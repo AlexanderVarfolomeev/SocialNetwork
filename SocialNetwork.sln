@@ -1,0 +1,24 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{EDD159A1-141D-4BFA-AC5C-0F27A934CFD3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialNetwork.WebAPI", "src\Systems\SocialNetwork.WebAPI\SocialNetwork.WebAPI.csproj", "{05362358-48CB-43F6-8CB4-3226FD1CC459}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Systems", "Systems", "{C259B242-7358-4535-BAC2-35E7EE39F946}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C259B242-7358-4535-BAC2-35E7EE39F946} = {EDD159A1-141D-4BFA-AC5C-0F27A934CFD3}
+		{05362358-48CB-43F6-8CB4-3226FD1CC459} = {C259B242-7358-4535-BAC2-35E7EE39F946}
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{05362358-48CB-43F6-8CB4-3226FD1CC459}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{05362358-48CB-43F6-8CB4-3226FD1CC459}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{05362358-48CB-43F6-8CB4-3226FD1CC459}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{05362358-48CB-43F6-8CB4-3226FD1CC459}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
