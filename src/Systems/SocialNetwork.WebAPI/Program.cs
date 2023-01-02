@@ -1,20 +1,23 @@
+using SocialNetwork.WebAPI.Configuration;
+
 var builder = WebApplication.CreateBuilder(args);
-
+var services = builder.Services;
 // Add services to the container.
+builder.AddAppSerilog();
 
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+services.AddControllers();
+
+services.AddAppVersioning();
+
+services.AddAppSwagger();
+
+services.AddAppCors();
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseAppSerilog();
+app.UseAppSwagger();
 
 app.UseHttpsRedirection();
 
