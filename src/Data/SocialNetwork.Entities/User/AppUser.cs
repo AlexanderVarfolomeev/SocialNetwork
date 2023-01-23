@@ -1,6 +1,11 @@
+using System.Collections;
 using Microsoft.AspNetCore.Identity;
 using SocialNetwork.Entities.Base;
-using SocialNetwork.Entities.Group;
+using SocialNetwork.Entities.Complaints;
+using SocialNetwork.Entities.Files;
+using SocialNetwork.Entities.Groups;
+using SocialNetwork.Entities.Messenger;
+using SocialNetwork.Entities.Posts;
 
 namespace SocialNetwork.Entities.User;
 
@@ -20,4 +25,21 @@ public class AppUser : IdentityUser<Guid>, IBaseEntity
     
     public virtual ICollection<AppUserRole> Roles { get; set; }
     public virtual ICollection<UserInGroup> InGroups { get; set; }
+    
+    public virtual ICollection<Post> CreatedPosts { get; set; }
+    
+    public virtual ICollection<UserLikePost> LikedPosts { get; set; }
+    public virtual ICollection<Comment> Comments { get; set; }
+    public virtual ICollection<Complaint> Complaints { get; set; }
+    public virtual ICollection<Complaint> CreatedComplaints { get; set; }
+    
+    public virtual ICollection<Message> Messages { get; set; }
+    
+    public virtual ICollection<Relationship> MyRelationships { get; set; }
+    public virtual ICollection<Relationship> ToMeRelationships { get; set; }
+    
+    public virtual ICollection<UserInChat> Chats { get; set; }
+    
+    
+    public virtual ICollection<Attachment> Avatars { get; set; }
 }

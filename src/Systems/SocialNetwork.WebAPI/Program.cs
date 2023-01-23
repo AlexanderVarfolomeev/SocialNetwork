@@ -1,3 +1,5 @@
+using SocialNetwork.Settings.Settings;
+using SocialNetwork.Settings.Source;
 using SocialNetwork.WebAPI.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -5,7 +7,7 @@ var services = builder.Services;
 // Add services to the container.
 builder.AddAppSerilog();
 
-services.AddAppDbContext();
+services.AddAppDbContext(new AppSettings(new SettingSource()));
 
 services.AddControllers();
 

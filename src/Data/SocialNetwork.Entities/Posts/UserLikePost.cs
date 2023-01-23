@@ -1,22 +1,17 @@
 using SocialNetwork.Entities.Base;
 using SocialNetwork.Entities.User;
 
-namespace SocialNetwork.Entities.Group;
+namespace SocialNetwork.Entities.Posts;
 
-public class UserInGroup : IBaseEntity
+public class UserLikePost : IBaseEntity
 {
     public Guid Id { get; set; }
     public DateTime CreationDateTime { get; set; }
     public DateTime ModificationDateTime { get; set; }
-
-    public bool IsCreator { get; set; }
-    public bool IsAdmin { get; set; }
-
-    public DateTimeOffset DateOfEntry { get; set; }
-
+    
     public Guid UserId { get; set; }
     public virtual AppUser User { get; set; }
-
-    public Guid GroupId { get; set; }
-    public virtual Group Group { get; set; }
+    
+    public Guid PostId { get; set; }
+    public virtual Post Post { get; set; }
 }

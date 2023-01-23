@@ -1,17 +1,17 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using SocialNetwork.Context;
+using SocialNetwork.Settings.Interfaces;
 
 namespace SocialNetwork.WebAPI.Configuration;
 
 public static class DbConfiguration
 {
-    public static IServiceCollection AddAppDbContext(this IServiceCollection services)
+    public static IServiceCollection AddAppDbContext(this IServiceCollection services, IAppSettings settings)
     {
         services.AddDbContext<MainDbContext>(options =>
         {
             options.UseLazyLoadingProxies();
-            options.UseNpgsql("Server=localhost;Port=6000;Database=SocialNetwork;User Id=postgres;Password=pgpass;");
+            options.UseNpgsql(settings.Db.GetConnectionString);
         });
         
         return services;
