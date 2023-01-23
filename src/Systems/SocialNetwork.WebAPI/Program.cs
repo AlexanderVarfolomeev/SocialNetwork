@@ -19,6 +19,7 @@ services.AddAppCors();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+app.UseAppMiddlewares();
 app.UseAppSerilog();
 app.UseAppSwagger();
 
