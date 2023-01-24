@@ -15,6 +15,7 @@
         <PackageReference Include="Serilog.AspNetCore" Version="6.1.0" />
         <PackageReference Include="Serilog.Enrichers.CorrelationId" Version="3.0.1" />
         <PackageReference Include="Serilog.Expressions" Version="3.4.1" />
+        <PackageReference Include="IdentityServer4.AccessTokenValidation" Version="3.0.1" />
         <PackageReference Include="Duende.IdentityServer.AspNetIdentity" Version="6.2.1" />
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.0.0" />
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="5.0.0" />
@@ -29,11 +30,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Controllers" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\..\Data\SocialNetwork.Context\SocialNetwork.Context.csproj" />
+      <ProjectReference Include="..\..\Data\SocialNetwork.Repository\SocialNetwork.Repository.csproj" />
+      <ProjectReference Include="..\..\Services\SocialNetwork.AccountServices\SocialNetwork.AccountServices.csproj" />
       <ProjectReference Include="..\..\Shared\SocialNetwork.Common\SocialNetwork.Common.csproj" />
       <ProjectReference Include="..\..\Shared\SocialNetwork.Settings\SocialNetwork.Settings.csproj" />
     </ItemGroup>

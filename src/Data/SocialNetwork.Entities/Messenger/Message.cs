@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using SocialNetwork.Entities.Base;
 using SocialNetwork.Entities.Files;
 using SocialNetwork.Entities.User;
@@ -7,8 +8,10 @@ namespace SocialNetwork.Entities.Messenger;
 public class Message : IBaseEntity
 {
     public Guid Id { get; set; }
-    public DateTime CreationDateTime { get; set; }
-    public DateTime ModificationDateTime { get; set; }
+    
+    public DateTimeOffset CreationDateTime { get; set; }
+    
+    public DateTimeOffset ModificationDateTime { get; set; }
 
     public string Text { get; set; }
     public bool IsRead { get; set; }

@@ -375,5 +375,11 @@ public class MainDbContext : IdentityDbContext<AppUser, AppRole, Guid>
             .WithOne(x => x.Message)
             .HasForeignKey(x => x.MessageId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<AppUser>()
+            .HasMany(x => x.Roles)
+            .WithOne(x => x.User)
+            .HasForeignKey(x => x.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

@@ -24,6 +24,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialNetwork.Settings", "s
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialNetwork.Repository", "src\Data\SocialNetwork.Repository\SocialNetwork.Repository.csproj", "{CCDE131A-66C0-4DE7-A891-D3A5643EE346}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialNetwork.AccountServices", "src\Services\SocialNetwork.AccountServices\SocialNetwork.AccountServices.csproj", "{67E48021-3ABD-402A-B99C-4BEC26956C6F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +43,7 @@ Global
 		{26310159-6D51-4C97-ACA9-51BA24538785} = {94F3C11F-FA81-41EC-97DC-9C2EFAC0BA8A}
 		{5051C68E-4E9A-45A2-B472-6A95C711EBD0} = {6BCBBE2B-1529-4A55-86EB-1FD7574FA5F9}
 		{CCDE131A-66C0-4DE7-A891-D3A5643EE346} = {94F3C11F-FA81-41EC-97DC-9C2EFAC0BA8A}
+		{67E48021-3ABD-402A-B99C-4BEC26956C6F} = {16918E00-DCA4-4464-A45B-4B1791C6627F}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{05362358-48CB-43F6-8CB4-3226FD1CC459}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -71,5 +74,9 @@ Global
 		{CCDE131A-66C0-4DE7-A891-D3A5643EE346}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CCDE131A-66C0-4DE7-A891-D3A5643EE346}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CCDE131A-66C0-4DE7-A891-D3A5643EE346}.Release|Any CPU.Build.0 = Release|Any CPU
+		{67E48021-3ABD-402A-B99C-4BEC26956C6F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{67E48021-3ABD-402A-B99C-4BEC26956C6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{67E48021-3ABD-402A-B99C-4BEC26956C6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{67E48021-3ABD-402A-B99C-4BEC26956C6F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

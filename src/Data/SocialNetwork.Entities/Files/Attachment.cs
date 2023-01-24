@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using SocialNetwork.Common.Enum;
 using SocialNetwork.Entities.Base;
 using SocialNetwork.Entities.Messenger;
@@ -9,8 +10,10 @@ namespace SocialNetwork.Entities.Files;
 public class Attachment : IBaseEntity
 {
     public Guid Id { get; set; }
-    public DateTime CreationDateTime { get; set; }
-    public DateTime ModificationDateTime { get; set; }
+    
+    public DateTimeOffset CreationDateTime { get; set; }
+    
+    public DateTimeOffset ModificationDateTime { get; set; }
 
     public string Name { get; set; }
     public FileType FileType { get; set; }
@@ -20,6 +23,7 @@ public class Attachment : IBaseEntity
 
     public Guid? UserId { get; set; }
     public virtual AppUser User { get; set; }
+    public bool IsCurrentAvatar { get; set; } = false;
     
     public Guid? CommentId { get; set; }
     public virtual Comment Comment { get; set; }

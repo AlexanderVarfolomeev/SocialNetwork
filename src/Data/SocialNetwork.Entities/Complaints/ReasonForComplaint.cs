@@ -1,4 +1,4 @@
-using System.Collections;
+using System.ComponentModel.DataAnnotations.Schema;
 using SocialNetwork.Entities.Base;
 
 namespace SocialNetwork.Entities.Complaints;
@@ -6,8 +6,10 @@ namespace SocialNetwork.Entities.Complaints;
 public class ReasonForComplaint : IBaseEntity
 {
     public Guid Id { get; set; }
-    public DateTime CreationDateTime { get; set; }
-    public DateTime ModificationDateTime { get; set; }
+    
+    public DateTimeOffset CreationDateTime { get; set; }
+    
+    public DateTimeOffset ModificationDateTime { get; set; }
     
     public string Name { get; set; }
     

@@ -1,4 +1,4 @@
-using System.Collections;
+using System.ComponentModel.DataAnnotations.Schema;
 using SocialNetwork.Entities.Base;
 using SocialNetwork.Entities.Complaints;
 using SocialNetwork.Entities.Files;
@@ -9,8 +9,10 @@ namespace SocialNetwork.Entities.Posts;
 public class Comment : IBaseEntity
 {
     public Guid Id { get; set; }
-    public DateTime CreationDateTime { get; set; }
-    public DateTime ModificationDateTime { get; set; }
+    
+    public DateTimeOffset CreationDateTime { get; set; }
+    
+    public DateTimeOffset ModificationDateTime { get; set; }
 
     public string Text { get; set; }
 

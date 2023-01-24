@@ -1,5 +1,6 @@
 using Duende.IdentityServer.Services;
 using SocialNetwork.IdentityServer.Configuration;
+using SocialNetwork.Repository;
 using SocialNetwork.Settings.Settings;
 using SocialNetwork.Settings.Source;
 
@@ -7,9 +8,9 @@ var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
 var settings = new AppSettings(new SettingSource());
 builder.AddAppSerilog();
-//services.AddRepository();
+services.AddRepository();
 
-//services.AddTransient<IProfileService, ProfileService>();
+services.AddTransient<IProfileService, ProfileService>();
 
 services.AddAppDbContext(settings.Db);
 // Add services to the container.

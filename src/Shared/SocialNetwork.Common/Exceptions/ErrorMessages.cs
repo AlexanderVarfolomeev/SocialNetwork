@@ -11,4 +11,6 @@ public class ErrorMessages
     public const string OnlyAdminOrAccountOwnerCanDoIdError = "Only admin or account owner can do it.";
     public const string OnlyAccountOwnerCanDoIdError = "Only account owner can do it.";
     public const string UserWithThisEmailExistsError = "User with this email exists.";
+    public const string UpdateEntityError = "Error while updating entity.";
+    public const string SaveEntityError = "Error while saving entity.";
 }

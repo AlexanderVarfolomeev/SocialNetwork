@@ -14,7 +14,6 @@ public class AppApiScopes
             {
                 JwtClaimTypes.NickName,
                 JwtClaimTypes.Email,
-                AppClaimTypes.Role
             }
         },
         new ApiScope(AppScopes.NetworkWrite, "Access to TwitterApi - write data.")
@@ -23,7 +22,6 @@ public class AppApiScopes
             {
                 JwtClaimTypes.NickName,
                 JwtClaimTypes.Email,
-                AppClaimTypes.Role
             }
         },
     };

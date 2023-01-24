@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using SocialNetwork.Entities.Base;
 using SocialNetwork.Entities.User;
 
@@ -6,8 +7,10 @@ namespace SocialNetwork.Entities.Groups;
 public class UserInGroup : IBaseEntity
 {
     public Guid Id { get; set; }
-    public DateTime CreationDateTime { get; set; }
-    public DateTime ModificationDateTime { get; set; }
+    
+    public DateTimeOffset CreationDateTime { get; set; }
+    
+    public DateTimeOffset ModificationDateTime { get; set; }
 
     public bool IsCreator { get; set; }
     public bool IsAdmin { get; set; }

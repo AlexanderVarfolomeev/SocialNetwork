@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using SocialNetwork.Entities.Base;
 
 namespace SocialNetwork.Entities.User;
@@ -11,6 +12,8 @@ public class AppUserRole : IBaseEntity
     public virtual AppUser User { get; set; }
     
     public Guid Id { get; set; }
-    public DateTime CreationDateTime { get; set; }
-    public DateTime ModificationDateTime { get; set; }
+    
+    public DateTimeOffset CreationDateTime { get; set; }
+    
+    public DateTimeOffset ModificationDateTime { get; set; }
 }

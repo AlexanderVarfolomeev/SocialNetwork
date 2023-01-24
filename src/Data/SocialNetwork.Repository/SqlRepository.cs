@@ -1,11 +1,11 @@
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
+using SocialNetwork.Common.Exceptions;
 using SocialNetwork.Context;
 using SocialNetwork.Entities.Base;
 
 namespace SocialNetwork.Repository;
 
-// TODO обработка исключений
 public class SqlRepository<T> : IRepository<T> where T : class, IBaseEntity
 {
     private readonly MainDbContext _context;
@@ -15,9 +15,9 @@ public class SqlRepository<T> : IRepository<T> where T : class, IBaseEntity
         _context = context;
     }
 
-    public async Task<T> GetAsync(int id)
+    public async Task<T> GetAsync(Guid id)
     {
-        return await _context.Set<T>().FindAsync(id);
+        return await _context.Set<T>().FindAsync(id) ?? throw new ProcessException(ErrorMessages.NotFoundError);
     }
 
     public async Task<IEnumerable<T>> GetAllAsync(int offset = 0, int limit = 10)
@@ -39,18 +39,32 @@ public class SqlRepository<T> : IRepository<T> where T : class, IBaseEntity
 
     public async Task<T> AddAsync(T entity)
     {
-        var result = await _context.Set<T>().AddAsync(entity);
-        await _context.SaveChangesAsync();
-        return result.Entity;
+        try
+        {
+            var result = await _context.Set<T>().AddAsync(entity);
+            await _context.SaveChangesAsync();
+            return result.Entity;
+        }
+        catch (Exception exc)
+        {
+            throw new ProcessException(ErrorMessages.SaveEntityError, exc);
+        }
     }
 
     public async Task<T> UpdateAsync(T entity)
     {
-        entity.ModificationDateTime = DateTime.Now;
-        var result = _context.Set<T>().Attach(entity);
-        _context.Entry(entity).State = EntityState.Modified;
-        await _context.SaveChangesAsync();
-        return result.Entity;
+        try
+        {
+            entity.ModificationDateTime = DateTimeOffset.Now;
+            var result = _context.Set<T>().Attach(entity);
+            _context.Entry(entity).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+            return result.Entity;
+        }
+        catch (Exception exc)
+        {
+            throw new ProcessException(ErrorMessages.UpdateEntityError, exc);
+        }
     }
 
     public async Task DeleteAsync(T entity)

@@ -1,6 +1,5 @@
 using Duende.IdentityServer.Models;
 using IdentityModel;
-using SocialNetwork.Common.Security;
 
 namespace SocialNetwork.IdentityServer.Configuration.IdentitySettings;
 
@@ -14,7 +13,6 @@ public static class AppIdentityResources
             {
                 JwtClaimTypes.NickName,
                 JwtClaimTypes.Email,
-                AppClaimTypes.Role
             }
         },
         new IdentityResources.Profile()
@@ -23,7 +21,6 @@ public static class AppIdentityResources
             {
                 JwtClaimTypes.NickName,
                 JwtClaimTypes.Email,
-                AppClaimTypes.Role
             }
         }
     };

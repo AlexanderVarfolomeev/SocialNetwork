@@ -24,6 +24,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\Data\SocialNetwork.Context\SocialNetwork.Context.csproj" />
+      <ProjectReference Include="..\..\Data\SocialNetwork.Repository\SocialNetwork.Repository.csproj" />
       <ProjectReference Include="..\..\Shared\SocialNetwork.Common\SocialNetwork.Common.csproj" />
       <ProjectReference Include="..\..\Shared\SocialNetwork.Settings\SocialNetwork.Settings.csproj" />
     </ItemGroup>

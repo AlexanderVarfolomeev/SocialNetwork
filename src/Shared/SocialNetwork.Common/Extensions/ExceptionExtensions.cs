@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using SocialNetwork.Common.Exceptions;
 using SocialNetwork.Common.Responses;
 

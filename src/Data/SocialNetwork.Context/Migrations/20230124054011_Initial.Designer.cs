@@ -12,8 +12,8 @@ using SocialNetwork.Context;
 namespace SocialNetwork.Context.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    [Migration("20230117072526_4")]
-    partial class _4
+    [Migration("20230124054011_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -140,8 +140,8 @@ namespace SocialNetwork.Context.Migrations
                     b.Property<Guid?>("CommentId")
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("CreationDateTime")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateTimeOffset>("CreationDateTime")
+                        .HasColumnType("timestamptz");
 
                     b.Property<Guid>("CreatorId")
                         .HasColumnType("uuid");
@@ -149,8 +149,8 @@ namespace SocialNetwork.Context.Migrations
                     b.Property<Guid?>("GroupId")
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("ModificationDateTime")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateTimeOffset>("ModificationDateTime")
+                        .HasColumnType("timestamptz");
 
                     b.Property<Guid?>("PostId")
                         .HasColumnType("uuid");
@@ -185,11 +185,11 @@ namespace SocialNetwork.Context.Migrations
                     b.Property<Guid>("ComplaintId")
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("CreationDateTime")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateTimeOffset>("CreationDateTime")
+                        .HasColumnType("timestamptz");
 
-                    b.Property<DateTime>("ModificationDateTime")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateTimeOffset>("ModificationDateTime")
+                        .HasColumnType("timestamptz");
 
                     b.Property<Guid>("ReasonId")
                         .HasColumnType("uuid");
@@ -209,11 +209,11 @@ namespace SocialNetwork.Context.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("CreationDateTime")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateTimeOffset>("CreationDateTime")
+                        .HasColumnType("timestamptz");
 
-                    b.Property<DateTime>("ModificationDateTime")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateTimeOffset>("ModificationDateTime")
+                        .HasColumnType("timestamptz");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -224,21 +224,68 @@ namespace SocialNetwork.Context.Migrations
                     b.ToTable("ReasonForComplaints");
                 });
 
+            modelBuilder.Entity("SocialNetwork.Entities.Files.Attachment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("CommentId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("CreationDateTime")
+                        .HasColumnType("timestamptz");
+
+                    b.Property<int>("FileType")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("IsCurrentAvatar")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid?>("MessageId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("ModificationDateTime")
+                        .HasColumnType("timestamptz");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid?>("PostId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CommentId");
+
+                    b.HasIndex("MessageId");
+
+                    b.HasIndex("PostId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Attachments");
+                });
+
             modelBuilder.Entity("SocialNetwork.Entities.Groups.Group", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("CreationDateTime")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateTimeOffset>("CreationDateTime")
+                        .HasColumnType("timestamptz");
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("ModificationDateTime")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateTimeOffset>("ModificationDateTime")
+                        .HasColumnType("timestamptz");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -255,8 +302,8 @@ namespace SocialNetwork.Context.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("CreationDateTime")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateTimeOffset>("CreationDateTime")
+                        .HasColumnType("timestamptz");
 
                     b.Property<DateTimeOffset>("DateOfEntry")
                         .HasColumnType("timestamp with time zone");
@@ -270,8 +317,8 @@ namespace SocialNetwork.Context.Migrations
                     b.Property<bool>("IsCreator")
                         .HasColumnType("boolean");
 
-                    b.Property<DateTime>("ModificationDateTime")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateTimeOffset>("ModificationDateTime")
+                        .HasColumnType("timestamptz");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
@@ -295,14 +342,14 @@ namespace SocialNetwork.Context.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("CreationDateTime")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateTimeOffset>("CreationDateTime")
+                        .HasColumnType("timestamptz");
 
                     b.Property<bool>("IsDialog")
                         .HasColumnType("boolean");
 
-                    b.Property<DateTime>("ModificationDateTime")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateTimeOffset>("ModificationDateTime")
+                        .HasColumnType("timestamptz");
 
                     b.HasKey("Id");
 
@@ -318,8 +365,8 @@ namespace SocialNetwork.Context.Migrations
                     b.Property<Guid>("ChatId")
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("CreationDateTime")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateTimeOffset>("CreationDateTime")
+                        .HasColumnType("timestamptz");
 
                     b.Property<bool>("IsModification")
                         .HasColumnType("boolean");
@@ -327,8 +374,8 @@ namespace SocialNetwork.Context.Migrations
                     b.Property<bool>("IsRead")
                         .HasColumnType("boolean");
 
-                    b.Property<DateTime>("ModificationDateTime")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateTimeOffset>("ModificationDateTime")
+                        .HasColumnType("timestamptz");
 
                     b.Property<Guid>("SenderId")
                         .HasColumnType("uuid");
@@ -355,17 +402,17 @@ namespace SocialNetwork.Context.Migrations
                     b.Property<Guid>("ChatId")
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("CreationDateTime")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateTimeOffset>("CreationDateTime")
+                        .HasColumnType("timestamptz");
 
                     b.Property<DateTimeOffset>("EntryDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamptz");
 
                     b.Property<bool>("IsCreator")
                         .HasColumnType("boolean");
 
-                    b.Property<DateTime>("ModificationDateTime")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateTimeOffset>("ModificationDateTime")
+                        .HasColumnType("timestamptz");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
@@ -385,14 +432,14 @@ namespace SocialNetwork.Context.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("CreationDateTime")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateTimeOffset>("CreationDateTime")
+                        .HasColumnType("timestamptz");
 
                     b.Property<Guid>("CreatorId")
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("ModificationDateTime")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateTimeOffset>("ModificationDateTime")
+                        .HasColumnType("timestamptz");
 
                     b.Property<Guid>("PostId")
                         .HasColumnType("uuid");
@@ -416,8 +463,8 @@ namespace SocialNetwork.Context.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("CreationDateTime")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateTimeOffset>("CreationDateTime")
+                        .HasColumnType("timestamptz");
 
                     b.Property<Guid>("CreatorId")
                         .HasColumnType("uuid");
@@ -428,8 +475,8 @@ namespace SocialNetwork.Context.Migrations
                     b.Property<bool>("IsInGroup")
                         .HasColumnType("boolean");
 
-                    b.Property<DateTime>("ModificationDateTime")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateTimeOffset>("ModificationDateTime")
+                        .HasColumnType("timestamptz");
 
                     b.Property<string>("Text")
                         .IsRequired()
@@ -450,11 +497,11 @@ namespace SocialNetwork.Context.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("CreationDateTime")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateTimeOffset>("CreationDateTime")
+                        .HasColumnType("timestamptz");
 
-                    b.Property<DateTime>("ModificationDateTime")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateTimeOffset>("ModificationDateTime")
+                        .HasColumnType("timestamptz");
 
                     b.Property<Guid>("PostId")
                         .HasColumnType("uuid");
@@ -481,11 +528,11 @@ namespace SocialNetwork.Context.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("CreationDateTime")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateTimeOffset>("CreationDateTime")
+                        .HasColumnType("timestamptz");
 
-                    b.Property<DateTime>("ModificationDateTime")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateTimeOffset>("ModificationDateTime")
+                        .HasColumnType("timestamptz");
 
                     b.Property<string>("Name")
                         .HasMaxLength(256)
@@ -517,14 +564,14 @@ namespace SocialNetwork.Context.Migrations
                         .HasColumnType("integer");
 
                     b.Property<DateTimeOffset>("Birthday")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamptz");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("CreationDateTime")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateTimeOffset>("CreationDateTime")
+                        .HasColumnType("timestamptz");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
@@ -542,8 +589,8 @@ namespace SocialNetwork.Context.Migrations
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<DateTime>("ModificationDateTime")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateTimeOffset>("ModificationDateTime")
+                        .HasColumnType("timestamptz");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -558,10 +605,6 @@ namespace SocialNetwork.Context.Migrations
                         .HasColumnType("character varying(256)");
 
                     b.Property<string>("PasswordHash")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Phone")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("PhoneNumber")
@@ -606,11 +649,11 @@ namespace SocialNetwork.Context.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("CreationDateTime")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateTimeOffset>("CreationDateTime")
+                        .HasColumnType("timestamptz");
 
-                    b.Property<DateTime>("ModificationDateTime")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateTimeOffset>("ModificationDateTime")
+                        .HasColumnType("timestamptz");
 
                     b.Property<Guid>("RoleId")
                         .HasColumnType("uuid");
@@ -633,14 +676,14 @@ namespace SocialNetwork.Context.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("CreationDateTime")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateTimeOffset>("CreationDateTime")
+                        .HasColumnType("timestamptz");
 
                     b.Property<Guid>("FirstUserId")
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("ModificationDateTime")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateTimeOffset>("ModificationDateTime")
+                        .HasColumnType("timestamptz");
 
                     b.Property<int>("RelationshipType")
                         .HasColumnType("integer");
@@ -764,6 +807,41 @@ namespace SocialNetwork.Context.Migrations
                     b.Navigation("Complaint");
 
                     b.Navigation("Reason");
+                });
+
+            modelBuilder.Entity("SocialNetwork.Entities.Files.Attachment", b =>
+                {
+                    b.HasOne("SocialNetwork.Entities.Posts.Comment", "Comment")
+                        .WithMany("Attachments")
+                        .HasForeignKey("CommentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SocialNetwork.Entities.Messenger.Message", "Message")
+                        .WithMany("Attachments")
+                        .HasForeignKey("MessageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SocialNetwork.Entities.Posts.Post", "Post")
+                        .WithMany("Attachments")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SocialNetwork.Entities.User.AppUser", "User")
+                        .WithMany("Avatars")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Comment");
+
+                    b.Navigation("Message");
+
+                    b.Navigation("Post");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("SocialNetwork.Entities.Groups.UserInGroup", b =>
@@ -890,7 +968,7 @@ namespace SocialNetwork.Context.Migrations
                     b.HasOne("SocialNetwork.Entities.User.AppUser", "User")
                         .WithMany("Roles")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Role");
@@ -943,13 +1021,22 @@ namespace SocialNetwork.Context.Migrations
                     b.Navigation("Users");
                 });
 
+            modelBuilder.Entity("SocialNetwork.Entities.Messenger.Message", b =>
+                {
+                    b.Navigation("Attachments");
+                });
+
             modelBuilder.Entity("SocialNetwork.Entities.Posts.Comment", b =>
                 {
+                    b.Navigation("Attachments");
+
                     b.Navigation("Complaints");
                 });
 
             modelBuilder.Entity("SocialNetwork.Entities.Posts.Post", b =>
                 {
+                    b.Navigation("Attachments");
+
                     b.Navigation("Comments");
 
                     b.Navigation("Complaints");
@@ -964,6 +1051,8 @@ namespace SocialNetwork.Context.Migrations
 
             modelBuilder.Entity("SocialNetwork.Entities.User.AppUser", b =>
                 {
+                    b.Navigation("Avatars");
+
                     b.Navigation("Chats");
 
                     b.Navigation("Comments");
