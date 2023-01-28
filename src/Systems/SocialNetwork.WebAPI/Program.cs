@@ -16,7 +16,7 @@ services.AddControllers();
 services.AddAppAuth(settings);
 services.AddAppVersioning();
 
-services.AddAppSwagger();
+services.AddAppSwagger(settings);
 services.AddAppAutomapper();
 services.AddAppCors();
 
@@ -25,6 +25,8 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 app.UseAppMiddlewares();
 app.UseAppAuth();
+app.UseAppCors();
+
 app.UseAppSerilog();
 app.UseAppSwagger();
 app.UseHttpsRedirection();

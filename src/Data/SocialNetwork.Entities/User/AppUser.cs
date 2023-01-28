@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Identity;
 using SocialNetwork.Entities.Base;
 using SocialNetwork.Entities.Complaints;

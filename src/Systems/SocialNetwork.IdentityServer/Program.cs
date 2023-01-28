@@ -14,7 +14,7 @@ services.AddTransient<IProfileService, ProfileService>();
 
 services.AddAppDbContext(settings.Db);
 // Add services to the container.
-services.AddTwitterCors();
+services.AddAppCors();
 services.AddControllers();
 services.AddEndpointsApiExplorer();
 services.AddAppIdentity();
@@ -23,7 +23,7 @@ services.AddSwaggerGen();
 var app = builder.Build();
 app.UseAppSerilog();
 
-app.UseTwitterCors();
+app.UseAppCors();
 
 app.UseHttpsRedirection();
 

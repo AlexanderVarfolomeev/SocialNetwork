@@ -4,5 +4,15 @@
         <name>SocialNetwork.WebAPI</name>
     </assembly>
     <members>
+        <member name="T:SocialNetwork.WebAPI.Controllers.Users.AccountController">
+            <summary>
+            CRUD контроллер для работы с аккаунтами пользователей
+            </summary>
+        </member>
+        <member name="T:SocialNetwork.WebAPI.Controllers.Users.ProfileController">
+            <summary>
+            Контроллер для работы с учетной записью пользователя
+            </summary>
+        </member>
     </members>
 </doc>

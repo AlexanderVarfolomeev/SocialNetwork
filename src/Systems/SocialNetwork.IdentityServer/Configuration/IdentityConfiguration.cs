@@ -25,7 +25,7 @@ public static class IdentityConfiguration
 
         services.AddIdentityServer(options => { options.EmitStaticAudienceClaim = true; })
             .AddAspNetIdentity<AppUser>()
-            //.AddProfileService<ProfileService>()
+            .AddProfileService<ProfileService>()
             .AddInMemoryApiScopes(AppApiScopes.Scopes)
             .AddInMemoryIdentityResources(AppIdentityResources.Resources)
             .AddInMemoryClients(AppClients.Clients)

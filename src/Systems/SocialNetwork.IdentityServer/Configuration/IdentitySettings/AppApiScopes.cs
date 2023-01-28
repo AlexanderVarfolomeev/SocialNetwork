@@ -8,7 +8,7 @@ public class AppApiScopes
 {
     public static IEnumerable<ApiScope> Scopes = new[]
     {
-        new ApiScope(AppScopes.NetworkRead, "Access to TwitterApi - read data.")
+        new ApiScope(AppScopes.NetworkRead, "Access to read data.")
         {
             UserClaims =
             {
@@ -16,7 +16,7 @@ public class AppApiScopes
                 JwtClaimTypes.Email,
             }
         },
-        new ApiScope(AppScopes.NetworkWrite, "Access to TwitterApi - write data.")
+        new ApiScope(AppScopes.NetworkWrite, "Access to write data.")
         {
             UserClaims =
             {

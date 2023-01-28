@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations.Schema;
 using SocialNetwork.Entities.Base;
 
 namespace SocialNetwork.Entities.Complaints;

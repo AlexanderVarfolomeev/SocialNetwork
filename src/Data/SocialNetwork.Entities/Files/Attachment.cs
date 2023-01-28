@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations.Schema;
 using SocialNetwork.Common.Enum;
 using SocialNetwork.Entities.Base;
 using SocialNetwork.Entities.Messenger;

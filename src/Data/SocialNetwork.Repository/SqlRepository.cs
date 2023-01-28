@@ -69,7 +69,14 @@ public class SqlRepository<T> : IRepository<T> where T : class, IBaseEntity
 
     public async Task DeleteAsync(T entity)
     {
-        _context.Set<T>().Remove(entity);
-        await _context.SaveChangesAsync();
+        try
+        {
+            _context.Set<T>().Remove(entity);
+            await _context.SaveChangesAsync();
+        }
+        catch (Exception exc)
+        {
+            throw new ProcessException(ErrorMessages.UpdateEntityError, exc);
+        }
     }
 }

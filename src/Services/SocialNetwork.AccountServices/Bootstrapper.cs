@@ -7,6 +7,7 @@ public static class Bootstrapper
     public static IServiceCollection AddAccountService(this IServiceCollection services)
     {
         services.AddScoped<IProfileService, ProfileService>();
+        services.AddScoped<IAccountService, AccountService>();
         return services;
     }
 }

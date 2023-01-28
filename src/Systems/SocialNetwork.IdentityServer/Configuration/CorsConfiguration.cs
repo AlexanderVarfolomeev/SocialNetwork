@@ -2,7 +2,7 @@ namespace SocialNetwork.IdentityServer.Configuration;
 
 public static class CorsConfiguration
 {
-    public static IServiceCollection AddTwitterCors(this IServiceCollection services)
+    public static IServiceCollection AddAppCors(this IServiceCollection services)
     {
         services.AddCors(builder =>
         {
@@ -17,7 +17,7 @@ public static class CorsConfiguration
         return services;
     }
 
-    public static void UseTwitterCors(this IApplicationBuilder app)
+    public static void UseAppCors(this IApplicationBuilder app)
     {
         app.UseCors();
     }
