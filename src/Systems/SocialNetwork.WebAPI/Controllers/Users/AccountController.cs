@@ -12,12 +12,12 @@ namespace SocialNetwork.WebAPI.Controllers.Users;
 [ApiVersion("1.0")]
 [Route("api/v{version:apiVersion}/[controller]")]
 [ApiController]
-public class AccountController : ControllerBase
+public class AccountsController : ControllerBase
 {
     private readonly IMapper _mapper;
     private readonly IAccountService _accountService;
 
-    public AccountController(IMapper mapper, IAccountService accountService)
+    public AccountsController(IMapper mapper, IAccountService accountService)
     {
         _mapper = mapper;
         _accountService = accountService;

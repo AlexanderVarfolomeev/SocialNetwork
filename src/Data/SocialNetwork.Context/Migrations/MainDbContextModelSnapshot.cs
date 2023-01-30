@@ -574,6 +574,10 @@ namespace SocialNetwork.Context.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
+                    b.Property<string>("EmailConfirmationKey")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("boolean");
 

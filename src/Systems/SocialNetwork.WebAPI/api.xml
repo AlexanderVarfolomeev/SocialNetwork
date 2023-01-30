@@ -4,7 +4,7 @@
         <name>SocialNetwork.WebAPI</name>
     </assembly>
     <members>
-        <member name="T:SocialNetwork.WebAPI.Controllers.Users.AccountController">
+        <member name="T:SocialNetwork.WebAPI.Controllers.Users.AccountsController">
             <summary>
             CRUD контроллер для работы с аккаунтами пользователей
             </summary>

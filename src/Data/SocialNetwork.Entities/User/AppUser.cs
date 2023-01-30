@@ -17,6 +17,13 @@ public class AppUser : IdentityUser<Guid>, IBaseEntity
 
     public string Name { get; set; } = string.Empty;
     public string Surname { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Ключ для подтверждения почты.
+    /// Генерируется при регистрации.
+    /// Чтобы подтвердить почту, необходими перейти по ссылке содержащей этот ключ.
+    /// </summary>
+    public string EmailConfirmationKey { get; set; } = string.Empty;
     
     public DateTimeOffset Birthday { get; set; }
     public string Status { get; set; } = string.Empty;

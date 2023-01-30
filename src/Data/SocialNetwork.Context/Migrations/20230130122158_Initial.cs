@@ -38,6 +38,7 @@ namespace SocialNetwork.Context.Migrations
                     ModificationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
                     Surname = table.Column<string>(type: "text", nullable: false),
+                    EmailConfirmationKey = table.Column<string>(type: "text", nullable: false),
                     Birthday = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     Status = table.Column<string>(type: "text", nullable: false),
                     IsBanned = table.Column<bool>(type: "boolean", nullable: false),

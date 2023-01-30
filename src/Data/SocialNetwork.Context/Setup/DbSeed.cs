@@ -46,7 +46,7 @@ public static class DbSeed
                 CreationDateTime = DateTimeOffset.Now,
                 ModificationDateTime = DateTimeOffset.Now
             });
-            context.SaveChanges();
+            await context.SaveChangesAsync();
 
             var user = new AppUser()
             {
@@ -57,7 +57,8 @@ public static class DbSeed
                 CreationDateTime = DateTimeOffset.Now,
                 ModificationDateTime = DateTimeOffset.Now,
                 UserName = "admin",
-                Email = "admin"
+                Email = "admin",
+                EmailConfirmed = true
             };
 
             await manager.CreateAsync(user, AdminPassword);

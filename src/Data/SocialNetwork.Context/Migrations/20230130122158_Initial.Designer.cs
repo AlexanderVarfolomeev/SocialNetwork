@@ -12,7 +12,7 @@ using SocialNetwork.Context;
 namespace SocialNetwork.Context.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    [Migration("20230130075653_Initial")]
+    [Migration("20230130122158_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -576,6 +576,10 @@ namespace SocialNetwork.Context.Migrations
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
+
+                    b.Property<string>("EmailConfirmationKey")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("boolean");

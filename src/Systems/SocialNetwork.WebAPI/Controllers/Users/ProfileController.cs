@@ -35,4 +35,24 @@ public class ProfileController : ControllerBase
     {
         return (await _profileService.LoginUserAsync(loginModel)).AccessToken;
     }
+
+    [HttpGet("confirm_email")]
+    public async Task<bool> ConfirmEmail([FromQuery] Guid userId, [FromQuery] string key)
+    {
+        return await _profileService.ConfirmEmailAsync(userId, key);
+    }
+
+    [HttpPut("{id}/password")]
+    public async Task<IActionResult> ChangePassword([FromRoute] Guid id, [FromBody] ChangePasswordModel model)
+    {
+        await _profileService.ChangePasswordAsync(id, model.OldPassword, model.NewPassword);
+        return Ok();
+    }
+    
+    //TODO закончил тут, восстановление пароля
+    [HttpGet("{id}/password")]
+    public async Task<IActionResult> ResetPassword([FromRoute] Guid id, [FromRoute] string key, [FromBody] string pass)
+    {
+        return Ok();
+    }
 }
