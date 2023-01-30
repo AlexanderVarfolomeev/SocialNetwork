@@ -42,4 +42,19 @@ public class AppUser : IdentityUser<Guid>, IBaseEntity
     
     
     public virtual ICollection<Attachment> Avatars { get; set; }
+
+    
+    public void Init()
+    {
+        CreationDateTime = DateTimeOffset.Now;
+        ModificationDateTime = CreationDateTime;
+    }
+
+    /// <summary>
+    /// Change entity timestamps.
+    /// </summary>
+    public void Touch()
+    {
+        ModificationDateTime = DateTimeOffset.Now;
+    }
 }

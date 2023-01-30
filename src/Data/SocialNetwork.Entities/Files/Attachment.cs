@@ -6,7 +6,7 @@ using SocialNetwork.Entities.User;
 
 namespace SocialNetwork.Entities.Files;
 
-public class Attachment : IBaseEntity
+public class Attachment : BaseEntity
 {
     public Guid Id { get; set; }
     

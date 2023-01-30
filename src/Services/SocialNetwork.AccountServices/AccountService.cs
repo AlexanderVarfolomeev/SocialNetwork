@@ -1,7 +1,5 @@
-using System.Linq.Expressions;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Routing.Template;
 using SocialNetwork.AccountServices.Models;
 using SocialNetwork.Common.Enum;
 using SocialNetwork.Common.Exceptions;

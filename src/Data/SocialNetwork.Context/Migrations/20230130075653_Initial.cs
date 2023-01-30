@@ -18,8 +18,8 @@ namespace SocialNetwork.Context.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Permissions = table.Column<int>(type: "integer", nullable: false),
-                    CreationDateTime = table.Column<DateTimeOffset>(type: "timestamptz", nullable: false),
-                    ModificationDateTime = table.Column<DateTimeOffset>(type: "timestamptz", nullable: false),
+                    CreationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    ModificationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     Name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     NormalizedName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     ConcurrencyStamp = table.Column<string>(type: "text", nullable: true)
@@ -34,11 +34,11 @@ namespace SocialNetwork.Context.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    CreationDateTime = table.Column<DateTimeOffset>(type: "timestamptz", nullable: false),
-                    ModificationDateTime = table.Column<DateTimeOffset>(type: "timestamptz", nullable: false),
+                    CreationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    ModificationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
                     Surname = table.Column<string>(type: "text", nullable: false),
-                    Birthday = table.Column<DateTimeOffset>(type: "timestamptz", nullable: false),
+                    Birthday = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     Status = table.Column<string>(type: "text", nullable: false),
                     IsBanned = table.Column<bool>(type: "boolean", nullable: false),
                     UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
@@ -66,8 +66,8 @@ namespace SocialNetwork.Context.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    CreationDateTime = table.Column<DateTimeOffset>(type: "timestamptz", nullable: false),
-                    ModificationDateTime = table.Column<DateTimeOffset>(type: "timestamptz", nullable: false),
+                    CreationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    ModificationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     IsDialog = table.Column<bool>(type: "boolean", nullable: false),
                     ChatName = table.Column<string>(type: "text", nullable: false)
                 },
@@ -81,8 +81,8 @@ namespace SocialNetwork.Context.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    CreationDateTime = table.Column<DateTimeOffset>(type: "timestamptz", nullable: false),
-                    ModificationDateTime = table.Column<DateTimeOffset>(type: "timestamptz", nullable: false),
+                    CreationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    ModificationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false)
                 },
@@ -96,8 +96,8 @@ namespace SocialNetwork.Context.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    CreationDateTime = table.Column<DateTimeOffset>(type: "timestamptz", nullable: false),
-                    ModificationDateTime = table.Column<DateTimeOffset>(type: "timestamptz", nullable: false),
+                    CreationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    ModificationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
@@ -216,8 +216,8 @@ namespace SocialNetwork.Context.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    CreationDateTime = table.Column<DateTimeOffset>(type: "timestamptz", nullable: false),
-                    ModificationDateTime = table.Column<DateTimeOffset>(type: "timestamptz", nullable: false),
+                    CreationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    ModificationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     RelationshipType = table.Column<int>(type: "integer", nullable: false),
                     FirstUserId = table.Column<Guid>(type: "uuid", nullable: false),
                     SecondUserId = table.Column<Guid>(type: "uuid", nullable: false)
@@ -246,8 +246,8 @@ namespace SocialNetwork.Context.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     RoleId = table.Column<Guid>(type: "uuid", nullable: false),
                     UserId = table.Column<Guid>(type: "uuid", nullable: false),
-                    CreationDateTime = table.Column<DateTimeOffset>(type: "timestamptz", nullable: false),
-                    ModificationDateTime = table.Column<DateTimeOffset>(type: "timestamptz", nullable: false)
+                    CreationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    ModificationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -271,8 +271,8 @@ namespace SocialNetwork.Context.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    CreationDateTime = table.Column<DateTimeOffset>(type: "timestamptz", nullable: false),
-                    ModificationDateTime = table.Column<DateTimeOffset>(type: "timestamptz", nullable: false),
+                    CreationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    ModificationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     Text = table.Column<string>(type: "text", nullable: false),
                     IsRead = table.Column<bool>(type: "boolean", nullable: false),
                     IsModification = table.Column<bool>(type: "boolean", nullable: false),
@@ -301,10 +301,10 @@ namespace SocialNetwork.Context.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    CreationDateTime = table.Column<DateTimeOffset>(type: "timestamptz", nullable: false),
-                    ModificationDateTime = table.Column<DateTimeOffset>(type: "timestamptz", nullable: false),
+                    CreationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    ModificationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     IsCreator = table.Column<bool>(type: "boolean", nullable: false),
-                    EntryDate = table.Column<DateTimeOffset>(type: "timestamptz", nullable: false),
+                    EntryDate = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     ChatId = table.Column<Guid>(type: "uuid", nullable: false),
                     UserId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
@@ -330,8 +330,8 @@ namespace SocialNetwork.Context.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    CreationDateTime = table.Column<DateTimeOffset>(type: "timestamptz", nullable: false),
-                    ModificationDateTime = table.Column<DateTimeOffset>(type: "timestamptz", nullable: false),
+                    CreationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    ModificationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     Text = table.Column<string>(type: "text", nullable: false),
                     IsInGroup = table.Column<bool>(type: "boolean", nullable: false),
                     CreatorId = table.Column<Guid>(type: "uuid", nullable: false),
@@ -359,8 +359,8 @@ namespace SocialNetwork.Context.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    CreationDateTime = table.Column<DateTimeOffset>(type: "timestamptz", nullable: false),
-                    ModificationDateTime = table.Column<DateTimeOffset>(type: "timestamptz", nullable: false),
+                    CreationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    ModificationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     IsCreator = table.Column<bool>(type: "boolean", nullable: false),
                     IsAdmin = table.Column<bool>(type: "boolean", nullable: false),
                     DateOfEntry = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
@@ -389,8 +389,8 @@ namespace SocialNetwork.Context.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    CreationDateTime = table.Column<DateTimeOffset>(type: "timestamptz", nullable: false),
-                    ModificationDateTime = table.Column<DateTimeOffset>(type: "timestamptz", nullable: false),
+                    CreationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    ModificationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     Text = table.Column<string>(type: "text", nullable: false),
                     CreatorId = table.Column<Guid>(type: "uuid", nullable: false),
                     PostId = table.Column<Guid>(type: "uuid", nullable: false)
@@ -417,8 +417,8 @@ namespace SocialNetwork.Context.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    CreationDateTime = table.Column<DateTimeOffset>(type: "timestamptz", nullable: false),
-                    ModificationDateTime = table.Column<DateTimeOffset>(type: "timestamptz", nullable: false),
+                    CreationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    ModificationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     UserId = table.Column<Guid>(type: "uuid", nullable: false),
                     PostId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
@@ -444,8 +444,8 @@ namespace SocialNetwork.Context.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    CreationDateTime = table.Column<DateTimeOffset>(type: "timestamptz", nullable: false),
-                    ModificationDateTime = table.Column<DateTimeOffset>(type: "timestamptz", nullable: false),
+                    CreationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    ModificationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
                     FileType = table.Column<int>(type: "integer", nullable: false),
                     MessageId = table.Column<Guid>(type: "uuid", nullable: true),
@@ -488,8 +488,8 @@ namespace SocialNetwork.Context.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    CreationDateTime = table.Column<DateTimeOffset>(type: "timestamptz", nullable: false),
-                    ModificationDateTime = table.Column<DateTimeOffset>(type: "timestamptz", nullable: false),
+                    CreationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    ModificationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     Type = table.Column<int>(type: "integer", nullable: false),
                     CreatorId = table.Column<Guid>(type: "uuid", nullable: false),
                     PostId = table.Column<Guid>(type: "uuid", nullable: true),
@@ -537,8 +537,8 @@ namespace SocialNetwork.Context.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    CreationDateTime = table.Column<DateTimeOffset>(type: "timestamptz", nullable: false),
-                    ModificationDateTime = table.Column<DateTimeOffset>(type: "timestamptz", nullable: false),
+                    CreationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    ModificationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     ReasonId = table.Column<Guid>(type: "uuid", nullable: false),
                     ComplaintId = table.Column<Guid>(type: "uuid", nullable: false)
                 },

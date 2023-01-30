@@ -4,7 +4,7 @@ using SocialNetwork.Entities.Posts;
 
 namespace SocialNetwork.Entities.Groups;
 
-public class Group : IBaseEntity
+public class Group : BaseEntity
 {
     public Guid Id { get; set; }
     

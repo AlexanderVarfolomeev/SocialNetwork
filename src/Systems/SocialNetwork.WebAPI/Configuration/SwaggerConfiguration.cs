@@ -86,13 +86,12 @@ public static class SwaggerConfiguration
 
             foreach (var description in provider.ApiVersionDescriptions)
                 options.SwaggerEndpoint($"{description.GroupName}/swagger.json", description.GroupName);
-            ;
 
             options.DocExpansion(DocExpansion.List);
             options.DefaultModelsExpandDepth(-1);
             options.OAuthAppName("SocNet_api");
 
-            options.OAuthClientId("swagger");
+            options.OAuthClientId("frontend");
             options.OAuthClientSecret("secret");
         });
         return app;

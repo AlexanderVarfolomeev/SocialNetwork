@@ -4,6 +4,7 @@
         <TargetFramework>net7.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
 
     <ItemGroup>
@@ -17,6 +18,9 @@
         <PackageReference Include="Serilog.AspNetCore" Version="6.1.0" />
         <PackageReference Include="Serilog.Enrichers.CorrelationId" Version="3.0.1" />
         <PackageReference Include="Serilog.Expressions" Version="3.4.1" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.2" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="7.0.2" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.2"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -34,6 +38,12 @@
       <Reference Include="Microsoft.EntityFrameworkCore.Proxies">
         <HintPath>..\..\..\..\..\.nuget\packages\microsoft.entityframeworkcore.proxies\7.0.2\lib\net6.0\Microsoft.EntityFrameworkCore.Proxies.dll</HintPath>
       </Reference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="..\..\..\.dockerignore">
+        <Link>.dockerignore</Link>
+      </Content>
     </ItemGroup>
 
 </Project>

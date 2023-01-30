@@ -1,10 +1,9 @@
 using AutoMapper;
-using SocialNetwork.Entities.Base;
 using SocialNetwork.Entities.User;
 
 namespace SocialNetwork.AccountServices.Models;
 
-public class AppAccountModel : IBaseEntity
+public class AppAccountModel
 {
     public Guid Id { get; set; }
     public DateTimeOffset CreationDateTime { get; set; }

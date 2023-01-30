@@ -2,7 +2,7 @@ using SocialNetwork.Entities.Base;
 
 namespace SocialNetwork.Entities.Complaints;
 
-public class ReasonForComplaint : IBaseEntity
+public class ReasonForComplaint : BaseEntity
 {
     public Guid Id { get; set; }
     

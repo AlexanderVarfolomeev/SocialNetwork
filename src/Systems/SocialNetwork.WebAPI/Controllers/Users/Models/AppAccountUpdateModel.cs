@@ -1,6 +1,5 @@
 using AutoMapper;
 using SocialNetwork.AccountServices.Models;
-using SocialNetwork.Entities.User;
 
 namespace SocialNetwork.WebAPI.Controllers.Users.Models;
 

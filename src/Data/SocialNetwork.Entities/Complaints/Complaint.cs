@@ -11,7 +11,7 @@ namespace SocialNetwork.Entities.Complaints;
 /// Тип жалобы - на что жалоба (пост, группа, пользователь, комментарий).
 /// В зависимости от типа, смотрим необходимый Id.
 /// </summary>
-public class Complaint : IBaseEntity
+public class Complaint : BaseEntity
 {
     public Guid Id { get; set; }
     

@@ -5,7 +5,7 @@ using SocialNetwork.Entities.User;
 
 namespace SocialNetwork.Entities.Posts;
 
-public class Comment : IBaseEntity
+public class Comment : BaseEntity
 {
     public Guid Id { get; set; }
     

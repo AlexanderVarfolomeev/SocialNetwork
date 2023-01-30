@@ -3,7 +3,7 @@ using SocialNetwork.Entities.User;
 
 namespace SocialNetwork.Entities.Posts;
 
-public class UserLikePost : IBaseEntity
+public class UserLikePost : BaseEntity
 {
     public Guid Id { get; set; }
     

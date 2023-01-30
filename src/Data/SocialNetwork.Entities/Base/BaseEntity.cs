@@ -1,17 +1,22 @@
 namespace SocialNetwork.Entities.Base;
 
-public interface IBaseEntity
+public class BaseEntity : IBaseEntity
 {
     public Guid Id { get; set; }
-
-
     public DateTimeOffset CreationDateTime { get; set; }
-
     public DateTimeOffset ModificationDateTime { get; set; }
+    
+    public void Init()
+    {
+        CreationDateTime = DateTimeOffset.Now;
+        ModificationDateTime = CreationDateTime;
+    }
 
-    void Init();
     /// <summary>
     /// Change entity timestamps.
     /// </summary>
-    void Touch();
+    public void Touch()
+    {
+        ModificationDateTime = DateTimeOffset.Now;
+    }
 }

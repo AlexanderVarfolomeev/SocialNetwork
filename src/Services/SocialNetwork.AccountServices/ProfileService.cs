@@ -47,10 +47,6 @@ public class ProfileService : IProfileService
         user.PhoneNumberConfirmed = false;
         user.EmailConfirmed = false;
 
-        user.CreationDateTime = DateTimeOffset.Now;
-        user.ModificationDateTime = user.CreationDateTime;
-        user.Id = Guid.NewGuid();
-
         var result = await _userManager.CreateAsync(user, requestModel.Password);
         ProcessException.ThrowIf(() => !result.Succeeded, result.ToString());
 
@@ -69,12 +65,11 @@ public class ProfileService : IProfileService
 
         return await GetTokenResponseAsync(model, user.UserName);
     }
-
     private async Task GiveUserRole(AppUser user)
     {
         var userRoleId = (await _roleRepository.GetAllAsync(x => x.Permissions == Permissions.User)).First().Id;
         await _userRolesRepository.AddAsync(new AppUserRole() { RoleId = userRoleId, UserId = user.Id });
-    }
+        }
 
     private async Task<TokenResponse> GetTokenResponseAsync(LoginModel model, string userName)
     {

@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using SocialNetwork.Context;
+using SocialNetwork.Context.Setup;
 using SocialNetwork.Settings.Interfaces;
 
 namespace SocialNetwork.WebAPI.Configuration;
@@ -16,5 +17,11 @@ public static class DbConfiguration
         
         return services;
     }
-    
+
+    public static IApplicationBuilder UseAppDbContext(this WebApplication app)
+    {
+        DbInit.Execute(app.Services);
+        DbSeed.Execute(app.Services);
+        return app;
+    }
 }

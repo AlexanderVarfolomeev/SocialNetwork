@@ -2,7 +2,7 @@ using SocialNetwork.Entities.Base;
 
 namespace SocialNetwork.Entities.Messenger;
 
-public class Chat : IBaseEntity
+public class Chat : BaseEntity
 {
     public Guid Id { get; set; }
     

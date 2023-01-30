@@ -41,6 +41,7 @@ public class SqlRepository<T> : IRepository<T> where T : class, IBaseEntity
     {
         try
         {
+            entity.Init();
             var result = await _context.Set<T>().AddAsync(entity);
             await _context.SaveChangesAsync();
             return result.Entity;
@@ -55,7 +56,7 @@ public class SqlRepository<T> : IRepository<T> where T : class, IBaseEntity
     {
         try
         {
-            entity.ModificationDateTime = DateTimeOffset.Now;
+            entity.Touch();
             var result = _context.Set<T>().Attach(entity);
             _context.Entry(entity).State = EntityState.Modified;
             await _context.SaveChangesAsync();

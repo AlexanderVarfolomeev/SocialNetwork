@@ -1,0 +1,10 @@
+version: "3.4"
+
+services:
+  social_network_api:
+    image: ${DOCKER_REGISTRY}network_api
+    build:
+      context: .
+      dockerfile: src/Systems/SocialNetwork.IdentityServer/Dockerfile
+    ports:
+      - "5000:80"

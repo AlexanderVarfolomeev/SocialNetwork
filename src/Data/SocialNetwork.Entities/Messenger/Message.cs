@@ -4,7 +4,7 @@ using SocialNetwork.Entities.User;
 
 namespace SocialNetwork.Entities.Messenger;
 
-public class Message : IBaseEntity
+public class Message : BaseEntity
 {
     public Guid Id { get; set; }
     

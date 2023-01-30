@@ -3,7 +3,7 @@ using SocialNetwork.Entities.Base;
 
 namespace SocialNetwork.Entities.User;
 
-public class Relationship : IBaseEntity
+public class Relationship : BaseEntity
 {
     public Guid Id { get; set; }
     

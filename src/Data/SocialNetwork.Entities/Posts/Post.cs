@@ -6,7 +6,7 @@ using SocialNetwork.Entities.User;
 
 namespace SocialNetwork.Entities.Posts;
 
-public class Post : IBaseEntity
+public class Post : BaseEntity
 {
     public Guid Id { get; set; }
     

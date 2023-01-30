@@ -23,6 +23,7 @@ services.AddAppCors();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+app.UseAppDbContext();
 app.UseAppMiddlewares();
 app.UseAppAuth();
 app.UseAppCors();
