@@ -1,7 +1,7 @@
 using IdentityModel.Client;
 using SocialNetwork.AccountServices.Models;
 
-namespace SocialNetwork.AccountServices;
+namespace SocialNetwork.AccountServices.Interfaces;
 
 // TODO восстановление и смена пароля
 // TODO изменение данных профиля

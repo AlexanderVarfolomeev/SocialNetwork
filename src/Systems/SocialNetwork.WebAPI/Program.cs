@@ -11,6 +11,7 @@ var services = builder.Services;
 builder.AddAppSerilog();
 
 services.AddAppDbContext(settings);
+services.AddHttpContextAccessor();
 services.AddAppServices();
 services.AddControllers();
 services.AddAppAuth(settings);

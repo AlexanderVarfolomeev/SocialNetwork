@@ -1,15 +1,16 @@
+using System.Security.Claims;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using SocialNetwork.AccountServices.Interfaces;
 using SocialNetwork.AccountServices.Models;
-using SocialNetwork.Common.Enum;
 using SocialNetwork.Common.Exceptions;
 using SocialNetwork.Entities.User;
 using SocialNetwork.Repository;
 using SocialNetwork.Settings.Interfaces;
 
-namespace SocialNetwork.AccountServices;
+namespace SocialNetwork.AccountServices.Implementations;
 
-//TODO действия админов
 class AccountService : IAccountService
 {
     private readonly IRepository<AppUser> _userRepository;
@@ -19,11 +20,13 @@ class AccountService : IAccountService
     private readonly IAppSettings _apiSettings;
     private readonly IRepository<AppUserRole> _userRolesRepository;
     private readonly IRepository<AppRole> _roleRepository;
+    private readonly IAdminService _adminService;
 
+    private readonly Guid _currentUserId;
 
     public AccountService(IRepository<AppUser> userRepository, UserManager<AppUser> userManager,
-        SignInManager<AppUser> signInManager, IMapper mapper, IAppSettings apiSettings,
-        IRepository<AppUserRole> userRolesRepository, IRepository<AppRole> roleRepository)
+        SignInManager<AppUser> signInManager, IMapper mapper, IAppSettings apiSettings, IHttpContextAccessor accessor,
+        IRepository<AppUserRole> userRolesRepository, IRepository<AppRole> roleRepository, IAdminService adminService)
     {
         _userRepository = userRepository;
         _userManager = userManager;
@@ -32,24 +35,20 @@ class AccountService : IAccountService
         _apiSettings = apiSettings;
         _userRolesRepository = userRolesRepository;
         _roleRepository = roleRepository;
+        _adminService = adminService;
+
+        var value = accessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        _currentUserId = value is null ? Guid.Empty : Guid.Parse(value);
     }
 
     public async Task<AppAccountModel> GetAccountAsync(Guid id)
     {
-        return _mapper.Map<AppAccountModel>(await GetUserAsync(id));
+        return _mapper.Map<AppAccountModel>(await _userRepository.GetAsync(id));
     }
 
     public async Task<AppAccountModel> GetAccountAsync(string username)
     {
-        try
-        {
-            return _mapper.Map<AppAccountModel>(
-                (await _userRepository.GetAllAsync((x) => x.UserName == username)).First());
-        }
-        catch (ProcessException exc)
-        {
-            throw new ProcessException(ErrorMessages.NotFoundError, exc);
-        }
+        return _mapper.Map<AppAccountModel>(await _userRepository.GetAsync(x => x.UserName == username));
     }
 
     public async Task<IEnumerable<AppAccountModel>> GetAccountsAsync(int offset = 0, int limit = 10)
@@ -59,44 +58,28 @@ class AccountService : IAccountService
 
     public async Task<AppAccountModel> UpdateAccountAsync(Guid id, AppAccountUpdateModel model)
     {
-        var user = await GetUserAsync(id);
-        var userModel = _mapper.Map(model, user);
+        var userModel = _mapper.Map(model, await CheckAdminOrAccountOwner(id));
         return _mapper.Map<AppAccountModel>(await _userRepository.UpdateAsync(userModel));
     }
 
     public async Task DeleteAccountAsync(Guid id)
     {
-        var user = await GetUserAsync(id);
-        await _userRepository.DeleteAsync(user);
+        await _userRepository.DeleteAsync(await CheckAdminOrAccountOwner(id));
     }
 
-    public async Task BanUserAsync(Guid id)
+    private async Task<AppUser> CheckAdminOrAccountOwner(Guid id)
     {
-        var user = await GetUserAsync(id);
-        user.IsBanned = true;
-        await _userRepository.UpdateAsync(user);
-    }
-
-    public async Task<bool> IsUserBanned(Guid id)
-    {
-        return (await GetUserAsync(id)).IsBanned;
-    }
-
-    public async Task<bool> IsAdmin(Guid id)
-    {
-        var roles = await _userRolesRepository.GetAllAsync((x) => x.UserId == id);
-        return roles.Any(x => x.Role.Permissions == Permissions.Admin || x.Role.Permissions == Permissions.GodAdmin);
-    }
-
-    private async Task<AppUser> GetUserAsync(Guid id)
-    {
-        try
+        if (_currentUserId != id && !await _adminService.IsAdminAsync(_currentUserId))
         {
-            return await _userRepository.GetAsync(id);
+            throw new ProcessException(ErrorMessages.OnlyAdminOrAccountOwnerCanDoIdError);
         }
-        catch (ProcessException exc)
+
+        var user = await _userRepository.GetAsync(id);
+        if (user.IsBanned)
         {
-            throw new ProcessException(ErrorMessages.NotFoundError, exc);
+            throw new ProcessException(ErrorMessages.YouBannedError);
         }
+
+        return user;
     }
 }

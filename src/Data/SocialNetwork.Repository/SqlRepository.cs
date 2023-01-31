@@ -20,6 +20,12 @@ public class SqlRepository<T> : IRepository<T> where T : class, IBaseEntity
         return await _context.Set<T>().FindAsync(id) ?? throw new ProcessException(ErrorMessages.NotFoundError);
     }
 
+    public async Task<T> GetAsync(Expression<Func<T, bool>> predicate)
+    {
+        return await _context.Set<T>().Where(predicate).FirstOrDefaultAsync() ??
+               throw new ProcessException(ErrorMessages.NotFoundError);
+    }
+
     public async Task<IEnumerable<T>> GetAllAsync(int offset = 0, int limit = 10)
     {
         return await _context.Set<T>()

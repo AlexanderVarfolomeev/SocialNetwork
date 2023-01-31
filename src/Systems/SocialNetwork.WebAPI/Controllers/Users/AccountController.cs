@@ -1,6 +1,6 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using SocialNetwork.AccountServices;
+using SocialNetwork.AccountServices.Interfaces;
 using SocialNetwork.AccountServices.Models;
 using SocialNetwork.WebAPI.Controllers.Users.Models;
 
@@ -16,11 +16,15 @@ public class AccountsController : ControllerBase
 {
     private readonly IMapper _mapper;
     private readonly IAccountService _accountService;
+    private readonly IAdminService _adminService;
 
-    public AccountsController(IMapper mapper, IAccountService accountService)
+    public AccountsController(IMapper mapper,
+        IAccountService accountService,
+        IAdminService adminService)
     {
         _mapper = mapper;
         _accountService = accountService;
+        _adminService = adminService;
     }
 
     [HttpGet("{id:Guid}")]
@@ -56,10 +60,17 @@ public class AccountsController : ControllerBase
         return Ok();
     }
 
-    [HttpPut("ban-{id}")]
+    [HttpPut("{id}/ban")]
     public async Task<IActionResult> BanAccount([FromRoute] Guid id)
     {
-        await _accountService.BanUserAsync(id);
+        await _adminService.BanUserAsync(id);
+        return Ok();
+    }
+
+    [HttpPut("{id}/unban")]
+    public async Task<IActionResult> UnbanAccount([FromRoute] Guid id)
+    {
+        await _adminService.UnbanUserAsync(id);
         return Ok();
     }
 }

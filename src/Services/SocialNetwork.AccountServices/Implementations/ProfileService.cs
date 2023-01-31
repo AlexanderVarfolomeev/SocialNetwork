@@ -1,6 +1,9 @@
+using System.Security.Claims;
 using AutoMapper;
 using IdentityModel.Client;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using SocialNetwork.AccountServices.Interfaces;
 using SocialNetwork.AccountServices.Models;
 using SocialNetwork.Common.Email;
 using SocialNetwork.Common.Enum;
@@ -12,7 +15,7 @@ using SocialNetwork.Entities.User;
 using SocialNetwork.Repository;
 using SocialNetwork.Settings.Interfaces;
 
-namespace SocialNetwork.AccountServices;
+namespace SocialNetwork.AccountServices.Implementations;
 
 public class ProfileService : IProfileService
 {
@@ -25,10 +28,12 @@ public class ProfileService : IProfileService
     private readonly IRepository<AppRole> _roleRepository;
     private readonly IEmailService _emailService;
 
+    private readonly Guid _currentUserId;
+
     public ProfileService(IRepository<AppUser> userRepository, UserManager<AppUser> userManager,
         SignInManager<AppUser> signInManager, IMapper mapper, IAppSettings apiSettings,
         IRepository<AppUserRole> userRolesRepository, IRepository<AppRole> roleRepository,
-        IEmailService emailService)
+        IEmailService emailService, IHttpContextAccessor accessor)
     {
         _userRepository = userRepository;
         _userManager = userManager;
@@ -38,6 +43,9 @@ public class ProfileService : IProfileService
         _userRolesRepository = userRolesRepository;
         _roleRepository = roleRepository;
         _emailService = emailService;
+
+        var value = accessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        _currentUserId = value is null ? Guid.Empty : Guid.Parse(value);
     }
 
     public async Task<AppAccountModel> RegisterUserAsync(AppAccountModelRequest requestModel)
@@ -66,30 +74,28 @@ public class ProfileService : IProfileService
         var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
         ProcessException.ThrowIf(() => !result.Succeeded, ErrorMessages.IncorrectEmailOrPasswordError);
 
-
         return await GetTokenResponseAsync(model, user.UserName);
     }
 
     public async Task<bool> ConfirmEmailAsync(Guid userId, string code)
     {
         code = code.Replace(' ', '+'); // почему то браузер не воспринимает символ + и вставляет пробел
+
         var user = await _userRepository.GetAsync(userId);
-        ProcessException.ThrowIf(() => user is null, ErrorMessages.NotFoundError);
+
         var result = await _userManager.ConfirmEmailAsync(user, code);
         if (result.Succeeded)
         {
             user.EmailConfirmed = true;
             await _userRepository.UpdateAsync(user);
-            return true;
         }
 
-        return false;
+        return result.Succeeded;
     }
 
     public async Task ChangePasswordAsync(Guid userId, string oldPassword, string newPassword)
     {
         var user = await _userRepository.GetAsync(userId);
-        ProcessException.ThrowIf(() => user is null, ErrorMessages.NotFoundError);
 
         var isCorrectPassword = await _userManager.CheckPasswordAsync(user, oldPassword);
         if (isCorrectPassword)
@@ -98,26 +104,21 @@ public class ProfileService : IProfileService
             await ResetPassword(user, newPassword, token);
         }
         else
+        {
             throw new ProcessException(ErrorMessages.IncorrectPassword);
+        }
     }
 
-    //TODO закончил тут, восстановление пароля
-    public async Task SendPasswordResetMail(AppUser user)
-    {
-       string key = await _userManager.GeneratePasswordResetTokenAsync(user);
-        await _emailService.SendEmailAsync(new EmailModel()
-        {
-            Email = user.Email,
-            Message = MessageConstants.PasswordReset + _apiSettings.Email.ConfirmAddress + "password/userId=" + user.Id +
-                      "&key=" + key,
-            Subject = MessageConstants.ConfirmRegistrationSubject
-        });
-    }
+
+    /// <summary>
+    /// Установка нового пароля
+    /// </summary>
     private async Task ResetPassword(AppUser user, string newPassword, string resetToken)
     {
         var result = await _userManager.ResetPasswordAsync(user, resetToken, newPassword);
         ProcessException.ThrowIf(() => !result.Succeeded, ErrorMessages.ErrorWhileResetPassword);
-    }    
+    }
+
     /// <summary>
     /// Отправка сообщения для подтверждения почты
     /// </summary>
@@ -127,8 +128,10 @@ public class ProfileService : IProfileService
         user.EmailConfirmationKey = await _userManager.GenerateEmailConfirmationTokenAsync(user);
         await _emailService.SendEmailAsync(new EmailModel()
         {
+            //TODO убрать хардкод
             Email = user.Email,
-            Message = MessageConstants.ConfirmRegistration + _apiSettings.Email.ConfirmAddress + "confirm-email?userId=" + user.Id +
+            Message = MessageConstants.ConfirmRegistration + _apiSettings.Email.ConfirmAddress +
+                      "confirm_email?userId=" + user.Id +
                       "&key=" + user.EmailConfirmationKey,
             Subject = MessageConstants.ConfirmRegistrationSubject
         });
@@ -163,3 +166,27 @@ public class ProfileService : IProfileService
         return tokenResponse;
     }
 }
+
+
+/* Восстановление пароля
+ public async Task RestorePassword(Guid userId, string newPassword, string token)
+{
+    var user = await _userRepository.GetAsync(userId);
+    await ResetPassword(user, newPassword, token);
+}
+
+public async Task SendPasswordResetMail(string email)
+{
+    //A4F1304A-9DA9-4729-AEC2-D96297D85593/reset_password?token=asdasd'
+    var user = (await _userRepository.GetAllAsync(x => x.Email == email)).First();
+    ProcessException.ThrowIf(() => user is null, ErrorMessages.NotFoundError);
+    
+    string token = await _userManager.GeneratePasswordResetTokenAsync(user);
+    await _emailService.SendEmailAsync(new EmailModel()
+    {
+        Email = user.Email,
+        Message = MessageConstants.PasswordReset + _apiSettings.Email.ConfirmAddress  +
+                  user.Id + "/reset_password?token="+ token,
+        Subject = MessageConstants.PasswordReset
+    });
+}*/

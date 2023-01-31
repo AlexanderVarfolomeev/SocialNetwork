@@ -1,6 +1,6 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using SocialNetwork.AccountServices;
+using SocialNetwork.AccountServices.Interfaces;
 using SocialNetwork.AccountServices.Models;
 using SocialNetwork.WebAPI.Controllers.Users.Models;
 
@@ -48,11 +48,20 @@ public class ProfileController : ControllerBase
         await _profileService.ChangePasswordAsync(id, model.OldPassword, model.NewPassword);
         return Ok();
     }
-    
-    //TODO закончил тут, восстановление пароля
-    [HttpGet("{id}/password")]
-    public async Task<IActionResult> ResetPassword([FromRoute] Guid id, [FromRoute] string key, [FromBody] string pass)
-    {
-        return Ok();
-    }
 }
+
+/*
+    * TODO закончить в клиенте
+   [HttpPost("{id}/reset_password")]
+   public async Task<IActionResult> ResetPassword([FromRoute] Guid id, [FromQuery] string token, [FromBody] string password)
+   {
+       await _profileService.RestorePassword(id, password, token);
+       return Ok();
+   }
+
+   [HttpPost("forgot_password")]
+   public async Task<IActionResult> ForgotPassword([FromBody] string email)
+   {
+       await _profileService.SendPasswordResetMail(email);
+       return Ok();
+   }*/

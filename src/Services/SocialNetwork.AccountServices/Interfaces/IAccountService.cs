@@ -1,6 +1,6 @@
 using SocialNetwork.AccountServices.Models;
 
-namespace SocialNetwork.AccountServices;
+namespace SocialNetwork.AccountServices.Interfaces;
 
 /// <summary>
 /// CRUD сервис для работы с аккаунтами.
@@ -11,8 +11,5 @@ public interface IAccountService
     Task<AppAccountModel> GetAccountAsync(string username);
     Task<IEnumerable<AppAccountModel>> GetAccountsAsync(int offset = 0, int limit = 10);
     Task<AppAccountModel> UpdateAccountAsync(Guid id, AppAccountUpdateModel model);
-    Task DeleteAccountAsync(Guid id); 
-    Task BanUserAsync(Guid id);
-    Task<bool> IsUserBanned(Guid id);
-    Task<bool> IsAdmin(Guid id);
+    Task DeleteAccountAsync(Guid id);
 }

@@ -7,6 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\Shared\SocialNetwork.Constants\SocialNetwork.Constants.csproj" />
       <ProjectReference Include="..\SocialNetwork.Context\SocialNetwork.Context.csproj" />
       <ProjectReference Include="..\SocialNetwork.Entities\SocialNetwork.Entities.csproj" />
     </ItemGroup>

@@ -1,5 +1,3 @@
-using System.Net;
-using System.Net.Mail;
 using SocialNetwork.EmailService.Models;
 using SocialNetwork.Settings.Interfaces;
 
