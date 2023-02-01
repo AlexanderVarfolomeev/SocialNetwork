@@ -5,10 +5,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using SocialNetwork.AccountServices.Interfaces;
 using SocialNetwork.AccountServices.Models;
-using SocialNetwork.Common.Email;
 using SocialNetwork.Common.Enum;
 using SocialNetwork.Common.Exceptions;
-using SocialNetwork.Common.Security;
+using SocialNetwork.Constants.Email;
+using SocialNetwork.Constants.Errors;
+using SocialNetwork.Constants.Security;
 using SocialNetwork.EmailService;
 using SocialNetwork.EmailService.Models;
 using SocialNetwork.Entities.User;
@@ -66,6 +67,9 @@ public class ProfileService : IProfileService
         return _mapper.Map<AppAccountModel>(user);
     }
 
+    /// <summary>
+    /// Выдача токена
+    /// </summary>
     public async Task<TokenResponse> LoginUserAsync(LoginModel model)
     {
         var user = await _userManager.FindByEmailAsync(model.Email);
@@ -73,10 +77,19 @@ public class ProfileService : IProfileService
 
         var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
         ProcessException.ThrowIf(() => !result.Succeeded, ErrorMessages.IncorrectEmailOrPasswordError);
+        ProcessException.ThrowIf(() => user.IsBanned,
+            ErrorMessages.YouBannedError); // Не даем зайти в аккаунт если забанен
+
 
         return await GetTokenResponseAsync(model, user.UserName);
     }
 
+    /// <summary>
+    /// Метод для подтверждения Email.
+    /// Чтобы подтвердить Email необходимо перейти по ссылке в сообщении, которая формируется в методе SendConfirmRegistrationMail
+    /// </summary>
+    /// <param name="userId"> Id юзера для которого подтверждаем</param>
+    /// <param name="code"> Код для подтверждения, сравниваем с тем, что сформировали и выслали в сообщении</param>
     public async Task<bool> ConfirmEmailAsync(Guid userId, string code)
     {
         code = code.Replace(' ', '+'); // почему то браузер не воспринимает символ + и вставляет пробел
@@ -93,9 +106,12 @@ public class ProfileService : IProfileService
         return result.Succeeded;
     }
 
-    public async Task ChangePasswordAsync(Guid userId, string oldPassword, string newPassword)
+    /// <summary>
+    /// Смена пароля
+    /// </summary>
+    public async Task ChangePasswordAsync(string oldPassword, string newPassword)
     {
-        var user = await _userRepository.GetAsync(userId);
+        var user = await _userRepository.GetAsync(_currentUserId);
 
         var isCorrectPassword = await _userManager.CheckPasswordAsync(user, oldPassword);
         if (isCorrectPassword)
@@ -109,7 +125,6 @@ public class ProfileService : IProfileService
         }
     }
 
-
     /// <summary>
     /// Установка нового пароля
     /// </summary>
@@ -121,14 +136,13 @@ public class ProfileService : IProfileService
 
     /// <summary>
     /// Отправка сообщения для подтверждения почты
+    /// Для подверждения генерируется ссылка на метод, в которой содержится ID пользователя и сгенерированный код.
     /// </summary>
-    /// <param name="user"></param>
     private async Task SendConfirmRegistrationMail(AppUser user)
     {
         user.EmailConfirmationKey = await _userManager.GenerateEmailConfirmationTokenAsync(user);
         await _emailService.SendEmailAsync(new EmailModel()
         {
-            //TODO убрать хардкод
             Email = user.Email,
             Message = MessageConstants.ConfirmRegistration + _apiSettings.Email.ConfirmAddress +
                       "confirm_email?userId=" + user.Id +

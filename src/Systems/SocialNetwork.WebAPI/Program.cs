@@ -7,13 +7,13 @@ var settings = new AppSettings(new SettingSource());
 var builder = WebApplication.CreateBuilder(args);
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 var services = builder.Services;
-// Add services to the container.
+
 builder.AddAppSerilog();
 
 services.AddAppDbContext(settings);
 services.AddHttpContextAccessor();
 services.AddAppServices();
-services.AddControllers();
+services.AddControllers().AddAppValidator();
 services.AddAppAuth(settings);
 services.AddAppVersioning();
 

@@ -1,6 +1,6 @@
 using Duende.IdentityServer;
 using Duende.IdentityServer.Models;
-using SocialNetwork.Common.Security;
+using SocialNetwork.Constants.Security;
 
 namespace SocialNetwork.IdentityServer.Configuration.IdentitySettings;
 

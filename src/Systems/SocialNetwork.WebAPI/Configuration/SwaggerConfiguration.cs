@@ -1,7 +1,7 @@
 using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.OpenApi.Models;
-using SocialNetwork.Common.Security;
+using SocialNetwork.Constants.Security;
 using SocialNetwork.Settings.Interfaces;
 using Swashbuckle.AspNetCore.SwaggerUI;
 

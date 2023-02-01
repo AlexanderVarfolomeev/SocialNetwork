@@ -1,4 +1,4 @@
-namespace SocialNetwork.Common.Exceptions;
+namespace SocialNetwork.Constants.Errors;
 
 public static class ErrorMessages
 {

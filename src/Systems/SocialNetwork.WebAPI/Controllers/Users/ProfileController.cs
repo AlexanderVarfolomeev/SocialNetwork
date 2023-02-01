@@ -1,7 +1,9 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SocialNetwork.AccountServices.Interfaces;
 using SocialNetwork.AccountServices.Models;
+using SocialNetwork.Constants.Security;
 using SocialNetwork.WebAPI.Controllers.Users.Models;
 
 namespace SocialNetwork.WebAPI.Controllers.Users;
@@ -42,10 +44,11 @@ public class ProfileController : ControllerBase
         return await _profileService.ConfirmEmailAsync(userId, key);
     }
 
-    [HttpPut("{id}/password")]
-    public async Task<IActionResult> ChangePassword([FromRoute] Guid id, [FromBody] ChangePasswordModel model)
+    [Authorize(AppScopes.NetworkWrite)]
+    [HttpPut("password")]
+    public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordModel model)
     {
-        await _profileService.ChangePasswordAsync(id, model.OldPassword, model.NewPassword);
+        await _profileService.ChangePasswordAsync(model.OldPassword, model.NewPassword);
         return Ok();
     }
 }

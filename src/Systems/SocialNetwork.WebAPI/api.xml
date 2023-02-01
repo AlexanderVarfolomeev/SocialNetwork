@@ -14,5 +14,20 @@
             Контроллер для работы с учетной записью пользователя
             </summary>
         </member>
+        <member name="T:SocialNetwork.WebAPI.Controllers.Users.RolesController">
+            <summary>
+            Контроллер для работы с ролями
+            </summary>
+        </member>
+        <member name="M:SocialNetwork.WebAPI.Controllers.Users.RolesController.GiveAdminRole(System.Guid)">
+            <summary>
+            Выдать роль администратора
+            </summary>
+        </member>
+        <member name="M:SocialNetwork.WebAPI.Controllers.Users.RolesController.RevokeAdminRole(System.Guid)">
+            <summary>
+            Отозвать роль администратора
+            </summary>
+        </member>
     </members>
 </doc>

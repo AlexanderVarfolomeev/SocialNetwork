@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using SocialNetwork.AccountServices.Interfaces;
 using SocialNetwork.Common.Enum;
 using SocialNetwork.Common.Exceptions;
+using SocialNetwork.Constants.Errors;
 using SocialNetwork.Entities.User;
 using SocialNetwork.Repository;
 using SocialNetwork.Settings.Interfaces;

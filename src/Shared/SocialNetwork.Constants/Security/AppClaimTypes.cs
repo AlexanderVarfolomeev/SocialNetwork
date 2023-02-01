@@ -1,4 +1,4 @@
-namespace SocialNetwork.Common.Security;
+namespace SocialNetwork.Constants.Security;
 
 public static class AppClaimTypes
 {

@@ -1,6 +1,7 @@
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using SocialNetwork.Common.Exceptions;
+using SocialNetwork.Constants.Errors;
 using SocialNetwork.Context;
 using SocialNetwork.Entities.Base;
 

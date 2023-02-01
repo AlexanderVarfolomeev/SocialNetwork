@@ -1,7 +1,7 @@
 using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
-using SocialNetwork.Common.Security;
+using SocialNetwork.Constants.Security;
 using SocialNetwork.Context;
 using SocialNetwork.Entities.User;
 using SocialNetwork.Settings.Interfaces;

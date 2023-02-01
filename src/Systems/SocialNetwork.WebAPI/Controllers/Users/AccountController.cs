@@ -1,11 +1,12 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SocialNetwork.AccountServices.Interfaces;
 using SocialNetwork.AccountServices.Models;
+using SocialNetwork.Constants.Security;
 using SocialNetwork.WebAPI.Controllers.Users.Models;
 
 namespace SocialNetwork.WebAPI.Controllers.Users;
-//TODO защитить
 /// <summary>
 /// CRUD контроллер для работы с аккаунтами пользователей
 /// </summary>
@@ -46,13 +47,15 @@ public class AccountsController : ControllerBase
         return _mapper.Map<IEnumerable<AppAccountResponse>>(await _accountService.GetAccountsAsync(offset, limit));
     }
 
+    [Authorize(AppScopes.NetworkWrite)]
     [HttpPut("{id:Guid}")]
     public async Task<AppAccountResponse> UpdateAccount([FromRoute] Guid id, [FromBody] AppAccountUpdateRequest model)
     {
         return _mapper.Map<AppAccountResponse>(
             await _accountService.UpdateAccountAsync(id, _mapper.Map<AppAccountUpdateModel>(model)));
     }
-
+    
+    [Authorize(AppScopes.NetworkWrite)]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteAccount([FromRoute] Guid id)
     {
@@ -60,13 +63,15 @@ public class AccountsController : ControllerBase
         return Ok();
     }
 
+    [Authorize(AppScopes.NetworkWrite)]
     [HttpPut("{id}/ban")]
     public async Task<IActionResult> BanAccount([FromRoute] Guid id)
     {
         await _adminService.BanUserAsync(id);
         return Ok();
     }
-
+    
+    [Authorize(AppScopes.NetworkWrite)]
     [HttpPut("{id}/unban")]
     public async Task<IActionResult> UnbanAccount([FromRoute] Guid id)
     {

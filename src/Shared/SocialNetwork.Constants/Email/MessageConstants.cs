@@ -1,5 +1,5 @@
 
-namespace SocialNetwork.Common.Email;
+namespace SocialNetwork.Constants.Email;
 
 public static class MessageConstants
 {
