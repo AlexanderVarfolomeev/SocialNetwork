@@ -5,7 +5,7 @@ namespace SocialNetwork.Settings.Settings;
 
 public class AppSettings : IAppSettings
 {
-    private readonly IDbSettings _db = null!;
+    private readonly IDbSettings _db;
     private readonly ISettingSource _source;
     private readonly IIdentitySettings _identity;
     private readonly IEmailSettings _email;

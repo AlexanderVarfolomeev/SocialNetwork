@@ -1,0 +1,32 @@
+version: "3.4"
+
+services:
+  social_network_api:
+    ports:
+      - "5000:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=development
+    env_file:
+      - env.api
+    depends_on:
+      - social_network_pgsl
+  
+  social_network_identity:
+    ports:
+      - "7000:80"
+    env_file:
+      - env.identity
+    depends_on:
+      - social_network_pgsl
+  
+  social_network_pgsl:
+    ports:
+      - "6000:5432"
+    environment:
+      - POSTGRES_NAME=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=pgpass
+    volumes:
+      - ~/.docker-conf/postgresql/data/:/var/lib/postgresql/data
+        
+

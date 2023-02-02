@@ -1,5 +1,6 @@
 using Duende.IdentityServer.Services;
 using SocialNetwork.IdentityServer.Configuration;
+using SocialNetwork.IdentityServer.Configuration.HealthChecks;
 using SocialNetwork.Repository;
 using SocialNetwork.Settings.Settings;
 using SocialNetwork.Settings.Source;
@@ -19,6 +20,7 @@ services.AddControllers();
 services.AddEndpointsApiExplorer();
 services.AddAppIdentity();
 services.AddSwaggerGen();
+services.AddAppHealthChecks();
 
 var app = builder.Build();
 app.UseAppSerilog();
@@ -26,6 +28,8 @@ app.UseAppSerilog();
 app.UseAppCors();
 
 app.UseHttpsRedirection();
+
+app.UseAppHealthChecks();
 
 app.UseAppIdentity();
 

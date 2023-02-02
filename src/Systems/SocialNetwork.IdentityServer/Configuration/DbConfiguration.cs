@@ -11,7 +11,7 @@ public static class DbConfiguration
         services.AddDbContext<MainDbContext>(options =>
         {
             options.UseLazyLoadingProxies();
-            options.UseNpgsql(settings.GetConnectionString);
+            options.UseNpgsql(settings.ConnectionString);
         });
 
         return services;

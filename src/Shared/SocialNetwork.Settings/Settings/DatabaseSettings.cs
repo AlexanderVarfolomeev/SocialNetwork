@@ -12,5 +12,5 @@ public class DbSettings : IDbSettings
         _source = source;
     }
 
-    public string GetConnectionString => _source.GetConnectionString("MainConnectionString");
+    public string ConnectionString => _source.GetAsString("Database:ConnectionString");
 }

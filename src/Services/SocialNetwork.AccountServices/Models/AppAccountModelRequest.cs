@@ -2,7 +2,6 @@ using AutoMapper;
 using SocialNetwork.Entities.User;
 
 namespace SocialNetwork.AccountServices.Models;
-//TODO Валидация
 public class AppAccountModelRequest
 {
     public string Name { get; set; } = string.Empty;

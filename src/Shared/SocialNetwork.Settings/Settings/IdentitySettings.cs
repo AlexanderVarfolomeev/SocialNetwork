@@ -12,8 +12,8 @@ public class IdentitySettings : IIdentitySettings
         _source = source;
     }
 
-    public string Url => _source.GetAsString("IdentityServer:Url");
-    public string ClientId => _source.GetAsString("IdentityServer:ClientId");
-    public string ClientSecret => _source.GetAsString("IdentityServer:ClientSecret");
+    public string Url => _source.GetAsString("Identity:Url");
+    public string ClientId => _source.GetAsString("Identity:ClientId");
+    public string ClientSecret => _source.GetAsString("Identity:ClientSecret");
     public bool RequireHttps => Url.ToLower().StartsWith("https://");
 }

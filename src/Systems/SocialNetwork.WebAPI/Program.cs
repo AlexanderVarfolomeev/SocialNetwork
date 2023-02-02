@@ -2,11 +2,12 @@ using SocialNetwork.Settings.Settings;
 using SocialNetwork.Settings.Source;
 using SocialNetwork.WebAPI;
 using SocialNetwork.WebAPI.Configuration;
+using SocialNetwork.WebAPI.Configuration.HealthChecks;
 
-var settings = new AppSettings(new SettingSource());
 var builder = WebApplication.CreateBuilder(args);
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 var services = builder.Services;
+var settings = new AppSettings(new SettingSource());
 
 builder.AddAppSerilog();
 
@@ -15,6 +16,7 @@ services.AddHttpContextAccessor();
 services.AddAppServices();
 services.AddControllers().AddAppValidator();
 services.AddAppAuth(settings);
+services.AddAppHealthChecks();
 services.AddAppVersioning();
 
 services.AddAppSwagger(settings);
@@ -28,6 +30,8 @@ app.UseAppDbContext();
 app.UseAppMiddlewares();
 app.UseAppAuth();
 app.UseAppCors();
+app.UseAppHealthChecks();
+
 
 app.UseAppSerilog();
 app.UseAppSwagger();

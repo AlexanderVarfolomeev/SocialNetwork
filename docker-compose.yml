@@ -5,6 +5,19 @@ services:
     image: ${DOCKER_REGISTRY}network_api
     build:
       context: .
+      dockerfile: src/Systems/SocialNetwork.WebAPI/Dockerfile
+    env_file:
+      - env.api
+    depends_on:
+      - social_network_pgsl
+  
+  social_network_identity:
+    image: ${DOCKER_REGISTRY}network_identity
+    build:
+      context: .
       dockerfile: src/Systems/SocialNetwork.IdentityServer/Dockerfile
-    ports:
-      - "5000:80"
+    depends_on:
+      - social_network_pgsl
+  
+  social_network_pgsl:
+    image: postgres

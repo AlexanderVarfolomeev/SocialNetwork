@@ -17,14 +17,16 @@ public class SettingSource : ISettingSource
 
         var builder = new ConfigurationBuilder()
             .SetBasePath(Path.Combine(Directory.GetCurrentDirectory()))
-            .AddJsonFile("appsettings.json", false);
-        
-        var isDevelopment = (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "")
-            .ToLower().Equals("development");
+            .AddJsonFile("appsettings.json", optional: false);
 
-        if (isDevelopment) builder.AddJsonFile("appsettings.development.json", true);
+        var aspNetCoreEnv = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "";
+        bool idDev = aspNetCoreEnv.ToLower().Equals("development");
 
-        _configuration = builder.AddEnvironmentVariables()
+        if (idDev)
+            builder.AddJsonFile("appsettings.Development.json", optional: true);
+
+        _configuration = builder
+            .AddEnvironmentVariables()
             .Build();
     }
     

@@ -11,6 +11,7 @@ public static class CorsConfiguration
                 pol.AllowAnyHeader();
                 pol.AllowAnyMethod();
                 pol.AllowAnyOrigin();
+                pol.WithOrigins("http://host.docker.internal:5000");
             });
         });
 

@@ -10,9 +10,10 @@ public static class Bootstrapper
     public static IServiceCollection AddSettings(this IServiceCollection services)
     {
         services.AddSingleton<ISettingSource, SettingSource>();
-        services.AddSingleton<IDbSettings, DbSettings>();
         services.AddSingleton<IAppSettings,AppSettings>();
         services.AddSingleton<IEmailSettings, EmailSettings>();
+        services.AddSingleton<IDbSettings, DbSettings>();
+        services.AddSingleton<IIdentitySettings, IdentitySettings>();
         return services;
     }
     

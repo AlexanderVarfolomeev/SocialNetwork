@@ -6,6 +6,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <GenerateDocumentationFile>True</GenerateDocumentationFile>
         <DocumentationFile>api.xml</DocumentationFile>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
 
     <ItemGroup>
@@ -40,6 +41,12 @@
       <ProjectReference Include="..\..\Shared\SocialNetwork.Common\SocialNetwork.Common.csproj" />
       <ProjectReference Include="..\..\Shared\SocialNetwork.Constants\SocialNetwork.Constants.csproj" />
       <ProjectReference Include="..\..\Shared\SocialNetwork.Settings\SocialNetwork.Settings.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="..\..\..\.dockerignore">
+        <Link>.dockerignore</Link>
+      </Content>
     </ItemGroup>
 
 </Project>
