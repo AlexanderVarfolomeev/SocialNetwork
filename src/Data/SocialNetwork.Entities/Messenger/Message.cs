@@ -6,12 +6,6 @@ namespace SocialNetwork.Entities.Messenger;
 
 public class Message : BaseEntity
 {
-    public Guid Id { get; set; }
-    
-    public DateTimeOffset CreationDateTime { get; set; }
-    
-    public DateTimeOffset ModificationDateTime { get; set; }
-
     public string Text { get; set; }
     public bool IsRead { get; set; }
     public bool IsModification { get; set; }

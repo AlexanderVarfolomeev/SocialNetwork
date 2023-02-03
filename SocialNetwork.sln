@@ -30,6 +30,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialNetwork.EmailService"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialNetwork.Constants", "src\Shared\SocialNetwork.Constants\SocialNetwork.Constants.csproj", "{9A404870-A52C-4162-ACFC-C3D5D6147D61}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialNetwork.RelationshipServices", "src\Services\SocialNetwork.RelationshipServices\SocialNetwork.RelationshipServices.csproj", "{4D472B46-6ADF-4572-8648-A11C3CA430EC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,6 +52,7 @@ Global
 		{67E48021-3ABD-402A-B99C-4BEC26956C6F} = {16918E00-DCA4-4464-A45B-4B1791C6627F}
 		{D595051C-AA47-477E-B384-140F5F80719E} = {16918E00-DCA4-4464-A45B-4B1791C6627F}
 		{9A404870-A52C-4162-ACFC-C3D5D6147D61} = {6BCBBE2B-1529-4A55-86EB-1FD7574FA5F9}
+		{4D472B46-6ADF-4572-8648-A11C3CA430EC} = {16918E00-DCA4-4464-A45B-4B1791C6627F}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{05362358-48CB-43F6-8CB4-3226FD1CC459}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -92,5 +95,9 @@ Global
 		{9A404870-A52C-4162-ACFC-C3D5D6147D61}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9A404870-A52C-4162-ACFC-C3D5D6147D61}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9A404870-A52C-4162-ACFC-C3D5D6147D61}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D472B46-6ADF-4572-8648-A11C3CA430EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D472B46-6ADF-4572-8648-A11C3CA430EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D472B46-6ADF-4572-8648-A11C3CA430EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D472B46-6ADF-4572-8648-A11C3CA430EC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

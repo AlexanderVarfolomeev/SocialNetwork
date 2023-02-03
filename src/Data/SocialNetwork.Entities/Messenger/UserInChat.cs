@@ -5,12 +5,6 @@ namespace SocialNetwork.Entities.Messenger;
 
 public class UserInChat : BaseEntity
 {
-    public Guid Id { get; set; }
-    
-    public DateTimeOffset CreationDateTime { get; set; }
-    
-    public DateTimeOffset ModificationDateTime { get; set; }
-
     public bool IsCreator { get; set; }
     
     public DateTimeOffset EntryDate { get; set; }

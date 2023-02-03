@@ -38,7 +38,7 @@ public class ProfileController : ControllerBase
         return (await _profileService.LoginUserAsync(loginModel)).AccessToken;
     }
 
-    [HttpGet("confirm_email")]
+    [HttpGet("confirm-email")]
     public async Task<bool> ConfirmEmail([FromQuery] Guid userId, [FromQuery] string key)
     {
         return await _profileService.ConfirmEmailAsync(userId, key);
@@ -55,7 +55,7 @@ public class ProfileController : ControllerBase
 
 /*
     * TODO закончить в клиенте
-   [HttpPost("{id}/reset_password")]
+   [HttpPost("{id}/reset-password")]
    public async Task<IActionResult> ResetPassword([FromRoute] Guid id, [FromQuery] string token, [FromBody] string password)
    {
        await _profileService.RestorePassword(id, password, token);

@@ -8,12 +8,6 @@ namespace SocialNetwork.Entities.Posts;
 
 public class Post : BaseEntity
 {
-    public Guid Id { get; set; }
-    
-    public DateTimeOffset CreationDateTime { get; set; }
-    
-    public DateTimeOffset ModificationDateTime { get; set; }
-
     public string Text { get; set; } = string.Empty;
     public bool IsInGroup { get; set; }
 

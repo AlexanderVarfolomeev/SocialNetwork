@@ -13,12 +13,6 @@ namespace SocialNetwork.Entities.Complaints;
 /// </summary>
 public class Complaint : BaseEntity
 {
-    public Guid Id { get; set; }
-    
-    public DateTimeOffset CreationDateTime { get; set; }
-    
-    public DateTimeOffset ModificationDateTime { get; set; }
-    
     public ComplaintType Type { get; set; }
     
     public virtual ICollection<ReasonComplaint> Reasons { get; set; }

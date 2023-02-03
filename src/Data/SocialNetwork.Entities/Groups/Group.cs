@@ -6,12 +6,6 @@ namespace SocialNetwork.Entities.Groups;
 
 public class Group : BaseEntity
 {
-    public Guid Id { get; set; }
-    
-    public DateTimeOffset CreationDateTime { get; set; }
-    
-    public DateTimeOffset ModificationDateTime { get; set; }
-
     public string Name { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
 

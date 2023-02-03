@@ -5,12 +5,6 @@ namespace SocialNetwork.Entities.Groups;
 
 public class UserInGroup : BaseEntity
 {
-    public Guid Id { get; set; }
-    
-    public DateTimeOffset CreationDateTime { get; set; }
-    
-    public DateTimeOffset ModificationDateTime { get; set; }
-
     public bool IsCreator { get; set; }
     public bool IsAdmin { get; set; }
 

@@ -19,4 +19,8 @@ public static class ErrorMessages
     public const string UserIsAdminError = "User is admin.";
     public const string UserIsNotAdminError = "User is not admin.";
     public const string UserIsUnbannedError = "User is not banned.";
+    public const string RelationshipExistsError = "Relationship between users already exists.";
+    public const string RelationshipDoesntExistsError = "Relationship between users doesnt exists.";
+    public const string RequestFriendshipIrrelevantError = "The request for friendship is irrelevant.";
+    public const string UserAlreadyRejectFriendshipRequest = "The user has already rejected friendship request.";
 }

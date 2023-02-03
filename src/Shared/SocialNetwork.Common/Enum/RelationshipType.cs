@@ -4,7 +4,6 @@ public enum RelationshipType
 {
     None =0,
     Friend = 1,
-    Blacklist = 2,
-    SendFriendRequest = 3,
-    GetFriendRequest = 4
+    FriendRequest = 2,
+    Rejected = 3
 }

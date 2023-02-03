@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="AutoMapper" Version="12.0.1" />
+        <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
+        <PackageReference Include="Castle.Core" Version="5.1.1" />
+        <PackageReference Include="FluentValidation" Version="11.4.0" />
+        <PackageReference Include="FluentValidation.AspNetCore" Version="11.2.2" />
+        <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
+    </ItemGroup>
+    <ItemGroup>
+        <Reference Include="IdentityModel">
+            <HintPath>..\..\..\..\..\.nuget\packages\identitymodel\6.0.0\lib\net6.0\IdentityModel.dll</HintPath>
+        </Reference>
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\Data\SocialNetwork.Entities\SocialNetwork.Entities.csproj" />
+        <ProjectReference Include="..\..\Data\SocialNetwork.Repository\SocialNetwork.Repository.csproj" />
+        <ProjectReference Include="..\..\Shared\SocialNetwork.Constants\SocialNetwork.Constants.csproj" />
+        <ProjectReference Include="..\..\Shared\SocialNetwork.Settings\SocialNetwork.Settings.csproj" />
+        <ProjectReference Include="..\SocialNetwork.AccountServices\SocialNetwork.AccountServices.csproj" />
+        <ProjectReference Include="..\SocialNetwork.EmailService\SocialNetwork.EmailService.csproj" />
+    </ItemGroup>
+</Project>

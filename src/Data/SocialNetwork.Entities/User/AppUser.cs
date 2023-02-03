@@ -10,7 +10,6 @@ namespace SocialNetwork.Entities.User;
 
 public class AppUser : IdentityUser<Guid>, IBaseEntity
 {
-    
     public DateTimeOffset CreationDateTime { get; set; }
     
     public DateTimeOffset ModificationDateTime { get; set; }

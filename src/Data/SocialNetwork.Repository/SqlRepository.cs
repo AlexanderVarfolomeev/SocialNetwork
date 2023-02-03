@@ -59,6 +59,17 @@ public class SqlRepository<T> : IRepository<T> where T : class, IBaseEntity
         }
     }
 
+    public async Task<IEnumerable<T>> AddRangeAsync(IEnumerable<T> entities)
+    {
+        var result = new List<T>();
+        foreach (var entity in entities)
+        {
+            result.Add(await AddAsync(entity));
+        }
+
+        return result;
+    }
+
     public async Task<T> UpdateAsync(T entity)
     {
         try

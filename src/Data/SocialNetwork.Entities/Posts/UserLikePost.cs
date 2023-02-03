@@ -5,12 +5,6 @@ namespace SocialNetwork.Entities.Posts;
 
 public class UserLikePost : BaseEntity
 {
-    public Guid Id { get; set; }
-    
-    public DateTimeOffset CreationDateTime { get; set; }
-    
-    public DateTimeOffset ModificationDateTime { get; set; }
-    
     public Guid UserId { get; set; }
     public virtual AppUser User { get; set; }
     

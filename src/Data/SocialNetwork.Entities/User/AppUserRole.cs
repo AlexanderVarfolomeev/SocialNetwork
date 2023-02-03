@@ -10,9 +10,4 @@ public class AppUserRole : BaseEntity
     public Guid UserId { get; set; }
     public virtual AppUser User { get; set; }
     
-    public Guid Id { get; set; }
-    
-    public DateTimeOffset CreationDateTime { get; set; }
-    
-    public DateTimeOffset ModificationDateTime { get; set; }
 }

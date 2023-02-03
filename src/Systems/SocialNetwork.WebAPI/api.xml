@@ -4,6 +4,36 @@
         <name>SocialNetwork.WebAPI</name>
     </assembly>
     <members>
+        <member name="T:SocialNetwork.WebAPI.Controllers.Relationships.RelationshipsController">
+            <summary>
+            Контроллер для работы с друзьями пользователя.
+            </summary>
+        </member>
+        <member name="M:SocialNetwork.WebAPI.Controllers.Relationships.RelationshipsController.SendFreindshipRequest(System.Guid)">
+            <summary>
+            Послать запрос на дружбу.
+            </summary>
+        </member>
+        <member name="M:SocialNetwork.WebAPI.Controllers.Relationships.RelationshipsController.AcceptFriendshipRequest(System.Guid)">
+            <summary>
+            Принять запрос на дружбы.
+            </summary>
+        </member>
+        <member name="M:SocialNetwork.WebAPI.Controllers.Relationships.RelationshipsController.RejectFriendshipRequest(System.Guid)">
+            <summary>
+            Отклонить запрос на дружбу.
+            </summary>
+        </member>
+        <member name="M:SocialNetwork.WebAPI.Controllers.Relationships.RelationshipsController.GetFriendshipRequests(System.Int32,System.Int32)">
+            <summary>
+            Получить список заявок в друзья.
+            </summary>
+        </member>
+        <member name="M:SocialNetwork.WebAPI.Controllers.Relationships.RelationshipsController.GetFriends(System.Int32,System.Int32)">
+            <summary>
+            Получить список друзей.
+            </summary>
+        </member>
         <member name="T:SocialNetwork.WebAPI.Controllers.Users.AccountsController">
             <summary>
             CRUD контроллер для работы с аккаунтами пользователей
