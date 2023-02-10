@@ -19,5 +19,9 @@
         <ProjectReference Include="..\..\Shared\SocialNetwork.Common\SocialNetwork.Common.csproj" />
         <ProjectReference Include="..\SocialNetwork.Entities\SocialNetwork.Entities.csproj" />
     </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Migrations" />
+    </ItemGroup>
     
 </Project>

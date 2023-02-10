@@ -1,6 +1,8 @@
+using Microsoft.AspNetCore.Identity;
 using SocialNetwork.AccountServices.Interfaces;
 using SocialNetwork.Common.Enum;
 using SocialNetwork.Common.Exceptions;
+using SocialNetwork.Common.Extensions;
 using SocialNetwork.Constants.Errors;
 using SocialNetwork.Entities.User;
 using SocialNetwork.Repository;
@@ -10,24 +12,26 @@ namespace SocialNetwork.AccountServices.Implementations;
 public class AdminService : IAdminService
 {
     private readonly IRepository<AppUser> _userRepository;
-    private readonly IRepository<AppUserRole> _userRolesRepository;
     private readonly IRepository<AppRole> _roleRepository;
+    private readonly RoleManager<AppRole> _roleManager;
+    private readonly UserManager<AppUser> _userManager;
 
     public AdminService(IRepository<AppUser> userRepository,
-        IRepository<AppUserRole> userRolesRepository,
-        IRepository<AppRole> roleRepository
-    )
+        IRepository<AppRole> roleRepository,
+        RoleManager<AppRole> roleManager,
+        UserManager<AppUser> userManager)
     {
         _userRepository = userRepository;
-        _userRolesRepository = userRolesRepository;
         _roleRepository = roleRepository;
+        _roleManager = roleManager;
+        _userManager = userManager;
     }
-
 
     public async Task<bool> IsAdminAsync(Guid userId)
     {
-        var userRoles = await _userRolesRepository.GetAllAsync(x => x.UserId == userId);
-        return userRoles.Any(x => x.Role.Permissions == Permissions.Admin || x.Role.Permissions == Permissions.GodAdmin);
+        var user = await _userRepository.GetAsync(userId);
+        return await _userManager.IsInRoleAsync(user, Permissions.Admin.GetName()) ||
+               await _userManager.IsInRoleAsync(user, Permissions.GodAdmin.GetName());
     }
 
     public async Task GiveAdminRoleAsync(Guid userId, Guid accountId)
@@ -41,10 +45,7 @@ public class AdminService : IAdminService
         if (await IsAdminAsync(userId))
             throw new ProcessException(ErrorMessages.UserIsAdminError);
 
-        var adminRole = await _roleRepository.GetAsync(x => x.Permissions == Permissions.Admin);
-        var newUserRole = new AppUserRole { RoleId = adminRole.Id, UserId = userId };
-
-        await _userRolesRepository.AddAsync(newUserRole);
+        await _userManager.AddToRoleAsync(user, Permissions.Admin.GetName());
     }
 
     public async Task RevokeAdminRoleAsync(Guid userId, Guid accountId)
@@ -52,16 +53,12 @@ public class AdminService : IAdminService
         if (!await IsAdminAsync(userId))
             throw new ProcessException(ErrorMessages.OnlyAdminCanDoItError);
 
-        var isUserExists = await _userRepository.Any(accountId);
-        ProcessException.ThrowIf(() => !isUserExists, ErrorMessages.NotFoundError);
+        var user = await _userRepository.GetAsync(accountId);
 
         if (!await IsAdminAsync(userId))
             throw new ProcessException(ErrorMessages.UserIsNotAdminError);
 
-        var userAdminRole = await _userRolesRepository.GetAsync(x =>
-            x.UserId == userId && x.Role.Permissions == Permissions.Admin);
-
-        await _userRolesRepository.DeleteAsync(userAdminRole);
+        await _userManager.RemoveFromRoleAsync(user, Permissions.Admin.GetName());
     }
 
     public async Task BanAccountAsync(Guid userId, Guid accountId)

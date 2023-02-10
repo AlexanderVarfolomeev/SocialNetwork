@@ -5,6 +5,7 @@ using SocialNetwork.AccountServices.Interfaces;
 using SocialNetwork.AccountServices.Models;
 using SocialNetwork.Common.Enum;
 using SocialNetwork.Common.Exceptions;
+using SocialNetwork.Common.Extensions;
 using SocialNetwork.Constants.Email;
 using SocialNetwork.Constants.Errors;
 using SocialNetwork.Constants.Security;
@@ -23,23 +24,19 @@ public class ProfileService : IProfileService
     private readonly SignInManager<AppUser> _signInManager;
     private readonly IMapper _mapper;
     private readonly IAppSettings _apiSettings;
-    private readonly IRepository<AppUserRole> _userRolesRepository;
-    private readonly IRepository<AppRole> _roleRepository;
     private readonly IEmailService _emailService;
+
     public ProfileService(IRepository<AppUser> userRepository, UserManager<AppUser> userManager,
         SignInManager<AppUser> signInManager, IMapper mapper, IAppSettings apiSettings,
-        IRepository<AppUserRole> userRolesRepository, IRepository<AppRole> roleRepository,
-        IEmailService emailService)
+        IRepository<AppRole> roleRepository,
+        IEmailService emailService, RoleManager<AppRole> roleManager)
     {
         _userRepository = userRepository;
         _userManager = userManager;
         _signInManager = signInManager;
         _mapper = mapper;
         _apiSettings = apiSettings;
-        _userRolesRepository = userRolesRepository;
-        _roleRepository = roleRepository;
         _emailService = emailService;
-
     }
 
     public async Task<AppAccountModel> RegisterUserAsync(AppAccountModelRequest requestModel)
@@ -150,8 +147,7 @@ public class ProfileService : IProfileService
     /// <param name="user"></param>
     private async Task GiveUserRole(AppUser user)
     {
-        var userRoleId = (await _roleRepository.GetAllAsync(x => x.Permissions == Permissions.User)).First().Id;
-        await _userRolesRepository.AddAsync(new AppUserRole { RoleId = userRoleId, UserId = user.Id });
+        await _userManager.AddToRoleAsync(user, Permissions.User.GetName());
     }
 
     private async Task<TokenResponse> GetTokenResponseAsync(LoginModel model, string userName)

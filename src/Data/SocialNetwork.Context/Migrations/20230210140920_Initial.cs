@@ -1,7 +1,8 @@
-﻿#nullable disable
-
+﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
+
+#nullable disable
 
 namespace SocialNetwork.Context.Migrations
 {
@@ -66,10 +67,10 @@ namespace SocialNetwork.Context.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    CreationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    ModificationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     IsDialog = table.Column<bool>(type: "boolean", nullable: false),
-                    ChatName = table.Column<string>(type: "text", nullable: false)
+                    ChatName = table.Column<string>(type: "text", nullable: false),
+                    CreationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    ModificationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -81,10 +82,10 @@ namespace SocialNetwork.Context.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    CreationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    ModificationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: false)
+                    Description = table.Column<string>(type: "text", nullable: false),
+                    CreationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    ModificationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -96,9 +97,9 @@ namespace SocialNetwork.Context.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
                     CreationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    ModificationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false)
+                    ModificationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -172,7 +173,11 @@ namespace SocialNetwork.Context.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<Guid>(type: "uuid", nullable: false),
-                    RoleId = table.Column<Guid>(type: "uuid", nullable: false)
+                    RoleId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Discriminator = table.Column<string>(type: "text", nullable: false),
+                    Id = table.Column<Guid>(type: "uuid", nullable: true),
+                    CreationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    ModificationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -182,7 +187,7 @@ namespace SocialNetwork.Context.Migrations
                         column: x => x.RoleId,
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_AspNetUserRoles_AspNetUsers_UserId",
                         column: x => x.UserId,
@@ -216,11 +221,11 @@ namespace SocialNetwork.Context.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    CreationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    ModificationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     RelationshipType = table.Column<int>(type: "integer", nullable: false),
                     FirstUserId = table.Column<Guid>(type: "uuid", nullable: false),
-                    SecondUserId = table.Column<Guid>(type: "uuid", nullable: false)
+                    SecondUserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    ModificationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -240,44 +245,17 @@ namespace SocialNetwork.Context.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "UserRoles",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    RoleId = table.Column<Guid>(type: "uuid", nullable: false),
-                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
-                    CreationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    ModificationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UserRoles", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_UserRoles_AspNetRoles_RoleId",
-                        column: x => x.RoleId,
-                        principalTable: "AspNetRoles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_UserRoles_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Messages",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    CreationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    ModificationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     Text = table.Column<string>(type: "text", nullable: false),
                     IsRead = table.Column<bool>(type: "boolean", nullable: false),
                     IsModification = table.Column<bool>(type: "boolean", nullable: false),
                     SenderId = table.Column<Guid>(type: "uuid", nullable: false),
-                    ChatId = table.Column<Guid>(type: "uuid", nullable: false)
+                    ChatId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    ModificationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -301,12 +279,12 @@ namespace SocialNetwork.Context.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    CreationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    ModificationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     IsCreator = table.Column<bool>(type: "boolean", nullable: false),
                     EntryDate = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     ChatId = table.Column<Guid>(type: "uuid", nullable: false),
-                    UserId = table.Column<Guid>(type: "uuid", nullable: false)
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    ModificationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -330,12 +308,12 @@ namespace SocialNetwork.Context.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    CreationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    ModificationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     Text = table.Column<string>(type: "text", nullable: false),
                     IsInGroup = table.Column<bool>(type: "boolean", nullable: false),
                     CreatorId = table.Column<Guid>(type: "uuid", nullable: false),
-                    GroupId = table.Column<Guid>(type: "uuid", nullable: true)
+                    GroupId = table.Column<Guid>(type: "uuid", nullable: true),
+                    CreationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    ModificationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -359,13 +337,13 @@ namespace SocialNetwork.Context.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    CreationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    ModificationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     IsCreator = table.Column<bool>(type: "boolean", nullable: false),
                     IsAdmin = table.Column<bool>(type: "boolean", nullable: false),
                     DateOfEntry = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     UserId = table.Column<Guid>(type: "uuid", nullable: false),
-                    GroupId = table.Column<Guid>(type: "uuid", nullable: false)
+                    GroupId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    ModificationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -389,11 +367,11 @@ namespace SocialNetwork.Context.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    CreationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    ModificationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     Text = table.Column<string>(type: "text", nullable: false),
                     CreatorId = table.Column<Guid>(type: "uuid", nullable: false),
-                    PostId = table.Column<Guid>(type: "uuid", nullable: false)
+                    PostId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    ModificationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -417,10 +395,10 @@ namespace SocialNetwork.Context.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    CreationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    ModificationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     UserId = table.Column<Guid>(type: "uuid", nullable: false),
-                    PostId = table.Column<Guid>(type: "uuid", nullable: false)
+                    PostId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    ModificationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -444,15 +422,15 @@ namespace SocialNetwork.Context.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    CreationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    ModificationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
                     FileType = table.Column<int>(type: "integer", nullable: false),
                     MessageId = table.Column<Guid>(type: "uuid", nullable: true),
                     UserId = table.Column<Guid>(type: "uuid", nullable: true),
                     IsCurrentAvatar = table.Column<bool>(type: "boolean", nullable: false),
                     CommentId = table.Column<Guid>(type: "uuid", nullable: true),
-                    PostId = table.Column<Guid>(type: "uuid", nullable: true)
+                    PostId = table.Column<Guid>(type: "uuid", nullable: true),
+                    CreationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    ModificationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -488,14 +466,14 @@ namespace SocialNetwork.Context.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    CreationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    ModificationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     Type = table.Column<int>(type: "integer", nullable: false),
                     CreatorId = table.Column<Guid>(type: "uuid", nullable: false),
                     PostId = table.Column<Guid>(type: "uuid", nullable: true),
                     CommentId = table.Column<Guid>(type: "uuid", nullable: true),
                     GroupId = table.Column<Guid>(type: "uuid", nullable: true),
-                    UserId = table.Column<Guid>(type: "uuid", nullable: true)
+                    UserId = table.Column<Guid>(type: "uuid", nullable: true),
+                    CreationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    ModificationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -537,10 +515,10 @@ namespace SocialNetwork.Context.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    CreationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    ModificationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     ReasonId = table.Column<Guid>(type: "uuid", nullable: false),
-                    ComplaintId = table.Column<Guid>(type: "uuid", nullable: false)
+                    ComplaintId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    ModificationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -702,16 +680,6 @@ namespace SocialNetwork.Context.Migrations
                 column: "SecondUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserRoles_RoleId",
-                table: "UserRoles",
-                column: "RoleId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UserRoles_UserId",
-                table: "UserRoles",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_UsersInChats_ChatId",
                 table: "UsersInChats",
                 column: "ChatId");
@@ -763,13 +731,13 @@ namespace SocialNetwork.Context.Migrations
                 name: "Relationships");
 
             migrationBuilder.DropTable(
-                name: "UserRoles");
-
-            migrationBuilder.DropTable(
                 name: "UsersInChats");
 
             migrationBuilder.DropTable(
                 name: "UsersInGroups");
+
+            migrationBuilder.DropTable(
+                name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "Messages");
@@ -779,9 +747,6 @@ namespace SocialNetwork.Context.Migrations
 
             migrationBuilder.DropTable(
                 name: "ReasonForComplaints");
-
-            migrationBuilder.DropTable(
-                name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "Chats");

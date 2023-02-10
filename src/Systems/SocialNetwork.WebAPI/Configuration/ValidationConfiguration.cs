@@ -37,7 +37,7 @@ public static class ValidationConfiguration
             };
         });
 
-        builder.Services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters(fv => { });
+        builder.Services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters(_ => { });
 
         ValidatorRegisterHelper.Register(builder.Services);
 

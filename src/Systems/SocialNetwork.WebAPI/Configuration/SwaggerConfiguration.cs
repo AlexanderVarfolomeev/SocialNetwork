@@ -79,7 +79,7 @@ public static class SwaggerConfiguration
 
     public static IApplicationBuilder UseAppSwagger(this IApplicationBuilder app)
     {
-        app.UseSwagger(options => { });
+        app.UseSwagger(_ => { });
         app.UseSwaggerUI(options =>
         {
             var provider = app.ApplicationServices.GetRequiredService<IApiVersionDescriptionProvider>();

@@ -26,7 +26,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialNetwork.Repository", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialNetwork.AccountServices", "src\Services\SocialNetwork.AccountServices\SocialNetwork.AccountServices.csproj", "{67E48021-3ABD-402A-B99C-4BEC26956C6F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialNetwork.EmailService", "src\Services\SocialNetwork.EmailService\SocialNetwork.EmailService.csproj", "{D595051C-AA47-477E-B384-140F5F80719E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialNetwork.EmailServices", "src\Services\SocialNetwork.EmailServices\SocialNetwork.EmailServices.csproj", "{D595051C-AA47-477E-B384-140F5F80719E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialNetwork.Constants", "src\Shared\SocialNetwork.Constants\SocialNetwork.Constants.csproj", "{9A404870-A52C-4162-ACFC-C3D5D6147D61}"
 EndProject

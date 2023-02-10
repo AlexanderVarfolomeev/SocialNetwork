@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using SocialNetwork.Common.Enum;
+using SocialNetwork.Common.Extensions;
 using SocialNetwork.Entities.User;
 
 namespace SocialNetwork.Context.Setup;
@@ -15,33 +16,32 @@ public static class DbSeed
         ArgumentNullException.ThrowIfNull(scope);
 
         var context = scope.ServiceProvider.GetRequiredService<MainDbContext>();
-        var manager = scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
-        Task.Run(async () => { await AddRolesAndAdmin(context, manager); });
+        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
+        var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<AppRole>>();
+        Task.Run(async () => { await AddRolesAndAdmin(context, userManager, roleManager); });
     }
 
-    private static async Task AddRolesAndAdmin(MainDbContext context, UserManager<AppUser> manager)
+    private static async Task AddRolesAndAdmin(MainDbContext context, UserManager<AppUser> userManager, RoleManager<AppRole> roleManager)
     {
-        if (!context.Roles.Any(x => x.Permissions == Permissions.Admin)
-            || !context.Roles.Any(x => x.Permissions == Permissions.User)
-            || !context.Roles.Any(x => x.Permissions == Permissions.GodAdmin))
+        if (!roleManager.Roles.Any())
         {
-            context.Roles.Add(new AppRole
+            await roleManager.CreateAsync(new AppRole
             {
-                Name = "User",
+                Name = Permissions.User.GetName(),
                 Permissions = Permissions.User,
                 CreationDateTime = DateTimeOffset.Now,
                 ModificationDateTime = DateTimeOffset.Now
             });
-            context.Roles.Add(new AppRole
+            await roleManager.CreateAsync(new AppRole
             {
-                Name = "Admin",
+                Name = Permissions.Admin.GetName(),
                 Permissions = Permissions.Admin,
                 CreationDateTime = DateTimeOffset.Now,
                 ModificationDateTime = DateTimeOffset.Now
             });
-            context.Roles.Add(new AppRole
+            await roleManager.CreateAsync(new AppRole
             {
-                Name = "GodAdmin",
+                Name = Permissions.GodAdmin.GetName(),
                 Permissions = Permissions.GodAdmin,
                 CreationDateTime = DateTimeOffset.Now,
                 ModificationDateTime = DateTimeOffset.Now
@@ -61,17 +61,8 @@ public static class DbSeed
                 EmailConfirmed = true
             };
 
-            await manager.CreateAsync(user, AdminPassword);
-            await context.SaveChangesAsync();
-
-            context.UserRoles.Add(new AppUserRole
-            {
-                RoleId = context.Roles.First(x => x.Permissions == Permissions.GodAdmin).Id,
-                UserId = user.Id,
-                CreationDateTime = DateTimeOffset.Now,
-                ModificationDateTime = DateTimeOffset.Now
-            });
-
+            await userManager.CreateAsync(user, AdminPassword);
+            await userManager.AddToRoleAsync(user, (await roleManager.FindByNameAsync(Permissions.GodAdmin.GetName()))!.ToString());
             await context.SaveChangesAsync();
         }
         await context.DisposeAsync();

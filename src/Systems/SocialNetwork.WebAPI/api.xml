@@ -9,7 +9,7 @@
             Контроллер для работы с друзьями пользователя.
             </summary>
         </member>
-        <member name="M:SocialNetwork.WebAPI.Controllers.Relationships.RelationshipsController.SendFreindshipRequest(System.Guid)">
+        <member name="M:SocialNetwork.WebAPI.Controllers.Relationships.RelationshipsController.SendFriendshipRequest(System.Guid)">
             <summary>
             Послать запрос на дружбу.
             </summary>

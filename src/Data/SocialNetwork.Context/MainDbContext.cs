@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using SocialNetwork.Entities.Complaints;
@@ -17,8 +18,7 @@ public class MainDbContext : IdentityDbContext<AppUser, AppRole, Guid>
 
     public override DbSet<AppUser> Users { get; set; }
     public override DbSet<AppRole> Roles { get; set; }
-
-    public DbSet<AppUserRole> UserRoles { get; set; }
+    public new DbSet<AppUserRole> UserRoles { get; set; }
     public DbSet<Group> Groups { get; set; }
     public DbSet<UserInGroup> UsersInGroups { get; set; }
 
@@ -42,11 +42,8 @@ public class MainDbContext : IdentityDbContext<AppUser, AppRole, Guid>
     {
         base.OnModelCreating(builder);
 
-        #region ids
-
         builder.Entity<AppUser>().HasKey(x => x.Id);
         builder.Entity<AppRole>().HasKey(x => x.Id);
-        builder.Entity<AppUserRole>().HasKey(x => x.Id);
         builder.Entity<Group>().HasKey(x => x.Id);
         builder.Entity<UserInGroup>().HasKey(x => x.Id);
         builder.Entity<Post>().HasKey(x => x.Id);
@@ -57,10 +54,6 @@ public class MainDbContext : IdentityDbContext<AppUser, AppRole, Guid>
         builder.Entity<Chat>().HasKey(x => x.Id);
         builder.Entity<UserInChat>().HasKey(x => x.Id);
         builder.Entity<Attachment>().HasKey(x => x.Id);
-
-        #endregion
-
-        #region MyRegion
 
         builder.Entity<Complaint>()
             .Property(x => x.PostId)
@@ -82,11 +75,11 @@ public class MainDbContext : IdentityDbContext<AppUser, AppRole, Guid>
         builder.Entity<Attachment>()
             .Property(x => x.UserId)
             .IsRequired(false);
-        
+
         builder.Entity<Attachment>()
             .Property(x => x.PostId)
             .IsRequired(false);
-        
+
         builder.Entity<Attachment>()
             .Property(x => x.MessageId)
             .IsRequired(false);
@@ -314,8 +307,6 @@ public class MainDbContext : IdentityDbContext<AppUser, AppRole, Guid>
             .HasForeignKey(x => x.ChatId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        #endregion
-
         builder.Entity<Attachment>()
             .HasOne(x => x.Comment)
             .WithMany(x => x.Attachments)
@@ -327,7 +318,7 @@ public class MainDbContext : IdentityDbContext<AppUser, AppRole, Guid>
             .WithOne(x => x.Comment)
             .HasForeignKey(x => x.CommentId)
             .OnDelete(DeleteBehavior.Cascade);
-        
+
         builder.Entity<Attachment>()
             .HasOne(x => x.User)
             .WithMany(x => x.Avatars)
@@ -339,7 +330,7 @@ public class MainDbContext : IdentityDbContext<AppUser, AppRole, Guid>
             .WithOne(x => x.User)
             .HasForeignKey(x => x.UserId)
             .OnDelete(DeleteBehavior.Cascade);
-        
+
         builder.Entity<Attachment>()
             .HasOne(x => x.Post)
             .WithMany(x => x.Attachments)
@@ -351,7 +342,7 @@ public class MainDbContext : IdentityDbContext<AppUser, AppRole, Guid>
             .WithOne(x => x.Post)
             .HasForeignKey(x => x.PostId)
             .OnDelete(DeleteBehavior.Cascade);
-        
+
         builder.Entity<Attachment>()
             .HasOne(x => x.Comment)
             .WithMany(x => x.Attachments)
@@ -363,7 +354,7 @@ public class MainDbContext : IdentityDbContext<AppUser, AppRole, Guid>
             .WithOne(x => x.Comment)
             .HasForeignKey(x => x.CommentId)
             .OnDelete(DeleteBehavior.Cascade);
-        
+
         builder.Entity<Attachment>()
             .HasOne(x => x.Message)
             .WithMany(x => x.Attachments)

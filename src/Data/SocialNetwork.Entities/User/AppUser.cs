@@ -56,9 +56,6 @@ public class AppUser : IdentityUser<Guid>, IBaseEntity
         ModificationDateTime = CreationDateTime;
     }
 
-    /// <summary>
-    /// Change entity timestamps.
-    /// </summary>
     public void Touch()
     {
         ModificationDateTime = DateTimeOffset.Now;

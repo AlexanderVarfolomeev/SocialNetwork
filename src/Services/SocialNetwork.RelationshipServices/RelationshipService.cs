@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using AutoMapper;
 using SocialNetwork.AccountServices.Models;
 using SocialNetwork.Common.Enum;
