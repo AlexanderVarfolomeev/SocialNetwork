@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using SocialNetwork.RelationshipServices;
@@ -27,29 +28,32 @@ public class RelationshipsController : ControllerBase
     /// Послать запрос на дружбу.
     /// </summary>
     [HttpPost("")]
-    public async Task<IActionResult> SendFreindshipRequest([FromQuery] Guid userId)
+    public async Task<IActionResult> SendFriendshipRequest([FromQuery] Guid recipientId)
     {
-        await _relationshipService.SendFriendRequest(userId);
+        var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        await _relationshipService.SendFriendRequest(userId, recipientId);
         return Ok();
     }
 
     /// <summary>
     /// Принять запрос на дружбы.
     /// </summary>
-    [HttpPut("accept-friendship/{id}")]
-    public async Task<IActionResult> AcceptFriendshipRequest([FromRoute] Guid id)
+    [HttpPut("accept-friendship/{requestId}")]
+    public async Task<IActionResult> AcceptFriendshipRequest([FromRoute] Guid requestId)
     {
-        await _relationshipService.AcceptFriendRequest(id);
+        var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        await _relationshipService.AcceptFriendRequest(userId, requestId);
         return Ok();
     }
 
     /// <summary>
     /// Отклонить запрос на дружбу.
     /// </summary>
-    [HttpPut("reject-friendship/{id}")]
-    public async Task<IActionResult> RejectFriendshipRequest([FromRoute] Guid id)
+    [HttpPut("reject-friendship/{requestId}")]
+    public async Task<IActionResult> RejectFriendshipRequest([FromRoute] Guid requestId)
     {
-        await _relationshipService.RejectFriendRequest(id);
+        var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        await _relationshipService.RejectFriendRequest(userId, requestId);
         return Ok();
     }
 
@@ -60,7 +64,8 @@ public class RelationshipsController : ControllerBase
     public async Task<List<FriendshipRequest>> GetFriendshipRequests([FromQuery] int offset = 0,
         [FromQuery] int limit = 10)
     {
-        return await _relationshipService.GetFriendshipRequests(offset, limit);
+        var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        return await _relationshipService.GetFriendshipRequests(userId, offset, limit);
     }
 
     /// <summary>
@@ -70,16 +75,18 @@ public class RelationshipsController : ControllerBase
     public async Task<List<AppAccountResponse>> GetFriends([FromQuery] int offset = 0,
         [FromQuery] int limit = 10)
     {
-        return _mapper.Map<List<AppAccountResponse>>(await _relationshipService.GetFriendList(offset, limit));
+        var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        return _mapper.Map<List<AppAccountResponse>>(await _relationshipService.GetFriendList(userId, offset, limit));
     }
 
     /// <summary>
     /// Удалить человека из списка друзей.
     /// </summary>
-    [HttpDelete("friends/{id}")]
-    public async Task<IActionResult> DeleteFriend([FromRoute] Guid id)
+    [HttpDelete("friends/{friendId}")]
+    public async Task<IActionResult> DeleteFriend([FromRoute] Guid friendId)
     {
-        await _relationshipService.DeleteFromFriendList(id);
+        var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        await _relationshipService.DeleteFromFriendList(userId, friendId);
         return Ok();
     }
 }
