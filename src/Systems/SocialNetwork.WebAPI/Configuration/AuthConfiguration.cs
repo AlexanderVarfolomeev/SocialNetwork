@@ -37,8 +37,9 @@ public static class AuthConfiguration
             })
             .AddJwtBearer(IdentityServerAuthenticationDefaults.AuthenticationScheme, options =>
             {
-                options.RequireHttpsMetadata = false;
+                options.RequireHttpsMetadata = apiSettings.Identity.RequireHttps;
                 options.Authority = apiSettings.Identity.Url;
+                options.MetadataAddress = apiSettings.Identity.Url + "/.well-known/openid-configuration";
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = false,

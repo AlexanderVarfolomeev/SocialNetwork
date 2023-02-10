@@ -98,4 +98,10 @@ public class SqlRepository<T> : IRepository<T> where T : class, IBaseEntity
             throw new ProcessException(ErrorMessages.UpdateEntityError, exc);
         }
     }
+
+    public async Task<bool> Any(Guid entityId)
+    {
+        return await _context.Set<T>().FindAsync(entityId) is not null;
+    }
+    
 }

@@ -1,4 +1,5 @@
 using Duende.IdentityServer.Services;
+using Microsoft.IdentityModel.Logging;
 using SocialNetwork.IdentityServer.Configuration;
 using SocialNetwork.IdentityServer.Configuration.HealthChecks;
 using SocialNetwork.Repository;
@@ -8,6 +9,8 @@ using SocialNetwork.Settings.Source;
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
 var settings = new AppSettings(new SettingSource());
+IdentityModelEventSource.ShowPII = true;
+
 builder.AddAppSerilog();
 services.AddRepository();
 
@@ -21,7 +24,6 @@ services.AddEndpointsApiExplorer();
 services.AddAppIdentity();
 services.AddSwaggerGen();
 services.AddAppHealthChecks();
-
 var app = builder.Build();
 app.UseAppSerilog();
 

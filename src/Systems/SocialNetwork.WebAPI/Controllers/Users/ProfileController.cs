@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -48,13 +49,13 @@ public class ProfileController : ControllerBase
     [HttpPut("password")]
     public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordModel model)
     {
-        await _profileService.ChangePasswordAsync(model.OldPassword, model.NewPassword);
+        var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        await _profileService.ChangePasswordAsync(userId, model.OldPassword, model.NewPassword);
         return Ok();
     }
 }
 
 /*
-    * TODO закончить в клиенте
    [HttpPost("{id}/reset-password")]
    public async Task<IActionResult> ResetPassword([FromRoute] Guid id, [FromQuery] string token, [FromBody] string password)
    {

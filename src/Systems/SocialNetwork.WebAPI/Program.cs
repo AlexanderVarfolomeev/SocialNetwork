@@ -1,3 +1,4 @@
+using Microsoft.IdentityModel.Logging;
 using SocialNetwork.Settings.Settings;
 using SocialNetwork.Settings.Source;
 using SocialNetwork.WebAPI;
@@ -8,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 var services = builder.Services;
 var settings = new AppSettings(new SettingSource());
-
+IdentityModelEventSource.ShowPII = true;
 builder.AddAppSerilog();
 
 services.AddAppDbContext(settings);

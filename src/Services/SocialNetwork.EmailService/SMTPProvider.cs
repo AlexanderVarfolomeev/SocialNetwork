@@ -1,5 +1,5 @@
-using MimeKit;
 using MailKit.Net.Smtp;
+using MimeKit;
 using SocialNetwork.Settings.Interfaces;
 
 namespace SocialNetwork.EmailService;

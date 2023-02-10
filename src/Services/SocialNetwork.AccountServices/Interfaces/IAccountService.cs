@@ -10,6 +10,6 @@ public interface IAccountService
     Task<AppAccountModel> GetAccountAsync(Guid id);
     Task<AppAccountModel> GetAccountAsync(string username);
     Task<IEnumerable<AppAccountModel>> GetAccountsAsync(int offset = 0, int limit = 10);
-    Task<AppAccountModel> UpdateAccountAsync(Guid id, AppAccountUpdateModel model);
-    Task DeleteAccountAsync(Guid id);
+    Task<AppAccountModel> UpdateAccountAsync(Guid userId, Guid accountId, AppAccountUpdateModel model);
+    Task DeleteAccountAsync(Guid userId, Guid accountId);
 }

@@ -59,7 +59,7 @@ public class RelationshipService : IRelationshipService
 
         var relationship = (
             await _relationshipRepository.GetAllAsync(
-                (x) => x.FirstUserId == fromUser.Id && x.SecondUserId == toUser.Id)).FirstOrDefault();
+                x => x.FirstUserId == fromUser.Id && x.SecondUserId == toUser.Id)).FirstOrDefault();
 
         if (relationship is not null)
         {
@@ -78,7 +78,7 @@ public class RelationshipService : IRelationshipService
         }
 
 
-        relationship = new Relationship()
+        relationship = new Relationship
         {
             FirstUserId = fromUser.Id,
             SecondUserId = toUser.Id,
@@ -116,7 +116,7 @@ public class RelationshipService : IRelationshipService
 
     public async Task<List<FriendshipRequest>> GetFriendshipRequests(int offset = 0, int limit = 10)
     {
-        var list = await _relationshipRepository.GetAllAsync((x) =>
+        var list = await _relationshipRepository.GetAllAsync(x =>
             x.SecondUserId == _currentUserId && x.RelationshipType == RelationshipType.FriendRequest, offset, limit);
         return _mapper.Map<List<FriendshipRequest>>(list);
     }

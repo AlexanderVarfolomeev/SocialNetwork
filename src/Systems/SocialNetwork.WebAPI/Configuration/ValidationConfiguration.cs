@@ -19,14 +19,14 @@ public static class ValidationConfiguration
                 foreach (var item in context.ModelState)
                 {
                     if (item.Value.ValidationState == ModelValidationState.Invalid)
-                        fieldErrors.Add(new ErrorResponseFieldInfo()
+                        fieldErrors.Add(new ErrorResponseFieldInfo
                         {
                             FieldName = item.Key,
                             Message = string.Join(", ", item.Value.Errors.Select(x => x.ErrorMessage))
                         });
                 }
 
-                var result = new BadRequestObjectResult(new ErrorResponse()
+                var result = new BadRequestObjectResult(new ErrorResponse
                 {
                     ErrorCode = -1,
                     Message = "One or more validation errors occurred.",

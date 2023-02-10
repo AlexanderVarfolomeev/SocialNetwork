@@ -9,7 +9,7 @@ public static class HealthCheckHelper
     public static async Task WriteHealthCheckResponse(HttpContext context, HealthReport report)
     {
         context.Response.ContentType = "application/json";
-        var response = new HealthCheck()
+        var response = new HealthCheck
         {
             OverallStatus = report.Status.ToString(),
             TotalDuration = report.TotalDuration.TotalSeconds.ToString("0:0.00"),

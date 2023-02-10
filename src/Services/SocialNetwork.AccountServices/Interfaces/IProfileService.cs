@@ -10,5 +10,5 @@ public interface IProfileService
     Task<AppAccountModel> RegisterUserAsync(AppAccountModelRequest requestModel);
     Task<TokenResponse> LoginUserAsync(LoginModel model);
     Task<bool> ConfirmEmailAsync(Guid userId, string code);
-    Task ChangePasswordAsync(string oldPassword, string newPassword);
+    Task ChangePasswordAsync(Guid userId ,string oldPassword, string newPassword);
 }

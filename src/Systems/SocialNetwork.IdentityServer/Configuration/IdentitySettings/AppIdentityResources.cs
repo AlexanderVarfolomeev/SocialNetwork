@@ -7,7 +7,7 @@ public static class AppIdentityResources
 {
     public static IEnumerable<IdentityResource> Resources = new IdentityResource[]
     {
-        new IdentityResources.OpenId()
+        new IdentityResources.OpenId
         {
             UserClaims =
             {
@@ -15,7 +15,7 @@ public static class AppIdentityResources
                 JwtClaimTypes.Email,
             }
         },
-        new IdentityResources.Profile()
+        new IdentityResources.Profile
         {
             UserClaims =
             {

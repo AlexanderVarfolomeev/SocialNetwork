@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SocialNetwork.AccountServices.Interfaces;
@@ -24,10 +25,11 @@ public class RolesController : ControllerBase
     /// Выдать роль администратора
     /// </summary>
     [Authorize(AppScopes.NetworkWrite)]
-    [HttpPost("{userId}")]
-    public async Task<IActionResult> GiveAdminRole([FromRoute] Guid userId)
+    [HttpPost("{accountId}")]
+    public async Task<IActionResult> GiveAdminRole([FromRoute] Guid accountId)
     {
-        await _adminService.GiveAdminRoleAsync(userId);
+        var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        await _adminService.GiveAdminRoleAsync(userId, accountId);
         return Ok();
     }
 
@@ -35,11 +37,11 @@ public class RolesController : ControllerBase
     /// Отозвать роль администратора
     /// </summary>
     [Authorize(AppScopes.NetworkWrite)]
-    [HttpDelete("{userId}")]
-    public async Task<IActionResult> RevokeAdminRole([FromRoute] Guid userId)
+    [HttpDelete("{accountId}")]
+    public async Task<IActionResult> RevokeAdminRole([FromRoute] Guid accountId)
     {
-        await _adminService.RevokeAdminRoleAsync(userId);
+        var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        await _adminService.RevokeAdminRoleAsync(userId, accountId);
         return Ok();
     }
-
 }

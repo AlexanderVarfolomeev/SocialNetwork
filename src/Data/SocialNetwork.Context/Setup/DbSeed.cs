@@ -25,21 +25,21 @@ public static class DbSeed
             || !context.Roles.Any(x => x.Permissions == Permissions.User)
             || !context.Roles.Any(x => x.Permissions == Permissions.GodAdmin))
         {
-            context.Roles.Add(new AppRole()
+            context.Roles.Add(new AppRole
             {
                 Name = "User",
                 Permissions = Permissions.User,
                 CreationDateTime = DateTimeOffset.Now,
                 ModificationDateTime = DateTimeOffset.Now
             });
-            context.Roles.Add(new AppRole()
+            context.Roles.Add(new AppRole
             {
                 Name = "Admin",
                 Permissions = Permissions.Admin,
                 CreationDateTime = DateTimeOffset.Now,
                 ModificationDateTime = DateTimeOffset.Now
             });
-            context.Roles.Add(new AppRole()
+            context.Roles.Add(new AppRole
             {
                 Name = "GodAdmin",
                 Permissions = Permissions.GodAdmin,
@@ -48,7 +48,7 @@ public static class DbSeed
             });
             await context.SaveChangesAsync();
 
-            var user = new AppUser()
+            var user = new AppUser
             {
                 Id = Guid.NewGuid(),
                 Name = "Admin",
@@ -64,7 +64,7 @@ public static class DbSeed
             await manager.CreateAsync(user, AdminPassword);
             await context.SaveChangesAsync();
 
-            context.UserRoles.Add(new AppUserRole()
+            context.UserRoles.Add(new AppUserRole
             {
                 RoleId = context.Roles.First(x => x.Permissions == Permissions.GodAdmin).Id,
                 UserId = user.Id,

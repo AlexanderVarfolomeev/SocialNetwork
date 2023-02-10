@@ -10,6 +10,8 @@ services:
       - env.api
     depends_on:
       - social_network_pgsl
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
   
   social_network_identity:
     image: ${DOCKER_REGISTRY}network_identity
@@ -18,6 +20,8 @@ services:
       dockerfile: src/Systems/SocialNetwork.IdentityServer/Dockerfile
     depends_on:
       - social_network_pgsl
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
   
   social_network_pgsl:
     image: postgres

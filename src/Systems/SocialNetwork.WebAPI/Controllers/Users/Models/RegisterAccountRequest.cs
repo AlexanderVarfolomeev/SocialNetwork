@@ -1,7 +1,6 @@
 using AutoMapper;
 using FluentValidation;
 using SocialNetwork.AccountServices.Models;
-using SocialNetwork.Common.Validator;
 using SocialNetwork.Constants.Errors;
 
 namespace SocialNetwork.WebAPI.Controllers.Users.Models;

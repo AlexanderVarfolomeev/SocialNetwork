@@ -34,6 +34,11 @@
             Получить список друзей.
             </summary>
         </member>
+        <member name="M:SocialNetwork.WebAPI.Controllers.Relationships.RelationshipsController.DeleteFriend(System.Guid)">
+            <summary>
+            Удалить человека из списка друзей.
+            </summary>
+        </member>
         <member name="T:SocialNetwork.WebAPI.Controllers.Users.AccountsController">
             <summary>
             CRUD контроллер для работы с аккаунтами пользователей

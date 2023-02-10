@@ -13,4 +13,5 @@ public interface IRepository<T> where T : IBaseEntity
     Task<IEnumerable<T>> AddRangeAsync(IEnumerable<T> entities);
     Task<T> UpdateAsync(T entity);
     Task DeleteAsync(T entity);
+    Task<bool> Any(Guid entityId);
 }

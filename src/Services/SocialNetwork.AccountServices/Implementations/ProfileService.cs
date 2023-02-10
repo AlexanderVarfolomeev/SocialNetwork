@@ -1,7 +1,5 @@
-using System.Security.Claims;
 using AutoMapper;
 using IdentityModel.Client;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using SocialNetwork.AccountServices.Interfaces;
 using SocialNetwork.AccountServices.Models;
@@ -28,13 +26,10 @@ public class ProfileService : IProfileService
     private readonly IRepository<AppUserRole> _userRolesRepository;
     private readonly IRepository<AppRole> _roleRepository;
     private readonly IEmailService _emailService;
-
-    private readonly Guid _currentUserId;
-
     public ProfileService(IRepository<AppUser> userRepository, UserManager<AppUser> userManager,
         SignInManager<AppUser> signInManager, IMapper mapper, IAppSettings apiSettings,
         IRepository<AppUserRole> userRolesRepository, IRepository<AppRole> roleRepository,
-        IEmailService emailService, IHttpContextAccessor accessor)
+        IEmailService emailService)
     {
         _userRepository = userRepository;
         _userManager = userManager;
@@ -45,8 +40,6 @@ public class ProfileService : IProfileService
         _roleRepository = roleRepository;
         _emailService = emailService;
 
-        var value = accessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        _currentUserId = value is null ? Guid.Empty : Guid.Parse(value);
     }
 
     public async Task<AppAccountModel> RegisterUserAsync(AppAccountModelRequest requestModel)
@@ -109,9 +102,9 @@ public class ProfileService : IProfileService
     /// <summary>
     /// Смена пароля
     /// </summary>
-    public async Task ChangePasswordAsync(string oldPassword, string newPassword)
+    public async Task ChangePasswordAsync(Guid userId, string oldPassword, string newPassword)
     {
-        var user = await _userRepository.GetAsync(_currentUserId);
+        var user = await _userRepository.GetAsync(userId);
 
         var isCorrectPassword = await _userManager.CheckPasswordAsync(user, oldPassword);
         if (isCorrectPassword)
@@ -141,7 +134,7 @@ public class ProfileService : IProfileService
     private async Task SendConfirmRegistrationMail(AppUser user)
     {
         user.EmailConfirmationKey = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-        await _emailService.SendEmailAsync(new EmailModel()
+        await _emailService.SendEmailAsync(new EmailModel
         {
             Email = user.Email,
             Message = MessageConstants.ConfirmRegistration + _apiSettings.Email.ConfirmAddress +
@@ -158,7 +151,7 @@ public class ProfileService : IProfileService
     private async Task GiveUserRole(AppUser user)
     {
         var userRoleId = (await _roleRepository.GetAllAsync(x => x.Permissions == Permissions.User)).First().Id;
-        await _userRolesRepository.AddAsync(new AppUserRole() { RoleId = userRoleId, UserId = user.Id });
+        await _userRolesRepository.AddAsync(new AppUserRole { RoleId = userRoleId, UserId = user.Id });
     }
 
     private async Task<TokenResponse> GetTokenResponseAsync(LoginModel model, string userName)
@@ -166,7 +159,7 @@ public class ProfileService : IProfileService
         var client = new HttpClient();
         var disco = await client.GetDiscoveryDocumentAsync(_apiSettings.Identity.Url);
         ProcessException.ThrowIf(() => disco.IsError, disco.Error);
-        var tokenResponse = await client.RequestPasswordTokenAsync(new PasswordTokenRequest()
+        var tokenResponse = await client.RequestPasswordTokenAsync(new PasswordTokenRequest
         {
             Address = disco.TokenEndpoint,
             ClientId = model.ClientId,

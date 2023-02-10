@@ -14,5 +14,5 @@ public class UserInGroup : BaseEntity
     public virtual AppUser User { get; set; }
 
     public Guid GroupId { get; set; }
-    public virtual Groups.Group Group { get; set; }
+    public virtual Group Group { get; set; }
 }

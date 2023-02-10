@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +8,7 @@ using SocialNetwork.Constants.Security;
 using SocialNetwork.WebAPI.Controllers.Users.Models;
 
 namespace SocialNetwork.WebAPI.Controllers.Users;
+
 /// <summary>
 /// CRUD контроллер для работы с аккаунтами пользователей
 /// </summary>
@@ -48,34 +50,39 @@ public class AccountsController : ControllerBase
     }
 
     [Authorize(AppScopes.NetworkWrite)]
-    [HttpPut("{id:Guid}")]
-    public async Task<AppAccountResponse> UpdateAccount([FromRoute] Guid id, [FromBody] AppAccountUpdateRequest model)
+    [HttpPut("{accountId:Guid}")]
+    public async Task<AppAccountResponse> UpdateAccount([FromRoute] Guid accountId,
+        [FromBody] AppAccountUpdateRequest model)
     {
+        var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
         return _mapper.Map<AppAccountResponse>(
-            await _accountService.UpdateAccountAsync(id, _mapper.Map<AppAccountUpdateModel>(model)));
+            await _accountService.UpdateAccountAsync(userId, accountId, _mapper.Map<AppAccountUpdateModel>(model)));
     }
-    
+
     [Authorize(AppScopes.NetworkWrite)]
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteAccount([FromRoute] Guid id)
+    [HttpDelete("{accountId}")]
+    public async Task<IActionResult> DeleteAccount([FromRoute] Guid accountId)
     {
-        await _accountService.DeleteAccountAsync(id);
+        var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        await _accountService.DeleteAccountAsync(userId, accountId);
         return Ok();
     }
 
     [Authorize(AppScopes.NetworkWrite)]
-    [HttpPut("{id}/ban")]
-    public async Task<IActionResult> BanAccount([FromRoute] Guid id)
+    [HttpPut("{accountId}/ban")]
+    public async Task<IActionResult> BanAccount([FromRoute] Guid accountId)
     {
-        await _adminService.BanUserAsync(id);
+        var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        await _adminService.BanAccountAsync(userId, accountId);
         return Ok();
     }
-    
+
     [Authorize(AppScopes.NetworkWrite)]
-    [HttpPut("{id}/unban")]
-    public async Task<IActionResult> UnbanAccount([FromRoute] Guid id)
+    [HttpPut("{accountId}/unban")]
+    public async Task<IActionResult> UnbanAccount([FromRoute] Guid accountId)
     {
-        await _adminService.UnbanUserAsync(id);
+        var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        await _adminService.UnbanAccountAsync(userId, accountId);
         return Ok();
     }
 }
