@@ -129,7 +129,7 @@ public class RelationshipService : IRelationshipService
         }
         catch (ProcessException)
         {
-            return null;
+            return null; // УБРАТЬ
         }
     }
 }

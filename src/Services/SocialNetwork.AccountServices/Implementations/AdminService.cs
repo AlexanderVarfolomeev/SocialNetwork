@@ -12,18 +12,12 @@ namespace SocialNetwork.AccountServices.Implementations;
 public class AdminService : IAdminService
 {
     private readonly IRepository<AppUser> _userRepository;
-    private readonly IRepository<AppRole> _roleRepository;
-    private readonly RoleManager<AppRole> _roleManager;
     private readonly UserManager<AppUser> _userManager;
 
     public AdminService(IRepository<AppUser> userRepository,
-        IRepository<AppRole> roleRepository,
-        RoleManager<AppRole> roleManager,
         UserManager<AppUser> userManager)
     {
         _userRepository = userRepository;
-        _roleRepository = roleRepository;
-        _roleManager = roleManager;
         _userManager = userManager;
     }
 

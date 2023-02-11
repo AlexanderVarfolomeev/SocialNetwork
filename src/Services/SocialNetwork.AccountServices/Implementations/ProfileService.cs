@@ -28,8 +28,7 @@ public class ProfileService : IProfileService
 
     public ProfileService(IRepository<AppUser> userRepository, UserManager<AppUser> userManager,
         SignInManager<AppUser> signInManager, IMapper mapper, IAppSettings apiSettings,
-        IRepository<AppRole> roleRepository,
-        IEmailService emailService, RoleManager<AppRole> roleManager)
+        IEmailService emailService)
     {
         _userRepository = userRepository;
         _userManager = userManager;
@@ -53,7 +52,7 @@ public class ProfileService : IProfileService
         ProcessException.ThrowIf(() => !result.Succeeded, result.ToString());
 
         await SendConfirmRegistrationMail(user);
-        await GiveUserRole(user);
+        await _userManager.AddToRoleAsync(user, Permissions.User.GetName());
         return _mapper.Map<AppAccountModel>(user);
     }
 
@@ -139,15 +138,6 @@ public class ProfileService : IProfileService
                       "&key=" + user.EmailConfirmationKey,
             Subject = MessageConstants.ConfirmRegistrationSubject
         });
-    }
-
-    /// <summary>
-    /// Выдача прав пользователя
-    /// </summary>
-    /// <param name="user"></param>
-    private async Task GiveUserRole(AppUser user)
-    {
-        await _userManager.AddToRoleAsync(user, Permissions.User.GetName());
     }
 
     private async Task<TokenResponse> GetTokenResponseAsync(LoginModel model, string userName)
