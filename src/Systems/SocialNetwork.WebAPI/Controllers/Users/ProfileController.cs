@@ -53,6 +53,8 @@ public class ProfileController : ControllerBase
         await _profileService.ChangePasswordAsync(userId, model.OldPassword, model.NewPassword);
         return Ok();
     }
+    
+    
 }
 
 /*
