@@ -1,6 +1,7 @@
 using System.Collections;
 using Microsoft.AspNetCore.Http;
 using SocialNetwork.AttachmentServices.Models;
+using SocialNetwork.Common.Enum;
 
 namespace SocialNetwork.AttachmentServices;
 
@@ -10,7 +11,7 @@ namespace SocialNetwork.AttachmentServices;
 public interface IAttachmentService
 {
     Task<IEnumerable<AttachmentModel>> UploadFiles(Guid userId, AttachmentModelRequest attachments);
-    
-    Task<IEnumerable<string>> GetAvatars(Guid userId);
+
+    Task<IEnumerable<string>> GetAttachments(FileType type, Guid contentId);
     Task<string> GetCurrentAvatar(Guid userId);
 }

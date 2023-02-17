@@ -70,8 +70,27 @@ public class AttachmentController : ControllerBase
     [HttpGet("accounts/{userId}/avatars")]
     public async Task<IEnumerable<string>> GetAvatars([FromRoute] Guid userId)
     {
-        return await _attachmentService.GetAvatars(userId);
+        return await _attachmentService.GetAttachments(FileType.Avatar, userId);
     }
+    
+    [HttpGet("posts/{postId}/attachments")]
+    public async Task<IEnumerable<string>> GetPostAttachments([FromRoute] Guid postId)
+    {
+        return await _attachmentService.GetAttachments(FileType.Post, postId);
+    }
+    
+    [HttpGet("comments/{commentId}/attachments")]
+    public async Task<IEnumerable<string>> GetCommentAttachments([FromRoute] Guid commentId)
+    {
+        return await _attachmentService.GetAttachments(FileType.Comment, commentId);
+    }
+    
+    [HttpGet("messages/{messageId}/attachments")]
+    public async Task<IEnumerable<string>> GetMessageAttachments([FromRoute] Guid messageId)
+    {
+        return await _attachmentService.GetAttachments(FileType.Message, messageId);
+    }
+
     
     [HttpGet("accounts/{userId}/avatars/current")]
     public async Task<string> GetCurrentAvatar([FromRoute] Guid userId)

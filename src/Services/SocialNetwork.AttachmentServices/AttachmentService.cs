@@ -49,12 +49,22 @@ public class AttachmentService : IAttachmentService
         return await CreateFiles(attachments);
     }
 
-    public async Task<IEnumerable<string>> GetAvatars(Guid userId)
+    /// <summary>
+    /// Получение прикрепленных файлов
+    /// </summary>
+    /// <param name="type"> Тип прикрепленных файлов: аватар, комментарий, пост, сообщение</param>
+    /// <param name="contentId"> Id сущности к которой прикреплены файлы </param>
+    public async Task<IEnumerable<string>> GetAttachments(FileType type, Guid contentId) => type switch
     {
-        var avatars =
-            await _attachmentsRepository.GetAllAsync(x => x.FileType == FileType.Avatar && x.UserId == userId);
-        return ConvertFilesToBase64(avatars);
-    }
+        FileType.Avatar => await GetAvatars(contentId),
+        FileType.Comment => await GetCommentAttachments(contentId),
+        FileType.Message => await GetMessageAttachments(contentId),
+        FileType.Post => await GetPostAttachments(contentId),
+        _ =>  throw new ProcessException("Неопределенный тип") // TODO заменить на определенную ошибку
+    };
+
+
+    
 
     public async Task<string> GetCurrentAvatar(Guid userId)
     {
@@ -124,12 +134,11 @@ public class AttachmentService : IAttachmentService
     /// <summary>
     /// Смена статуса текущего аватара
     /// </summary>
-    /// <param name="userId"></param>
     private async Task ChangeAvatarStatus(Guid? userId)
     {
         var avatars = (await _attachmentsRepository.GetAllAsync(x => x.UserId == userId && x.IsCurrentAvatar == true))
             .ToList();
-        
+
         if (avatars.Count != 0)
         {
             avatars.First().IsCurrentAvatar = false;
@@ -148,5 +157,33 @@ public class AttachmentService : IAttachmentService
         }
 
         return result;
+    }
+    
+    private async Task<IEnumerable<string>> GetAvatars(Guid userId)
+    {
+        var avatars =
+            await _attachmentsRepository.GetAllAsync(x => x.FileType == FileType.Avatar && x.UserId == userId);
+        return ConvertFilesToBase64(avatars);
+    }
+    
+    private async Task<IEnumerable<string>> GetCommentAttachments(Guid commentId)
+    {
+        var attachments =
+            await _attachmentsRepository.GetAllAsync(x => x.FileType == FileType.Comment && x.CommentId == commentId);
+        return ConvertFilesToBase64(attachments);
+    }
+    
+    private async Task<IEnumerable<string>> GetMessageAttachments(Guid messageId)
+    {
+        var attachments =
+            await _attachmentsRepository.GetAllAsync(x => x.FileType == FileType.Message && x.MessageId == messageId);
+        return ConvertFilesToBase64(attachments);
+    }
+    
+    private async Task<IEnumerable<string>> GetPostAttachments(Guid postId)
+    {
+        var attachments =
+            await _attachmentsRepository.GetAllAsync(x => x.FileType == FileType.Post && x.PostId == postId);
+        return ConvertFilesToBase64(attachments);
     }
 }
