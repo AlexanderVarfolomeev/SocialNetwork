@@ -1,13 +1,9 @@
-using System.Diagnostics;
-using System.Linq.Expressions;
 using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using SocialNetwork.AttachmentServices.Models;
 using SocialNetwork.Common.Enum;
 using SocialNetwork.Common.Exceptions;
 using SocialNetwork.Common.Extensions;
 using SocialNetwork.Constants.Errors;
-using SocialNetwork.Entities.Base;
 using SocialNetwork.Entities.Files;
 using SocialNetwork.Entities.Messenger;
 using SocialNetwork.Entities.Posts;
@@ -16,7 +12,6 @@ using SocialNetwork.Repository;
 
 namespace SocialNetwork.AttachmentServices;
 
-// TODO deleteFile, getFiles
 public class AttachmentService : IAttachmentService
 {
     private readonly IRepository<Post> _postRepository;
@@ -50,23 +45,39 @@ public class AttachmentService : IAttachmentService
     }
 
     /// <summary>
-    /// Получение прикрепленных файлов
+    /// Получение вложений в формате base64 строки
     /// </summary>
-    /// <param name="type"> Тип прикрепленных файлов: аватар, комментарий, пост, сообщение</param>
+    /// <param name="type"> Тип вложения: аватар, комментарий, пост, сообщение</param>
     /// <param name="contentId"> Id сущности к которой прикреплены файлы </param>
-    public async Task<IEnumerable<string>> GetAttachments(FileType type, Guid contentId) => type switch
+    public async Task<IEnumerable<AttachmentViewModel>> GetAttachments(FileType type, Guid contentId) => type switch
     {
         FileType.Avatar => await GetAvatars(contentId),
         FileType.Comment => await GetCommentAttachments(contentId),
         FileType.Message => await GetMessageAttachments(contentId),
         FileType.Post => await GetPostAttachments(contentId),
-        _ =>  throw new ProcessException("Неопределенный тип") // TODO заменить на определенную ошибку
+        _ => throw new ProcessException("Неопределенный тип") // TODO заменить на определенную ошибку
     };
 
+    /// <summary>
+    /// Удалить вложение
+    /// </summary>
+    /// <param name="userId">Id юзера который выполняет запрос</param>
+    /// <param name="type"> Тип вложения: аватар, комментарий, пост, сообщение</param>
+    /// <param name="attachmentId"> Id вложения для удаления</param>
+    public async Task DeleteAttachment(Guid userId, FileType type, Guid attachmentId)
+    {
+        var attachment = await _attachmentsRepository.GetAsync(attachmentId);
+        var creatorOfContentId = await GetCreatorIdOfAttachedContent(attachment);
+        ProcessException.ThrowIf(() => userId != creatorOfContentId,
+            "Не создатель"); // TODO исправить через другой метод и заменить ошибку
 
-    
+        var pathToFile = Path.Combine(attachment.FileType.GetPath(), attachment.Name);
+        File.Delete(pathToFile); // Удаляем файл с системы
+        await _attachmentsRepository.DeleteAsync(attachment); // Удаляем файл с бд
+    }
 
-    public async Task<string> GetCurrentAvatar(Guid userId)
+
+    public async Task<AttachmentViewModel> GetCurrentAvatar(Guid userId)
     {
         var avatar = await _attachmentsRepository.GetAsync(x =>
             x.FileType == FileType.Avatar
@@ -146,44 +157,64 @@ public class AttachmentService : IAttachmentService
         }
     }
 
-    private IEnumerable<string> ConvertFilesToBase64(IEnumerable<Attachment> files)
+    private IEnumerable<AttachmentViewModel> ConvertFilesToBase64(IEnumerable<Attachment> files)
     {
-        var result = new List<string>();
+        var result = new List<AttachmentViewModel>();
         foreach (var file in files)
         {
             var path = Path.Combine(file.FileType.GetPath(), file.Name);
             var bytes = File.ReadAllBytes(path);
-            result.Add(Convert.ToBase64String(bytes));
+
+            AttachmentViewModel viewModel = new AttachmentViewModel
+            {
+                Content = Convert.ToBase64String(bytes),
+                Id = file.Id
+            };
+
+            result.Add(viewModel);
         }
 
         return result;
     }
-    
-    private async Task<IEnumerable<string>> GetAvatars(Guid userId)
+
+    private async Task<IEnumerable<AttachmentViewModel>> GetAvatars(Guid userId)
     {
         var avatars =
             await _attachmentsRepository.GetAllAsync(x => x.FileType == FileType.Avatar && x.UserId == userId);
         return ConvertFilesToBase64(avatars);
     }
-    
-    private async Task<IEnumerable<string>> GetCommentAttachments(Guid commentId)
+
+    private async Task<IEnumerable<AttachmentViewModel>> GetCommentAttachments(Guid commentId)
     {
         var attachments =
             await _attachmentsRepository.GetAllAsync(x => x.FileType == FileType.Comment && x.CommentId == commentId);
         return ConvertFilesToBase64(attachments);
     }
-    
-    private async Task<IEnumerable<string>> GetMessageAttachments(Guid messageId)
+
+    private async Task<IEnumerable<AttachmentViewModel>> GetMessageAttachments(Guid messageId)
     {
         var attachments =
             await _attachmentsRepository.GetAllAsync(x => x.FileType == FileType.Message && x.MessageId == messageId);
         return ConvertFilesToBase64(attachments);
     }
-    
-    private async Task<IEnumerable<string>> GetPostAttachments(Guid postId)
+
+    private async Task<IEnumerable<AttachmentViewModel>> GetPostAttachments(Guid postId)
     {
         var attachments =
             await _attachmentsRepository.GetAllAsync(x => x.FileType == FileType.Post && x.PostId == postId);
         return ConvertFilesToBase64(attachments);
     }
+
+    /// <summary>
+    /// TODO подумать как избавиться от этого метода
+    /// Получить id создателя сущности к которой прикреплено вложение
+    /// </summary>
+    private async Task<Guid> GetCreatorIdOfAttachedContent(Attachment attachment) => attachment.FileType switch
+    {
+        FileType.Avatar => (Guid)attachment.UserId!,
+        FileType.Comment => (await _commentRepository.GetAsync((Guid)attachment.CommentId!)).CreatorId,
+        FileType.Post => (await _postRepository.GetAsync((Guid)attachment.PostId!)).CreatorId,
+        FileType.Message => (await _messageRepository.GetAsync((Guid)attachment.MessageId!)).SenderId,
+        _ => throw new ProcessException("Неопределенный тип") // TODO уточнить ошибку
+    };
 }

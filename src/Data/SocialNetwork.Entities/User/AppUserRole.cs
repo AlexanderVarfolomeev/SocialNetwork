@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Identity;
-using SocialNetwork.Entities.Base;
 
 namespace SocialNetwork.Entities.User;
 

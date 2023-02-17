@@ -1,5 +1,4 @@
 using Microsoft.Extensions.DependencyInjection;
-using SocialNetwork.Entities.Files;
 
 namespace SocialNetwork.AttachmentServices;
 
