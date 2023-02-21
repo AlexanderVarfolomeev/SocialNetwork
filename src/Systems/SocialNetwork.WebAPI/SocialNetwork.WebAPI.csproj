@@ -39,6 +39,7 @@
       <ProjectReference Include="..\..\Services\SocialNetwork.AccountServices\SocialNetwork.AccountServices.csproj" />
       <ProjectReference Include="..\..\Services\SocialNetwork.AttachmentServices\SocialNetwork.AttachmentServices.csproj" />
       <ProjectReference Include="..\..\Services\SocialNetwork.EmailServices\SocialNetwork.EmailServices.csproj" />
+      <ProjectReference Include="..\..\Services\SocialNetwork.GroupServices\SocialNetwork.GroupServices.csproj" />
       <ProjectReference Include="..\..\Services\SocialNetwork.PostServices\SocialNetwork.PostServices.csproj" />
       <ProjectReference Include="..\..\Services\SocialNetwork.RelationshipServices\SocialNetwork.RelationshipServices.csproj" />
       <ProjectReference Include="..\..\Shared\SocialNetwork.Common\SocialNetwork.Common.csproj" />
@@ -53,6 +54,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="Controllers\Groups" />
       <Folder Include="wwwroot\Comment" />
       <Folder Include="wwwroot\Message" />
       <Folder Include="wwwroot\Post" />
