@@ -1,9 +1,11 @@
 using System.Security.Claims;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SocialNetwork.AttachmentServices;
 using SocialNetwork.AttachmentServices.Models;
 using SocialNetwork.Common.Enum;
+using SocialNetwork.Constants.Security;
 using SocialNetwork.WebAPI.Controllers.Attachments.Models;
 
 namespace SocialNetwork.WebAPI.Controllers.Attachments;
@@ -22,6 +24,7 @@ public class AttachmentController : ControllerBase
         _mapper = mapper;
     }
 
+    [Authorize(AppScopes.NetworkWrite)]
     [HttpPost("posts/{postId}/attachments")]
     public async Task UploadFilesToPost([FromRoute] Guid postId, IEnumerable<IFormFile> attachments)
     {
@@ -34,6 +37,7 @@ public class AttachmentController : ControllerBase
         });
     }
 
+    [Authorize(AppScopes.NetworkWrite)]
     [HttpPost("comments/{commentId}/attachments")]
     public async Task UploadFilesToComment([FromRoute] Guid commentId, IEnumerable<IFormFile> attachments)
     {
@@ -46,6 +50,7 @@ public class AttachmentController : ControllerBase
         });
     }
 
+    [Authorize(AppScopes.NetworkWrite)]
     [HttpPost("messages/{messageId}/attachments")]
     public async Task UploadFilesToMessage([FromRoute] Guid messageId, IEnumerable<IFormFile> attachments)
     {
@@ -58,6 +63,7 @@ public class AttachmentController : ControllerBase
         });
     }
 
+    [Authorize(AppScopes.NetworkWrite)]
     [HttpPost("profile/avatars")]
     public async Task UploadAvatar(IFormFile avatar)
     {
@@ -105,6 +111,8 @@ public class AttachmentController : ControllerBase
         return _mapper.Map<AttachmentViewResponse>(await _attachmentService.GetCurrentAvatar(userId));
     }
 
+    //TODO Что то напутал, исправить удаление, передаются неправильные id, неправильный путь, должен быть posts/postId/attachmentId
+    /*[Authorize(AppScopes.NetworkWrite)]
     [HttpDelete("profile/avatars/{avatarId}")]
     public async Task<IActionResult> DeleteAvatar([FromRoute] Guid avatarId)
     {
@@ -113,27 +121,30 @@ public class AttachmentController : ControllerBase
         return Ok();
     }
 
-    [HttpDelete("messages/{messageId}")]
-    public async Task<IActionResult> DeleteMessageAttachment([FromRoute] Guid messageId)
+    [Authorize(AppScopes.NetworkWrite)]
+    [HttpDelete("messages/{attachmentId}")]
+    public async Task<IActionResult> DeleteMessageAttachment([FromRoute] Guid attachmentId)
     {
         var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
-        await _attachmentService.DeleteAttachment(userId, FileType.Message, messageId);
+        await _attachmentService.DeleteAttachment(userId, FileType.Message, attachmentId);
         return Ok();
     }
 
-    [HttpDelete("posts/{postId}")]
-    public async Task<IActionResult> DeletePostAttachment([FromRoute] Guid postId)
+    [Authorize(AppScopes.NetworkWrite)]
+    [HttpDelete("posts/{attachmentId}")]
+    public async Task<IActionResult> DeletePostAttachment([FromRoute] Guid attachmentId)
     {
         var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
-        await _attachmentService.DeleteAttachment(userId, FileType.Post, postId);
+        await _attachmentService.DeleteAttachment(userId, FileType.Post, attachmentId);
         return Ok();
     }
 
-    [HttpDelete("comments/{commentId}")]
-    public async Task<IActionResult> DeleteCommentAttachment([FromRoute] Guid commentId)
+    [Authorize(AppScopes.NetworkWrite)]
+    [HttpDelete("comments/{attachmentId}")]
+    public async Task<IActionResult> DeleteCommentAttachment([FromRoute] Guid attachmentId)
     {
         var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
-        await _attachmentService.DeleteAttachment(userId, FileType.Comment, commentId);
+        await _attachmentService.DeleteAttachment(userId, FileType.Comment, attachmentId);
         return Ok();
-    }
+    }*/
 }

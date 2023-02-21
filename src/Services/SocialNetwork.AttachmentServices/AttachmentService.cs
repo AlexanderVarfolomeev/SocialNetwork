@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using SocialNetwork.AttachmentServices.Models;
 using SocialNetwork.Common.Enum;
 using SocialNetwork.Common.Exceptions;
@@ -55,7 +56,7 @@ public class AttachmentService : IAttachmentService
         FileType.Comment => await GetCommentAttachments(contentId),
         FileType.Message => await GetMessageAttachments(contentId),
         FileType.Post => await GetPostAttachments(contentId),
-        _ => throw new ProcessException("Неопределенный тип") // TODO заменить на определенную ошибку
+        _ => throw new ProcessException(ErrorMessages.UnsupportedTypeError)
     };
 
     /// <summary>
@@ -69,7 +70,7 @@ public class AttachmentService : IAttachmentService
         var attachment = await _attachmentsRepository.GetAsync(attachmentId);
         var creatorOfContentId = await GetCreatorIdOfAttachedContent(attachment);
         ProcessException.ThrowIf(() => userId != creatorOfContentId,
-            "Не создатель"); // TODO исправить через другой метод и заменить ошибку
+            ErrorMessages.OnlyAccountOwnerCanDoIdError);
 
         var pathToFile = Path.Combine(attachment.FileType.GetPath(), attachment.Name);
         File.Delete(pathToFile); // Удаляем файл с системы
@@ -206,7 +207,6 @@ public class AttachmentService : IAttachmentService
     }
 
     /// <summary>
-    /// TODO подумать как избавиться от этого метода
     /// Получить id создателя сущности к которой прикреплено вложение
     /// </summary>
     private async Task<Guid> GetCreatorIdOfAttachedContent(Attachment attachment) => attachment.FileType switch
@@ -215,6 +215,6 @@ public class AttachmentService : IAttachmentService
         FileType.Comment => (await _commentRepository.GetAsync((Guid)attachment.CommentId!)).CreatorId,
         FileType.Post => (await _postRepository.GetAsync((Guid)attachment.PostId!)).CreatorId,
         FileType.Message => (await _messageRepository.GetAsync((Guid)attachment.MessageId!)).SenderId,
-        _ => throw new ProcessException("Неопределенный тип") // TODO уточнить ошибку
+        _ => throw new ProcessException(ErrorMessages.UnsupportedTypeError)
     };
 }

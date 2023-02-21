@@ -25,4 +25,9 @@ public static class ErrorMessages
     public const string UserAlreadyRejectFriendshipRequest = "The user has already rejected friendship request.";
     public const string InvestmentLimitExceededError = "The maximum number of attachments is 10!";
     public const string MorThanOneAvatarError = "You can attach only one photo for the avatar.";
+    public const string UnsupportedTypeError = "Unsupported type.";
+    public const string UserNotFoundError = "User not found.";
+    public const string GroupNotFoundError = "Group not found.";
+    public const string OnlyAdminOfGroupCanAddContentInError = "Only administrators of group can add content to the group.";
+    public const string OnlyCreatorOfContentCanDoIt = "Only creator of content can do it.";
 }

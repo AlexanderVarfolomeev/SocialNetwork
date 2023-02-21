@@ -17,6 +17,12 @@ public class ProcessException : Exception
         if (predicate.Invoke())
             throw new ProcessException(message);
     }
+    
+    public static void ThrowIf(Func<bool> predicate, Exception ex)
+    {
+        if (predicate.Invoke())
+            throw new ProcessException(ex);
+    }
 
     #region Constructors
 

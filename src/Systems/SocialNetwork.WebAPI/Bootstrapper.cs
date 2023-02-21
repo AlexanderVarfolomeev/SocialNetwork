@@ -1,6 +1,7 @@
 using SocialNetwork.AccountServices;
 using SocialNetwork.AttachmentServices;
 using SocialNetwork.EmailService;
+using SocialNetwork.PostServices;
 using SocialNetwork.RelationshipServices;
 using SocialNetwork.Repository;
 using SocialNetwork.Settings;
@@ -17,6 +18,7 @@ public static class Bootstrapper
         services.AddEmailService();
         services.AddRelationshipService();
         services.AddAttachmentService();
+        services.AddPostServices();
         return services;
     }
 }
