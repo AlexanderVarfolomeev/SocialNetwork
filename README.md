@@ -70,7 +70,8 @@ ___
 - Добавление комментариев :x:
 
 ### Структура проекта
-└── src                                         # основное приложение            
+```
+└── src                                                  
     ├── Data                                    # слой работы с данными
     │   ├── SocialNetwork.Context               # описание dbContext
     │   ├── SocialNetwork.Entities              # описание всех сущностей
@@ -89,3 +90,4 @@ ___
     └── Systems                                 
         ├── SocialNetwork.IdentityServer        # сервис для генерации JWT 
         └── SocialNetwork.WebAPI                # основное веб-апи
+```
