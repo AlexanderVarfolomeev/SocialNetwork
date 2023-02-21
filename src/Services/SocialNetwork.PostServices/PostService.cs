@@ -28,6 +28,13 @@ public class PostService : IPostService
         _userRepository = userRepository;
     }
 
+    public async Task<IEnumerable<PostModelResponse>> GetPosts(int offset = 0, int limit = 10)
+    {
+        return _mapper.Map<IEnumerable<PostModelResponse>>(
+                await _postRepository.GetAllAsync(offset, limit))
+            .OrderBy(x => x.CreationDateTime).ToList();
+    }
+
     public async Task<IEnumerable<PostModelResponse>> GetUsersPosts(Guid userId, int offset = 0, int limit = 10)
     {
         try

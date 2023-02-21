@@ -23,6 +23,12 @@ public class PostController : ControllerBase
         _mapper = mapper;
     }
 
+    [HttpGet("posts")]
+    public async Task<IEnumerable<PostResponse>> GetAllPosts([FromQuery] int offset = 0, [FromQuery] int limit = 10)
+    {
+        return _mapper.Map<IEnumerable<PostResponse>>(await _postService.GetPosts(offset, limit));
+    }
+
     [HttpGet("accounts/{userId}/posts")]
     public async Task<IEnumerable<PostResponse>> GetUsersPosts([FromRoute] Guid userId, [FromQuery] int offset = 0,
         [FromQuery] int limit = 10)

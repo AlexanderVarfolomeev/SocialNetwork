@@ -4,6 +4,7 @@ namespace SocialNetwork.PostServices;
 
 public interface IPostService
 {
+    Task<IEnumerable<PostModelResponse>> GetPosts(int offset = 0, int limit = 10);
     Task<IEnumerable<PostModelResponse>> GetUsersPosts(Guid userId, int offset = 0, int limit = 10);
     Task<IEnumerable<PostModelResponse>> GetGroupPosts(Guid groupId, int offset = 0, int limit = 10);
     Task<PostModelResponse> AddUserPost(Guid userId, PostModelAdd postModel);
