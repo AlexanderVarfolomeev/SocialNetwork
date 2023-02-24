@@ -12,4 +12,6 @@ public interface IPostService
     Task<PostModelResponse> AddGroupPost(Guid userId, PostModelAdd postModel);
     Task<PostModelResponse> UpdatePost(Guid userId, Guid postId, PostModelUpdate postModel);
     Task DeletePost(Guid userId, Guid postId);
+    Task LikePost(Guid userId, Guid postId);
+    Task<int> GetCountOfLikes(Guid postId);
 }

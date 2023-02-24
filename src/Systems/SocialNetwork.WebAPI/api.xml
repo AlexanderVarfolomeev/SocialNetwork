@@ -11,7 +11,12 @@
         </member>
         <member name="M:SocialNetwork.WebAPI.Controllers.Posts.PostController.GetUsersPosts(System.Guid,System.Int32,System.Int32)">
             <summary>
-            Получить посты пользователя
+            Получить посты пользователя по его Id
+            </summary>
+        </member>
+        <member name="M:SocialNetwork.WebAPI.Controllers.Posts.PostController.GetUsersPostsByUsername(System.String,System.Int32,System.Int32)">
+            <summary>
+            Получить посты пользователя по его никнейму
             </summary>
         </member>
         <member name="M:SocialNetwork.WebAPI.Controllers.Posts.PostController.GetGroupPosts(System.Guid,System.Int32,System.Int32)">
@@ -47,6 +52,11 @@
         <member name="M:SocialNetwork.WebAPI.Controllers.Posts.PostController.GetAttachments(System.Guid)">
             <summary>
             Получить прикрепленные к посту изображения
+            </summary>
+        </member>
+        <member name="M:SocialNetwork.WebAPI.Controllers.Posts.PostController.DeleteAttachment(System.Guid,System.Guid)">
+            <summary>
+            Удалить прикрепленное изображение
             </summary>
         </member>
         <member name="T:SocialNetwork.WebAPI.Controllers.Relationships.RelationshipsController">

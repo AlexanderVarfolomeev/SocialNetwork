@@ -11,6 +11,8 @@ public class PostModelResponse : BaseEntity
 
     public Guid CreatorId { get; set; }
     public Guid? GroupId { get; set; }
+    
+    
 }
 
 public class PostModelResponseProfile : Profile

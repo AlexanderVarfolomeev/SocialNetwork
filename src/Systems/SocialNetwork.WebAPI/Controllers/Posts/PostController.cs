@@ -174,4 +174,19 @@ public class PostController : ControllerBase
         await _attachmentService.DeletePostAttachment(userId, postId, attachmentId);
         return Ok();
     }
+
+    [Authorize(AppScopes.NetworkWrite)]
+    [HttpPost("posts/{postId}/likes")]
+    public async Task<IActionResult> LikePost([FromRoute] Guid postId)
+    {
+        var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        await _postService.LikePost(userId, postId);
+        return Ok();
+    }
+
+    [HttpGet("posts/{postId}/likes")]
+    public async Task<int> GetCountOfLikes([FromRoute] Guid postId)
+    {
+        return await _postService.GetCountOfLikes(postId);
+    }
 }

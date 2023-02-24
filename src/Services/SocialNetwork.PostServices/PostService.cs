@@ -15,17 +15,20 @@ public class PostService : IPostService
     private readonly IRepository<Group> _groupRepository;
     private readonly IMapper _mapper;
     private readonly IRepository<AppUser> _userRepository;
+    private readonly IRepository<UserLikePost> _likesRepository;
 
     public PostService(
         IRepository<Post> postRepository,
         IRepository<Group> groupRepository,
         IMapper mapper,
-        IRepository<AppUser> userRepository)
+        IRepository<AppUser> userRepository,
+        IRepository<UserLikePost> likesRepository)
     {
         _postRepository = postRepository;
         _groupRepository = groupRepository;
         _mapper = mapper;
         _userRepository = userRepository;
+        _likesRepository = likesRepository;
     }
 
     public async Task<IEnumerable<PostModelResponse>> GetPosts(int offset = 0, int limit = 10)
@@ -108,6 +111,25 @@ public class PostService : IPostService
     {
         var post = await GetPostIfUserCreator(userId, postId);
         await _postRepository.DeleteAsync(post);
+    }
+
+    public async Task LikePost(Guid userId, Guid postId)
+    {
+        var user = await _userRepository.GetAsync(userId);
+        ProcessException.ThrowIf(() => user.IsBanned, ErrorMessages.YouBannedError);
+
+        var likes = (await _likesRepository.GetAllAsync(x => x.PostId == postId && x.UserId == userId)).ToList();
+
+        // Если пользователь уже лайкал пост, то убираем лайк, иначе добавляем
+        if (likes.Any())
+            await _likesRepository.DeleteAsync(likes.First());
+        else
+            await _likesRepository.AddAsync(new UserLikePost() { UserId = userId, PostId = postId });
+    }
+
+    public async Task<int> GetCountOfLikes(Guid postId)
+    {
+        return (await _likesRepository.GetAllAsync(x => x.PostId == postId)).Count();
     }
 
     /// <summary>
