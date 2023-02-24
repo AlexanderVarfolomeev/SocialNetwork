@@ -7,6 +7,7 @@ namespace SocialNetwork.GroupServices.Models;
 public class GroupModelResponse : BaseEntity
 {
     public string Name { get; set; } = string.Empty;
+    public string Title { get; set; } = String.Empty;
     public string Description { get; set; } = string.Empty;
 }
 

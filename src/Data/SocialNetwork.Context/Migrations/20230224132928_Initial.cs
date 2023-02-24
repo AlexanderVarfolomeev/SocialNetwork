@@ -82,6 +82,7 @@ namespace SocialNetwork.Context.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Title = table.Column<string>(type: "text", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
                     CreationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
@@ -174,10 +175,7 @@ namespace SocialNetwork.Context.Migrations
                 {
                     UserId = table.Column<Guid>(type: "uuid", nullable: false),
                     RoleId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Discriminator = table.Column<string>(type: "text", nullable: false),
-                    Id = table.Column<Guid>(type: "uuid", nullable: true),
-                    CreationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
-                    ModificationDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true)
+                    Discriminator = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {

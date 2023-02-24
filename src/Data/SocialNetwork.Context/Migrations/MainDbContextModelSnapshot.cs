@@ -294,6 +294,10 @@ namespace SocialNetwork.Context.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.HasKey("Id");
 
                     b.ToTable("Groups");
@@ -683,15 +687,6 @@ namespace SocialNetwork.Context.Migrations
             modelBuilder.Entity("SocialNetwork.Entities.User.AppUserRole", b =>
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>");
-
-                    b.Property<DateTimeOffset>("CreationDateTime")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTimeOffset>("ModificationDateTime")
-                        .HasColumnType("timestamp with time zone");
 
                     b.HasIndex("RoleId");
 

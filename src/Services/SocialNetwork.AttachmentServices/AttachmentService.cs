@@ -40,8 +40,8 @@ public class AttachmentService : IAttachmentService
         ProcessException.ThrowIf(() => !isCreator, ErrorMessages.OnlyAccountOwnerCanDoIdError);
         ProcessException.ThrowIf(() => attachments.FileType == FileType.Avatar && attachments.Files.Count() > 1,
             ErrorMessages.MorThanOneAvatarError);
-        
-        
+
+
         ProcessException.ThrowIf(() => attachments.Files.Count() > 10, ErrorMessages.InvestmentLimitExceededError);
 
         Directory.CreateDirectory("./wwwroot/Avatar");
@@ -59,12 +59,28 @@ public class AttachmentService : IAttachmentService
     /// <param name="contentId"> Id сущности к которой прикреплены файлы </param>
     public async Task<IEnumerable<AttachmentViewModel>> GetAttachments(FileType type, Guid contentId) => type switch
     {
-        FileType.Avatar => await GetAvatars(contentId),
+        //FileType.Avatar => await GetAvatars(contentId),
         FileType.Comment => await GetCommentAttachments(contentId),
         FileType.Message => await GetMessageAttachments(contentId),
         FileType.Post => await GetPostAttachments(contentId),
         _ => throw new ProcessException(ErrorMessages.UnsupportedTypeError)
     };
+
+    public async Task<IEnumerable<AvatarModel>> GetAvatars(Guid userId)
+    {
+        var avatars =
+            await _attachmentsRepository.GetAllAsync(x => x.FileType == FileType.Avatar && x.UserId == userId);
+        var avatarsModel = _mapper.Map<IEnumerable<AvatarModel>>(avatars).ToList();
+        
+        var files = ConvertFilesToBase64(avatars).ToList();
+        foreach (var model in avatarsModel)
+        {
+            model.Content = files.Where(x => x.Id == model.Id).Select(x => x.Content).First();
+        }
+
+        return avatarsModel;
+    }
+
     public async Task DeletePostAttachment(Guid userId, Guid postId, Guid attachmentId)
     {
         var attachment = await _attachmentsRepository.GetAsync(attachmentId);
@@ -74,17 +90,6 @@ public class AttachmentService : IAttachmentService
         var pathToFile = Path.Combine(attachment.FileType.GetPath(), attachment.Name);
         File.Delete(pathToFile); // Удаляем файл с системы
         await _attachmentsRepository.DeleteAsync(attachment); // Удаляем файл с бд
-    }
-
-
-    public async Task<AttachmentViewModel> GetCurrentAvatar(Guid userId)
-    {
-        var avatar = await _attachmentsRepository.GetAsync(x =>
-            x.FileType == FileType.Avatar
-            && x.UserId == userId
-            && x.IsCurrentAvatar == true);
-
-        return ConvertFilesToBase64(new[] { avatar }).First();
     }
 
     /// <summary>
@@ -178,12 +183,12 @@ public class AttachmentService : IAttachmentService
         return result;
     }
 
-    private async Task<IEnumerable<AttachmentViewModel>> GetAvatars(Guid userId)
+    /*private async Task<IEnumerable<AttachmentViewModel>> GetAvatars(Guid userId)
     {
         var avatars =
             await _attachmentsRepository.GetAllAsync(x => x.FileType == FileType.Avatar && x.UserId == userId);
         return ConvertFilesToBase64(avatars);
-    }
+    }*/
 
     private async Task<IEnumerable<AttachmentViewModel>> GetCommentAttachments(Guid commentId)
     {

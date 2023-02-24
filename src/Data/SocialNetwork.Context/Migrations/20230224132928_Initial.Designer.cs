@@ -12,7 +12,7 @@ using SocialNetwork.Context;
 namespace SocialNetwork.Context.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    [Migration("20230210140920_Initial")]
+    [Migration("20230224132928_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -294,6 +294,10 @@ namespace SocialNetwork.Context.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -686,15 +690,6 @@ namespace SocialNetwork.Context.Migrations
             modelBuilder.Entity("SocialNetwork.Entities.User.AppUserRole", b =>
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>");
-
-                    b.Property<DateTimeOffset>("CreationDateTime")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTimeOffset>("ModificationDateTime")
-                        .HasColumnType("timestamp with time zone");
 
                     b.HasIndex("RoleId");
 

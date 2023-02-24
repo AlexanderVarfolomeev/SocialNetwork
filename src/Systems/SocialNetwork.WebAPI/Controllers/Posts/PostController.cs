@@ -57,7 +57,7 @@ public class PostController : ControllerBase
         [FromQuery] int offset = 0,
         [FromQuery] int limit = 10)
     {
-        return _mapper.Map<IEnumerable<PostResponse>>(await _postService.GetUsersPostsByName(userName, offset, limit));
+        return _mapper.Map<IEnumerable<PostResponse>>(await _postService.GetUsersPosts(userName, offset, limit));
     }
 
     /// <summary>

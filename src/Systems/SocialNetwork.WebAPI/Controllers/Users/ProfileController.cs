@@ -4,7 +4,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SocialNetwork.AccountServices.Interfaces;
 using SocialNetwork.AccountServices.Models;
+using SocialNetwork.AttachmentServices;
+using SocialNetwork.AttachmentServices.Models;
+using SocialNetwork.Common.Enum;
 using SocialNetwork.Constants.Security;
+using SocialNetwork.WebAPI.Controllers.CommonModels;
 using SocialNetwork.WebAPI.Controllers.Users.Models;
 
 namespace SocialNetwork.WebAPI.Controllers.Users;
@@ -19,11 +23,13 @@ public class ProfileController : ControllerBase
 {
     private readonly IProfileService _profileService;
     private readonly IMapper _mapper;
+    private readonly IAttachmentService _attachmentService;
 
-    public ProfileController(IProfileService profileService, IMapper mapper)
+    public ProfileController(IProfileService profileService, IMapper mapper, IAttachmentService attachmentService)
     {
         _profileService = profileService;
         _mapper = mapper;
+        _attachmentService = attachmentService;
     }
 
     [HttpPost("register")]
@@ -53,8 +59,21 @@ public class ProfileController : ControllerBase
         await _profileService.ChangePasswordAsync(userId, model.OldPassword, model.NewPassword);
         return Ok();
     }
-    
-    
+
+    [Authorize(AppScopes.NetworkWrite)]
+    [HttpPost("avatars")]
+    public async Task<AttachmentResponse> AddAvatar(IFormFile avatar)
+    {
+        var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        var createdAvatar = await _attachmentService.UploadFiles(userId, new AttachmentModelRequest()
+        {
+            UserId = userId,
+            FileType = FileType.Avatar,
+            Files = new[] { avatar }
+        });
+
+        return _mapper.Map<AttachmentResponse>(createdAvatar.First());
+    }
 }
 
 /*

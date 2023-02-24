@@ -53,7 +53,7 @@ public class PostService : IPostService
         }
     }
 
-    public async Task<IEnumerable<PostModelResponse>> GetUsersPostsByName(string username, int offset = 0,
+    public async Task<IEnumerable<PostModelResponse>> GetUsersPosts(string username, int offset = 0,
         int limit = 10)
     {
         var user = await _userRepository.GetAsync(x => x.UserName == username);
