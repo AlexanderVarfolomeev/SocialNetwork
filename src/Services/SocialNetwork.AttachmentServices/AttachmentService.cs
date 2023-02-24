@@ -87,9 +87,15 @@ public class AttachmentService : IAttachmentService
         var post = await _postRepository.GetAsync(postId);
         ProcessException.ThrowIf(() => userId != post.CreatorId, ErrorMessages.OnlyAccountOwnerCanDoIdError);
 
-        var pathToFile = Path.Combine(attachment.FileType.GetPath(), attachment.Name);
-        File.Delete(pathToFile); // Удаляем файл с системы
-        await _attachmentsRepository.DeleteAsync(attachment); // Удаляем файл с бд
+        await DeleteFile(attachment);
+    }
+
+    public async Task DeleteAvatar(Guid userId, Guid avatarId)
+    {
+        var attachment = await _attachmentsRepository.GetAsync(avatarId);
+        ProcessException.ThrowIf(() => userId != attachment.UserId, ErrorMessages.OnlyAccountOwnerCanDoIdError);
+
+        await DeleteFile(attachment);
     }
 
     /// <summary>
@@ -209,5 +215,12 @@ public class AttachmentService : IAttachmentService
         var attachments =
             await _attachmentsRepository.GetAllAsync(x => x.FileType == FileType.Post && x.PostId == postId);
         return ConvertFilesToBase64(attachments);
+    }
+
+    private async Task DeleteFile(Attachment attachment)
+    {
+        var pathToFile = Path.Combine(attachment.FileType.GetPath(), attachment.Name);
+        File.Delete(pathToFile); // Удаляем файл с системы
+        await _attachmentsRepository.DeleteAsync(attachment); // Удаляем файл с бд
     }
 }

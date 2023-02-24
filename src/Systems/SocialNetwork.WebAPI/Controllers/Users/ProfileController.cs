@@ -74,6 +74,15 @@ public class ProfileController : ControllerBase
 
         return _mapper.Map<AttachmentResponse>(createdAvatar.First());
     }
+
+    [Authorize(AppScopes.NetworkWrite)]
+    [HttpDelete("avatars/{avatarId}")]
+    public async Task<IActionResult> DeleteAvatar([FromRoute] Guid avatarId)
+    {
+        var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        await _attachmentService.DeleteAvatar(userId, avatarId);
+        return Ok();
+    }
 }
 
 /*
