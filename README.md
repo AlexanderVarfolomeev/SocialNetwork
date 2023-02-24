@@ -69,3 +69,25 @@ ___
 - Статус пользователя (онлай/офлайн) :x:
 - Добавление комментариев :x:
 
+### Структура проекта
+```
+└── src                                                  
+    ├── Data                                    # слой работы с данными
+    │   ├── SocialNetwork.Context               # описание dbContext
+    │   ├── SocialNetwork.Entities              # описание всех сущностей
+    │   └── SocialNetwork.Repository            # реализация Repository паттерна
+    ├── Services                                # слой бизнес логики
+    │   ├── SocialNetwork.AccountServices       # сервис для работы с аккаунтами, личным профилем, админами
+    │   ├── SocialNetwork.AttachmentServices    # сервис для работы с вложениями
+    │   ├── SocialNetwork.EmailServices         # отправка Email
+    │   ├── SocialNetwork.GroupServices         # сервис для работы с группами
+    │   ├── SocialNetwork.PostServices          # сервис для работы с постами
+    │   └── SocialNetwork.RelationshipServices  # сервис для работы с друзьями
+    ├── Shared                                  # общий слой, доступен отовсюду
+    │   ├── SocialNetwork.Common                # различные классы расширения, хелперы, енамы
+    │   ├── SocialNetwork.Constants             # строковые константы
+    │   └── SocialNetwork.Settings              # общие настройки приложения, получение переменных окружения
+    └── Systems                                 
+        ├── SocialNetwork.IdentityServer        # сервис для генерации JWT 
+        └── SocialNetwork.WebAPI                # основное веб-апи
+```
