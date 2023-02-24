@@ -1,4 +1,4 @@
-using System.Security.Claims;
+    using System.Security.Claims;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -30,6 +30,12 @@ public class GroupsController : ControllerBase
     {
         return _mapper.Map<IEnumerable<GroupResponse>>(await _groupService.GetGroups(offset, limit));
     }
+
+    [HttpGet("groups/{groupName}")]
+    public async Task<GroupResponse> GetGroupByName([FromRoute] string groupName)
+    {
+        return _mapper.Map<GroupResponse>(await _groupService.GetGroupByName(groupName));
+    }
     
     [Authorize(AppScopes.NetworkWrite)]
     [HttpPost("groups")]
@@ -37,6 +43,6 @@ public class GroupsController : ControllerBase
     {
         var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
         return _mapper.Map<GroupResponse>(
-            await _groupService.AddGroup(userId, _mapper.Map<GroupModelRequest>(group)));
+            await _groupService.CreateGroup(userId, _mapper.Map<GroupModelRequest>(group)));
     }
 }

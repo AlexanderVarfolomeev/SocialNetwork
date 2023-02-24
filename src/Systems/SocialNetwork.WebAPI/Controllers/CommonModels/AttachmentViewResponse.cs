@@ -1,7 +1,7 @@
 using AutoMapper;
 using SocialNetwork.AttachmentServices.Models;
 
-namespace SocialNetwork.WebAPI.Controllers.Attachments.Models;
+namespace SocialNetwork.WebAPI.Controllers.CommonModels;
 
 public class AttachmentViewResponse
 {

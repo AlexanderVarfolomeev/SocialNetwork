@@ -40,7 +40,14 @@ public class AttachmentService : IAttachmentService
         ProcessException.ThrowIf(() => !isCreator, ErrorMessages.OnlyAccountOwnerCanDoIdError);
         ProcessException.ThrowIf(() => attachments.FileType == FileType.Avatar && attachments.Files.Count() > 1,
             ErrorMessages.MorThanOneAvatarError);
+        
+        
         ProcessException.ThrowIf(() => attachments.Files.Count() > 10, ErrorMessages.InvestmentLimitExceededError);
+
+        Directory.CreateDirectory("./wwwroot/Avatar");
+        Directory.CreateDirectory("./wwwroot/Message");
+        Directory.CreateDirectory("./wwwroot/Post");
+        Directory.CreateDirectory("./wwwroot/Comment");
 
         return await CreateFiles(attachments);
     }
@@ -58,19 +65,11 @@ public class AttachmentService : IAttachmentService
         FileType.Post => await GetPostAttachments(contentId),
         _ => throw new ProcessException(ErrorMessages.UnsupportedTypeError)
     };
-
-    /// <summary>
-    /// Удалить вложение
-    /// </summary>
-    /// <param name="userId">Id юзера который выполняет запрос</param>
-    /// <param name="type"> Тип вложения: аватар, комментарий, пост, сообщение</param>
-    /// <param name="attachmentId"> Id вложения для удаления</param>
-    public async Task DeleteAttachment(Guid userId, FileType type, Guid attachmentId)
+    public async Task DeletePostAttachment(Guid userId, Guid postId, Guid attachmentId)
     {
         var attachment = await _attachmentsRepository.GetAsync(attachmentId);
-        var creatorOfContentId = await GetCreatorIdOfAttachedContent(attachment);
-        ProcessException.ThrowIf(() => userId != creatorOfContentId,
-            ErrorMessages.OnlyAccountOwnerCanDoIdError);
+        var post = await _postRepository.GetAsync(postId);
+        ProcessException.ThrowIf(() => userId != post.CreatorId, ErrorMessages.OnlyAccountOwnerCanDoIdError);
 
         var pathToFile = Path.Combine(attachment.FileType.GetPath(), attachment.Name);
         File.Delete(pathToFile); // Удаляем файл с системы
@@ -90,6 +89,7 @@ public class AttachmentService : IAttachmentService
 
     /// <summary>
     /// Проверка что пользователь который добавляет фото к посту/комменту/сообщению, является создателем этого
+    /// TODO тоже убрать? 
     /// </summary>
     private async Task<bool> IsCreatorOfContent(Guid userId, AttachmentModelRequest attachments) =>
         attachments.FileType switch
@@ -132,8 +132,8 @@ public class AttachmentService : IAttachmentService
                     break;
             }
 
-            createdFiles.Add(_mapper.Map<AttachmentModel>(fileModel));
-            await _attachmentsRepository.AddAsync(fileModel);
+            var createdFile = await _attachmentsRepository.AddAsync(fileModel);
+            createdFiles.Add(_mapper.Map<AttachmentModel>(createdFile));
 
             var filePath = Path.Combine(fileModel.FileType.GetPath(), fileModel.Name);
             await using var stream = File.Create(filePath);
@@ -205,16 +205,4 @@ public class AttachmentService : IAttachmentService
             await _attachmentsRepository.GetAllAsync(x => x.FileType == FileType.Post && x.PostId == postId);
         return ConvertFilesToBase64(attachments);
     }
-
-    /// <summary>
-    /// Получить id создателя сущности к которой прикреплено вложение
-    /// </summary>
-    private async Task<Guid> GetCreatorIdOfAttachedContent(Attachment attachment) => attachment.FileType switch
-    {
-        FileType.Avatar => (Guid)attachment.UserId!,
-        FileType.Comment => (await _commentRepository.GetAsync((Guid)attachment.CommentId!)).CreatorId,
-        FileType.Post => (await _postRepository.GetAsync((Guid)attachment.PostId!)).CreatorId,
-        FileType.Message => (await _messageRepository.GetAsync((Guid)attachment.MessageId!)).SenderId,
-        _ => throw new ProcessException(ErrorMessages.UnsupportedTypeError)
-    };
 }

@@ -11,6 +11,6 @@ public interface IAttachmentService
     Task<IEnumerable<AttachmentModel>> UploadFiles(Guid userId, AttachmentModelRequest attachments);
 
     Task<IEnumerable<AttachmentViewModel>> GetAttachments(FileType type, Guid contentId);
-    Task DeleteAttachment(Guid userId, FileType type, Guid attachmentId);
+    Task DeletePostAttachment(Guid userId, Guid postId, Guid attachmentId);
     Task<AttachmentViewModel> GetCurrentAvatar(Guid userId);
 }

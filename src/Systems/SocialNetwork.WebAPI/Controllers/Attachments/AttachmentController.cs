@@ -6,10 +6,11 @@ using SocialNetwork.AttachmentServices;
 using SocialNetwork.AttachmentServices.Models;
 using SocialNetwork.Common.Enum;
 using SocialNetwork.Constants.Security;
-using SocialNetwork.WebAPI.Controllers.Attachments.Models;
+using SocialNetwork.WebAPI.Controllers.CommonModels;
 
 namespace SocialNetwork.WebAPI.Controllers.Attachments;
 
+// TODO тут воощбе все удалить и раскидать по другим контроллерам
 [ApiVersion("1.0")]
 [Route("api/v{version:apiVersion}/")]
 [ApiController]
@@ -24,7 +25,7 @@ public class AttachmentController : ControllerBase
         _mapper = mapper;
     }
 
-    [Authorize(AppScopes.NetworkWrite)]
+    /*[Authorize(AppScopes.NetworkWrite)]
     [HttpPost("posts/{postId}/attachments")]
     public async Task UploadFilesToPost([FromRoute] Guid postId, IEnumerable<IFormFile> attachments)
     {
@@ -112,18 +113,18 @@ public class AttachmentController : ControllerBase
     }
 
     //TODO Что то напутал, исправить удаление, передаются неправильные id, неправильный путь, должен быть posts/postId/attachmentId
-    /*[Authorize(AppScopes.NetworkWrite)]
+    [Authorize(AppScopes.NetworkWrite)]
     [HttpDelete("profile/avatars/{avatarId}")]
     public async Task<IActionResult> DeleteAvatar([FromRoute] Guid avatarId)
     {
         var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
         await _attachmentService.DeleteAttachment(userId, FileType.Avatar, avatarId);
         return Ok();
-    }
-
+    }*/
+    /*
     [Authorize(AppScopes.NetworkWrite)]
-    [HttpDelete("messages/{attachmentId}")]
-    public async Task<IActionResult> DeleteMessageAttachment([FromRoute] Guid attachmentId)
+    [HttpDelete("messages/{messageId}/{attachmentId}")]
+    public async Task<IActionResult> DeleteMessageAttachment([FromRoute] Guid attachmentId, [FromRoute] Guid messageId)
     {
         var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
         await _attachmentService.DeleteAttachment(userId, FileType.Message, attachmentId);
@@ -146,5 +147,6 @@ public class AttachmentController : ControllerBase
         var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
         await _attachmentService.DeleteAttachment(userId, FileType.Comment, attachmentId);
         return Ok();
-    }*/
+    }
+    */
 }

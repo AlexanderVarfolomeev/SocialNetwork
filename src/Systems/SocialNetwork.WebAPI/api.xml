@@ -4,6 +4,51 @@
         <name>SocialNetwork.WebAPI</name>
     </assembly>
     <members>
+        <member name="M:SocialNetwork.WebAPI.Controllers.Posts.PostController.GetAllPosts(System.Int32,System.Int32)">
+            <summary>
+            Получить все посты
+            </summary>
+        </member>
+        <member name="M:SocialNetwork.WebAPI.Controllers.Posts.PostController.GetUsersPosts(System.Guid,System.Int32,System.Int32)">
+            <summary>
+            Получить посты пользователя
+            </summary>
+        </member>
+        <member name="M:SocialNetwork.WebAPI.Controllers.Posts.PostController.GetGroupPosts(System.Guid,System.Int32,System.Int32)">
+            <summary>
+            Получить посты группы
+            </summary>
+        </member>
+        <member name="M:SocialNetwork.WebAPI.Controllers.Posts.PostController.AddUsersPost(SocialNetwork.WebAPI.Controllers.Posts.Models.PostRequest)">
+            <summary>
+            Добавить пост на личный блог
+            </summary>
+        </member>
+        <member name="M:SocialNetwork.WebAPI.Controllers.Posts.PostController.AddGroupPost(System.Guid,SocialNetwork.WebAPI.Controllers.Posts.Models.PostRequest)">
+            <summary>
+            Добавить пост в группу
+            </summary>
+        </member>
+        <member name="M:SocialNetwork.WebAPI.Controllers.Posts.PostController.UpdatePost(System.Guid,SocialNetwork.WebAPI.Controllers.Posts.Models.PostRequest)">
+            <summary>
+            Изменить пост
+            </summary>
+        </member>
+        <member name="M:SocialNetwork.WebAPI.Controllers.Posts.PostController.DeletePost(System.Guid)">
+            <summary>
+            Удалить пост
+            </summary>
+        </member>
+        <member name="M:SocialNetwork.WebAPI.Controllers.Posts.PostController.AddAttachments(System.Guid,System.Collections.Generic.IEnumerable{Microsoft.AspNetCore.Http.IFormFile})">
+            <summary>
+            Прикрепить изображение к посту
+            </summary>
+        </member>
+        <member name="M:SocialNetwork.WebAPI.Controllers.Posts.PostController.GetAttachments(System.Guid)">
+            <summary>
+            Получить прикрепленные к посту изображения
+            </summary>
+        </member>
         <member name="T:SocialNetwork.WebAPI.Controllers.Relationships.RelationshipsController">
             <summary>
             Контроллер для работы с друзьями пользователя.

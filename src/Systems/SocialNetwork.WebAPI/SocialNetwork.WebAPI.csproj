@@ -54,6 +54,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="Controllers\Attachments\Models" />
       <Folder Include="wwwroot\Comment" />
       <Folder Include="wwwroot\Message" />
       <Folder Include="wwwroot\Post" />

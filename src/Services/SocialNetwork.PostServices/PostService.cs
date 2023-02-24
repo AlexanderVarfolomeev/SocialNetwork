@@ -50,6 +50,13 @@ public class PostService : IPostService
         }
     }
 
+    public async Task<IEnumerable<PostModelResponse>> GetUsersPostsByName(string username, int offset = 0,
+        int limit = 10)
+    {
+        var user = await _userRepository.GetAsync(x => x.UserName == username);
+        return await GetUsersPosts(user.Id, offset, limit);
+    }
+
     public async Task<IEnumerable<PostModelResponse>> GetGroupPosts(Guid groupId, int offset = 0, int limit = 10)
     {
         try
