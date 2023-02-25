@@ -140,7 +140,7 @@ public class PostService : IPostService
         var user = await _userRepository.GetAsync(userId);
         var post = await _postRepository.GetAsync(postId);
         ProcessException.ThrowIf(() => user.IsBanned, ErrorMessages.YouBannedError);
-        ProcessException.ThrowIf(() => post.CreatorId != userId, ErrorMessages.OnlyCreatorOfContentCanDoIt);
+        ProcessException.ThrowIf(() => post.CreatorId != userId, ErrorMessages.OnlyCreatorOfContentCanDoItError);
 
         if (post.IsInGroup)
         {

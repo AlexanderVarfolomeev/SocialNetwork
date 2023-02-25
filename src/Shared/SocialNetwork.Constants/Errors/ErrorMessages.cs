@@ -29,5 +29,7 @@ public static class ErrorMessages
     public const string UserNotFoundError = "User not found.";
     public const string GroupNotFoundError = "Group not found.";
     public const string OnlyAdminOfGroupCanAddContentInError = "Only administrators of group can add content to the group.";
-    public const string OnlyCreatorOfContentCanDoIt = "Only creator of content can do it.";
+    public const string OnlyCreatorOfContentCanDoItError = "Only creator of content can do it.";
+    public const string GroupWithThisNameAlreadyExistsError = "Group with this name already exists.";
+    public const string CreatorCantUnsubscribeFromGroupError = "The creator of the group cannot unsubscribe from it.";
 }

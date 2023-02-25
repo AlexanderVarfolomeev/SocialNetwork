@@ -1,5 +1,4 @@
 using AutoMapper;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using SocialNetwork.AttachmentServices.Models;
 using SocialNetwork.Common.Enum;
 using SocialNetwork.Common.Exceptions;

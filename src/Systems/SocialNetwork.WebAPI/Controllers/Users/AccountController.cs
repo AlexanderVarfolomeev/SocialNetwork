@@ -5,9 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using SocialNetwork.AccountServices.Interfaces;
 using SocialNetwork.AccountServices.Models;
 using SocialNetwork.AttachmentServices;
-using SocialNetwork.Common.Enum;
 using SocialNetwork.Constants.Security;
-using SocialNetwork.WebAPI.Controllers.CommonModels;
 using SocialNetwork.WebAPI.Controllers.Users.Models;
 
 namespace SocialNetwork.WebAPI.Controllers.Users;

@@ -49,7 +49,10 @@ public class GroupService : IGroupService
     {
         var user = await _userRepository.GetAsync(userId);
         ProcessException.ThrowIf(() => user.IsBanned, ErrorMessages.YouBannedError);
-
+        
+        var isGroupAlreadyExists = (await _groupRepository.GetAllAsync(x => x.Name == groupModelRequest.Name)).Any();
+        ProcessException.ThrowIf(() => isGroupAlreadyExists, ErrorMessages.GroupWithThisNameAlreadyExistsError);
+        
         var group = await _groupRepository.AddAsync(_mapper.Map<Group>(groupModelRequest));
 
         await _userInGroupRepository.AddAsync(new UserInGroup()
@@ -78,5 +81,34 @@ public class GroupService : IGroupService
     {
         var group = await GetGroupByName(groupName);
         return await GetSubscribers(group.Id, offset, limit);
+    }
+
+    public async Task SubscribeToGroup(Guid userId, Guid groupId)
+    {
+        var user = await _userRepository.GetAsync(userId);
+        ProcessException.ThrowIf(() => user.IsBanned, ErrorMessages.YouBannedError);
+
+        var group = await _groupRepository.GetAsync(groupId);
+        var subscribers = group.Users;
+
+        
+        // Если пользователь подписан, то отписываемся, если нет - подписываемся
+        var subscription = subscribers.FirstOrDefault(x => x.UserId == userId);
+        if (subscription is null)
+        {
+            subscribers.Add(new UserInGroup()
+            {
+                GroupId = groupId,
+                UserId = userId,
+                IsCreator = false,
+                IsAdmin = false,
+                DateOfEntry = DateTimeOffset.Now
+            });
+        }
+        else
+        {
+            ProcessException.ThrowIf(() => subscription.IsCreator, ErrorMessages.CreatorCantUnsubscribeFromGroupError);
+            subscribers.Remove(subscription);
+        }
     }
 }

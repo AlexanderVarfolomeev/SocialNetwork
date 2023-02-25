@@ -64,7 +64,7 @@ public class AdminService : IAdminService
         ProcessException.ThrowIf(() => user.IsBanned, ErrorMessages.UserIsBannedError);
 
         if (await IsAdminAsync(userId))
-            throw new ProcessException(ErrorMessages.UserIsAdminError);
+            throw new ProcessException(ErrorMessages.CantBanAdminError);
 
         user.IsBanned = true;
         await _userRepository.UpdateAsync(user);

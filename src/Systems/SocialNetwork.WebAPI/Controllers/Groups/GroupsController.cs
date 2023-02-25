@@ -45,4 +45,19 @@ public class GroupsController : ControllerBase
         return _mapper.Map<GroupResponse>(
             await _groupService.CreateGroup(userId, _mapper.Map<GroupModelRequest>(group)));
     }
+
+    [HttpGet("groups/{groupId}/subscribes")]
+    public async Task<IEnumerable<UserInGroupResponse>> GetSubscribers([FromRoute] Guid groupId)
+    {
+        return _mapper.Map<IEnumerable<UserInGroupResponse>>(await _groupService.GetSubscribers(groupId));
+    }
+    
+    [Authorize(AppScopes.NetworkWrite)]
+    [HttpPost("groups/{groupId}/subscribes")]
+    public async Task<IActionResult> SubscribeToGroup([FromRoute] Guid groupId)
+    {
+        var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        await _groupService.SubscribeToGroup(userId, groupId);
+        return Ok();
+    }
 }

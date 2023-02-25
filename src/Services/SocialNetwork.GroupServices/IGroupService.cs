@@ -1,4 +1,3 @@
-using SocialNetwork.Entities.User;
 using SocialNetwork.GroupServices.Models;
 
 namespace SocialNetwork.GroupServices;
@@ -11,4 +10,6 @@ public interface IGroupService
     Task<GroupModelResponse> CreateGroup(Guid userId, GroupModelRequest groupModelRequest);
     Task<IEnumerable<UserInGroupModel>> GetSubscribers(Guid groupId, int offset = 0, int limit = 10);
     Task<IEnumerable<UserInGroupModel>> GetSubscribersByGroupName(string groupName, int offset = 0, int limit = 10);
+    Task SubscribeToGroup(Guid userId, Guid groupId);
+    // Task GrantAdminRole(Guid userId, Guid groupId);
 }
