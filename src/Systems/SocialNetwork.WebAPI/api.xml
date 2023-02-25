@@ -4,6 +4,31 @@
         <name>SocialNetwork.WebAPI</name>
     </assembly>
     <members>
+        <member name="M:SocialNetwork.WebAPI.Controllers.Groups.GroupsController.GetGroups(System.Int32,System.Int32)">
+            <summary>
+            Получить список групп
+            </summary>
+        </member>
+        <member name="M:SocialNetwork.WebAPI.Controllers.Groups.GroupsController.GetGroupByName(System.String)">
+            <summary>
+            Получить группу по имени
+            </summary>
+        </member>
+        <member name="M:SocialNetwork.WebAPI.Controllers.Groups.GroupsController.CreateGroup(SocialNetwork.WebAPI.Controllers.Groups.Models.GroupRequest)">
+            <summary>
+            Создать группу
+            </summary>
+        </member>
+        <member name="M:SocialNetwork.WebAPI.Controllers.Groups.GroupsController.GetSubscribers(System.Guid)">
+            <summary>
+            Получить подписчиков группы
+            </summary>
+        </member>
+        <member name="M:SocialNetwork.WebAPI.Controllers.Groups.GroupsController.SubscribeToGroup(System.Guid)">
+            <summary>
+            Подписаться на группу
+            </summary>
+        </member>
         <member name="M:SocialNetwork.WebAPI.Controllers.Posts.PostController.GetAllPosts(System.Int32,System.Int32)">
             <summary>
             Получить все посты

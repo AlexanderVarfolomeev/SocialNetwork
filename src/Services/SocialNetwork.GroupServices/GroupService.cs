@@ -69,11 +69,8 @@ public class GroupService : IGroupService
 
     public async Task<IEnumerable<UserInGroupModel>> GetSubscribers(Guid groupId, int offset = 0, int limit = 10)
     {
-        var usersIds =
-            (await _userInGroupRepository.GetAllAsync(x => x.GroupId == groupId, offset, limit)).Select(x => x.UserId);
-
         return _mapper.Map<IEnumerable<UserInGroupModel>>(
-            await _userRepository.GetAllAsync(x => usersIds.Contains(x.Id)));
+            await _userInGroupRepository.GetAllAsync(x => x.GroupId == groupId, offset, limit));
     }
 
     public async Task<IEnumerable<UserInGroupModel>> GetSubscribersByGroupName(string groupName, int offset = 0,
@@ -96,7 +93,7 @@ public class GroupService : IGroupService
         var subscription = subscribers.FirstOrDefault(x => x.UserId == userId);
         if (subscription is null)
         {
-            subscribers.Add(new UserInGroup()
+            await _userInGroupRepository.AddAsync(new UserInGroup()
             {
                 GroupId = groupId,
                 UserId = userId,
@@ -108,7 +105,7 @@ public class GroupService : IGroupService
         else
         {
             ProcessException.ThrowIf(() => subscription.IsCreator, ErrorMessages.CreatorCantUnsubscribeFromGroupError);
-            subscribers.Remove(subscription);
+            await _userInGroupRepository.DeleteAsync(subscription);
         }
     }
 
