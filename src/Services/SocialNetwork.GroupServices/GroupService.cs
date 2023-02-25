@@ -49,10 +49,10 @@ public class GroupService : IGroupService
     {
         var user = await _userRepository.GetAsync(userId);
         ProcessException.ThrowIf(() => user.IsBanned, ErrorMessages.YouBannedError);
-        
+
         var isGroupAlreadyExists = (await _groupRepository.GetAllAsync(x => x.Name == groupModelRequest.Name)).Any();
         ProcessException.ThrowIf(() => isGroupAlreadyExists, ErrorMessages.GroupWithThisNameAlreadyExistsError);
-        
+
         var group = await _groupRepository.AddAsync(_mapper.Map<Group>(groupModelRequest));
 
         await _userInGroupRepository.AddAsync(new UserInGroup()
@@ -91,7 +91,7 @@ public class GroupService : IGroupService
         var group = await _groupRepository.GetAsync(groupId);
         var subscribers = group.Users;
 
-        
+
         // Если пользователь подписан, то отписываемся, если нет - подписываемся
         var subscription = subscribers.FirstOrDefault(x => x.UserId == userId);
         if (subscription is null)
@@ -110,5 +110,39 @@ public class GroupService : IGroupService
             ProcessException.ThrowIf(() => subscription.IsCreator, ErrorMessages.CreatorCantUnsubscribeFromGroupError);
             subscribers.Remove(subscription);
         }
+    }
+
+    public async Task GrantAdminRole(Guid userId, Guid receiverId, Guid groupId)
+    {
+        var userInGroup = await GetUserInGroup(receiverId, groupId);
+        ProcessException.ThrowIf(() => userInGroup is null, ErrorMessages.UserNotSubToGroupError);
+        
+        var admin = await GetUserInGroup(userId, groupId);
+        ProcessException.ThrowIf(() => !admin.IsCreator, ErrorMessages.UserIsNotAdminError);
+        
+        userInGroup!.IsAdmin = true;
+        await _userInGroupRepository.UpdateAsync(userInGroup);
+    }
+
+    public async Task RevokeAdminRole(Guid userId, Guid receiverId, Guid groupId)
+    {
+        var userInGroup = await GetUserInGroup(receiverId, groupId);
+        ProcessException.ThrowIf(() => userInGroup is null, ErrorMessages.UserNotSubToGroupError);
+        
+        var admin = await GetUserInGroup(userId, groupId);
+        ProcessException.ThrowIf(() => !admin.IsCreator, ErrorMessages.UserIsNotAdminError);
+        
+        userInGroup!.IsAdmin = false;
+        await _userInGroupRepository.UpdateAsync(userInGroup);
+    }
+
+    private async Task<UserInGroup?> GetUserInGroup(Guid userId, Guid groupId)
+    {
+        var user = await _userRepository.GetAsync(userId);
+        ProcessException.ThrowIf(() => user.IsBanned, ErrorMessages.UserIsBannedError);
+        
+        var group = await _groupRepository.GetAsync(groupId);
+        var subscribers = group.Users;
+        return subscribers.FirstOrDefault(x => x.UserId == userId);
     }
 }

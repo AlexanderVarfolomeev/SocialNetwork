@@ -32,4 +32,5 @@ public static class ErrorMessages
     public const string OnlyCreatorOfContentCanDoItError = "Only creator of content can do it.";
     public const string GroupWithThisNameAlreadyExistsError = "Group with this name already exists.";
     public const string CreatorCantUnsubscribeFromGroupError = "The creator of the group cannot unsubscribe from it.";
+    public const string UserNotSubToGroupError = "The user is not subscribed to the group.";
 }
