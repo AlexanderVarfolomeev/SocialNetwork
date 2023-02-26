@@ -137,7 +137,7 @@ public class PostController : ControllerBase
     /// Прикрепить изображение к посту
     /// </summary>
     [Authorize(AppScopes.NetworkWrite)]
-    [HttpPost("posts/{postId}")]
+    [HttpPost("posts/{postId}/attachments")]
     public async Task<IEnumerable<AttachmentResponse>> AddAttachments([FromRoute] Guid postId,
         IEnumerable<IFormFile> attachments)
     {

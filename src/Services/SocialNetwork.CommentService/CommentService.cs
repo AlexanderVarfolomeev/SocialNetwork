@@ -49,4 +49,24 @@ public class CommentService : ICommentService
         
         return _mapper.Map<CommentModelResponse>(createdPost);
     }
+
+    public async Task<CommentModelResponse> UpdateComment(Guid userId, Guid commentId, CommentModelRequest commentModel)
+    {
+        var user = await _usersRepository.GetAsync(userId);
+        ProcessException.ThrowIf(() => user.IsBanned, ErrorMessages.YouBannedError);
+        var comment = await _commentsRepository.GetAsync(commentId);
+        ProcessException.ThrowIf(() => comment.CreatorId != userId, ErrorMessages.OnlyCreatorOfContentCanDoItError);
+        comment.Text = commentModel.Text;
+        return _mapper.Map<CommentModelResponse>(await _commentsRepository.UpdateAsync(comment));
+    }
+
+    public async Task DeleteComment(Guid userId, Guid commentId)
+    {
+        var user = await _usersRepository.GetAsync(userId);
+        ProcessException.ThrowIf(() => user.IsBanned, ErrorMessages.YouBannedError);
+        var comment = await _commentsRepository.GetAsync(commentId);
+        ProcessException.ThrowIf(() => comment.CreatorId != userId, ErrorMessages.OnlyCreatorOfContentCanDoItError);
+
+        await _commentsRepository.DeleteAsync(comment);
+    }
 }
