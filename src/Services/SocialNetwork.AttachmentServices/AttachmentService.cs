@@ -89,6 +89,15 @@ public class AttachmentService : IAttachmentService
         await DeleteFile(attachment);
     }
 
+    public async Task DeleteCommentAttachment(Guid userId, Guid commentId, Guid attachmentId)
+    {
+        var attachment = await _attachmentsRepository.GetAsync(attachmentId);
+        var comment = await _commentRepository.GetAsync(commentId);
+        ProcessException.ThrowIf(() => userId != comment.CreatorId, ErrorMessages.OnlyAccountOwnerCanDoIdError);
+
+        await DeleteFile(attachment);
+    }
+
     public async Task DeleteAvatar(Guid userId, Guid avatarId)
     {
         var attachment = await _attachmentsRepository.GetAsync(avatarId);

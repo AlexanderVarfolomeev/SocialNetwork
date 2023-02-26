@@ -92,4 +92,16 @@ public class CommentsController : ControllerBase
         return _mapper.Map<IEnumerable<AttachmentViewResponse>>(
             await _attachmentService.GetAttachments(FileType.Comment, commentId));
     }
+    
+    /// <summary>
+    /// Удалить прикрепленное изображение
+    /// </summary>
+    [Authorize(AppScopes.NetworkWrite)]
+    [HttpDelete("comments/{commentId}/attachments/{attachmentId}")]
+    public async Task<IActionResult> DeleteAttachment([FromRoute] Guid commentId, [FromRoute] Guid attachmentId)
+    {
+        var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        await _attachmentService.DeleteCommentAttachment(userId, commentId, attachmentId);
+        return Ok();
+    }
 }
