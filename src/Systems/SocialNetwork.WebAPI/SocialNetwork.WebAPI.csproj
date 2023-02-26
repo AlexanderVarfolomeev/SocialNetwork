@@ -38,6 +38,7 @@
       <ProjectReference Include="..\..\Data\SocialNetwork.Repository\SocialNetwork.Repository.csproj" />
       <ProjectReference Include="..\..\Services\SocialNetwork.AccountServices\SocialNetwork.AccountServices.csproj" />
       <ProjectReference Include="..\..\Services\SocialNetwork.AttachmentServices\SocialNetwork.AttachmentServices.csproj" />
+      <ProjectReference Include="..\..\Services\SocialNetwork.CommentService\SocialNetwork.CommentService.csproj" />
       <ProjectReference Include="..\..\Services\SocialNetwork.EmailServices\SocialNetwork.EmailServices.csproj" />
       <ProjectReference Include="..\..\Services\SocialNetwork.GroupServices\SocialNetwork.GroupServices.csproj" />
       <ProjectReference Include="..\..\Services\SocialNetwork.PostServices\SocialNetwork.PostServices.csproj" />

@@ -38,6 +38,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialNetwork.AttachmentSer
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialNetwork.GroupServices", "src\Services\SocialNetwork.GroupServices\SocialNetwork.GroupServices.csproj", "{FAA5AF17-D9C7-47D2-BEC3-07F42D532A5A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialNetwork.CommentService", "src\Services\SocialNetwork.CommentService\SocialNetwork.CommentService.csproj", "{A959E36D-7C8D-4C7B-B094-2B5ECB829744}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -62,6 +64,7 @@ Global
 		{1076AD7E-5483-4CD7-888E-0AEE45A2FCAF} = {16918E00-DCA4-4464-A45B-4B1791C6627F}
 		{7A2E8091-723B-42D1-AC77-D9F29692262E} = {16918E00-DCA4-4464-A45B-4B1791C6627F}
 		{FAA5AF17-D9C7-47D2-BEC3-07F42D532A5A} = {16918E00-DCA4-4464-A45B-4B1791C6627F}
+		{A959E36D-7C8D-4C7B-B094-2B5ECB829744} = {16918E00-DCA4-4464-A45B-4B1791C6627F}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{05362358-48CB-43F6-8CB4-3226FD1CC459}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -120,5 +123,9 @@ Global
 		{FAA5AF17-D9C7-47D2-BEC3-07F42D532A5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FAA5AF17-D9C7-47D2-BEC3-07F42D532A5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FAA5AF17-D9C7-47D2-BEC3-07F42D532A5A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A959E36D-7C8D-4C7B-B094-2B5ECB829744}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A959E36D-7C8D-4C7B-B094-2B5ECB829744}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A959E36D-7C8D-4C7B-B094-2B5ECB829744}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A959E36D-7C8D-4C7B-B094-2B5ECB829744}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
