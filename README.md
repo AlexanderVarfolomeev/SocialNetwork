@@ -7,6 +7,8 @@
   - [RabbitMQ](#rabbitmq)
   - [Redis](#redis)
   - [SignalR](#signalr)
+- [Структура проекта](#структура-проекта)
+- [Логическая модель данных](#логическая-модель-данных-idef1x)
 
 ## Инструкция по запуску
 <p>Рекомендуется запускать с помощью docker-compose.</p>
@@ -91,3 +93,7 @@ ___
         ├── SocialNetwork.IdentityServer        # сервис для генерации JWT 
         └── SocialNetwork.WebAPI                # основное веб-апи
 ```
+### Логическая модель данных IDEF1X
+![bd](bd.png)
+____
+![bd2](bd2.png)
