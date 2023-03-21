@@ -4,6 +4,21 @@
         <name>SocialNetwork.WebAPI</name>
     </assembly>
     <members>
+        <member name="M:SocialNetwork.WebAPI.Controllers.Comments.CommentsController.AddAttachments(System.Guid,System.Collections.Generic.IEnumerable{Microsoft.AspNetCore.Http.IFormFile})">
+            <summary>
+            Прикрепить изображение к комментарию
+            </summary>
+        </member>
+        <member name="M:SocialNetwork.WebAPI.Controllers.Comments.CommentsController.GetAttachments(System.Guid)">
+            <summary>
+            Получить прикрепленные к комментарию изображения
+            </summary>
+        </member>
+        <member name="M:SocialNetwork.WebAPI.Controllers.Comments.CommentsController.DeleteAttachment(System.Guid,System.Guid)">
+            <summary>
+            Удалить прикрепленное изображение
+            </summary>
+        </member>
         <member name="M:SocialNetwork.WebAPI.Controllers.Groups.GroupsController.GetGroups(System.Int32,System.Int32)">
             <summary>
             Получить список групп

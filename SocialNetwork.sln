@@ -40,6 +40,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialNetwork.GroupServices
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialNetwork.CommentService", "src\Services\SocialNetwork.CommentService\SocialNetwork.CommentService.csproj", "{A959E36D-7C8D-4C7B-B094-2B5ECB829744}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialNetwork.ComplaintsServices", "src\Services\SocialNetwork.ComplaintsServices\SocialNetwork.ComplaintsServices.csproj", "{89A0BC1C-B471-4754-987B-67F979552533}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialNetwork.MessengerService", "src\Services\SocialNetwork.MessengerService\SocialNetwork.MessengerService.csproj", "{3BAC4663-D8FB-4693-8FDF-5198C7ACC597}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -65,6 +69,8 @@ Global
 		{7A2E8091-723B-42D1-AC77-D9F29692262E} = {16918E00-DCA4-4464-A45B-4B1791C6627F}
 		{FAA5AF17-D9C7-47D2-BEC3-07F42D532A5A} = {16918E00-DCA4-4464-A45B-4B1791C6627F}
 		{A959E36D-7C8D-4C7B-B094-2B5ECB829744} = {16918E00-DCA4-4464-A45B-4B1791C6627F}
+		{89A0BC1C-B471-4754-987B-67F979552533} = {16918E00-DCA4-4464-A45B-4B1791C6627F}
+		{3BAC4663-D8FB-4693-8FDF-5198C7ACC597} = {16918E00-DCA4-4464-A45B-4B1791C6627F}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{05362358-48CB-43F6-8CB4-3226FD1CC459}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -127,5 +133,13 @@ Global
 		{A959E36D-7C8D-4C7B-B094-2B5ECB829744}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A959E36D-7C8D-4C7B-B094-2B5ECB829744}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A959E36D-7C8D-4C7B-B094-2B5ECB829744}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89A0BC1C-B471-4754-987B-67F979552533}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89A0BC1C-B471-4754-987B-67F979552533}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89A0BC1C-B471-4754-987B-67F979552533}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89A0BC1C-B471-4754-987B-67F979552533}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3BAC4663-D8FB-4693-8FDF-5198C7ACC597}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3BAC4663-D8FB-4693-8FDF-5198C7ACC597}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3BAC4663-D8FB-4693-8FDF-5198C7ACC597}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3BAC4663-D8FB-4693-8FDF-5198C7ACC597}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
