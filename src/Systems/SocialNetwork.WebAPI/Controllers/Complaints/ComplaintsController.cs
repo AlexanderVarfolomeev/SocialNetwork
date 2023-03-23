@@ -1,13 +1,11 @@
 using System.Security.Claims;
 using AutoMapper;
-using Duende.IdentityServer.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SocialNetwork.Common.Enum;
 using SocialNetwork.ComplaintsServices;
 using SocialNetwork.ComplaintsServices.Model;
 using SocialNetwork.Constants.Security;
-using SocialNetwork.Entities.Complaints;
 using SocialNetwork.WebAPI.Controllers.Complaints.Models;
 
 namespace SocialNetwork.WebAPI.Controllers.Complaints;

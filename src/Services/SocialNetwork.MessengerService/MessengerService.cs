@@ -1,5 +1,4 @@
 using AutoMapper;
-using Duende.IdentityServer.Models;
 using SocialNetwork.Common.Exceptions;
 using SocialNetwork.Constants.Errors;
 using SocialNetwork.Entities.Messenger;

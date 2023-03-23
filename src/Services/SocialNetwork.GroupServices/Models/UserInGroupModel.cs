@@ -1,7 +1,6 @@
 using AutoMapper;
 using SocialNetwork.Entities.Base;
 using SocialNetwork.Entities.Groups;
-using SocialNetwork.Entities.User;
 
 namespace SocialNetwork.GroupServices.Models;
 

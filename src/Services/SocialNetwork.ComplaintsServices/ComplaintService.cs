@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using AutoMapper;
 using SocialNetwork.AccountServices.Interfaces;
 using SocialNetwork.Common.Enum;

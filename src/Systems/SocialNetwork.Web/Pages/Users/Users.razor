@@ -1,0 +1,33 @@
+@page "/accounts"
+@using SocialNetwork.Web.Pages.Users.Services
+@using SocialNetwork.Web.Pages.Users.Models
+
+@inject IAccountService AccountService
+
+@layout MainLayout
+
+<h1>Accounts</h1>
+
+
+@code {
+    private IEnumerable<AccountModel> AccountsList = new List<AccountModel>();
+
+    private async Task ReloadData()
+    {
+        AccountsList = await AccountService.GetAccounts(0, 10000);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            Console.WriteLine("Get accounts from api");
+            await ReloadData();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message );
+        }
+    }
+
+}

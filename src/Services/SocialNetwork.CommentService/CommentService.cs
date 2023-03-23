@@ -1,4 +1,3 @@
-using System.Runtime.InteropServices.JavaScript;
 using AutoMapper;
 using SocialNetwork.CommentService.Models;
 using SocialNetwork.Common.Exceptions;

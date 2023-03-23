@@ -1,6 +1,5 @@
 using AutoMapper;
 using SocialNetwork.CommentService.Models;
-using SocialNetwork.Entities.Posts;
 
 namespace SocialNetwork.WebAPI.Controllers.Comments.Models;
 
