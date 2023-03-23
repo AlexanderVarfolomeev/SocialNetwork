@@ -7,14 +7,19 @@
 @layout MainLayout
 
 <h1>Accounts</h1>
-
+@foreach (var v in _accountsList)
+{
+    <div>@v.Id</div>
+    <div>@v.Name - @v.Surname</div>
+    <div>@v.Birthday</div>
+}
 
 @code {
-    private IEnumerable<AccountModel> AccountsList = new List<AccountModel>();
+    private IEnumerable<AccountModel> _accountsList = new List<AccountModel>();
 
     private async Task ReloadData()
     {
-        AccountsList = await AccountService.GetAccounts(0, 10000);
+        _accountsList = await AccountService.GetAccounts(0, 10000);
     }
 
     protected override async Task OnInitializedAsync()
@@ -26,7 +31,7 @@
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex.Message );
+            Console.WriteLine(ex.Message);
         }
     }
 

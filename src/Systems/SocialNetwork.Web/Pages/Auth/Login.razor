@@ -1,0 +1,115 @@
+﻿@page "/login"
+@using SocialNetwork.Web.Pages.Auth.Services
+@using Microsoft.AspNetCore.Components
+@using SocialNetwork.Web.Pages.Auth.Models
+@using System.ComponentModel.DataAnnotations
+@layout SimpleLayout
+
+@inject IAuthService AuthService
+@inject NavigationManager NavigationManager
+
+<MudGrid Justify="Justify.Center" Class="pa-10">
+    <MudItem xs="7" sm="4">
+        <MudPaper Class="pa-4">
+            <EditForm Model="@_model" OnValidSubmit="HandleValidSubmit">
+                
+                <MudText Typo="Typo.h4" GutterBottom="true" Class="mb-3">Sign In</MudText>
+
+                <MudAlert Severity="Severity.Error" Class="@(ShowErrors ? "mb-3 d-block" : "d-none")">
+                    @Error
+                    <br />
+                    @ErrorDetail
+                </MudAlert>
+
+                <MudTextField T="string"
+                                @bind-Value="_model.Email" For="@(() => _model.Email)"
+                                Label="Email" 
+                                Required="true" 
+                                RequiredError="Email is required!"
+                                HelperText="Input your username"
+                                Validation="@(new EmailAddressAttribute() {ErrorMessage = "The email address is invalid"})"/>
+                <MudTextField @bind-Value="_model.Password" For="@(() => _model.Password)"
+                                Label="Password" 
+                                HelperText="Input your password"
+                                InputType="@PasswordInput"
+                                Adornment="Adornment.End"
+                                AdornmentIcon="@PasswordInputIcon"
+                                Required="true"
+                                RequiredError="Password is required!"
+                                OnAdornmentClick="TogglePasswordVisibility" />
+
+                <div Class="d-flex justify-space-between align-center">
+                    <MudCheckBox For="@(() => _model.RememberMe)" @bind-Checked="_model.RememberMe" Label="Remember me?" Color="Color.Primary" Class="ml-n1 my-3"></MudCheckBox>
+                    <MudLink Href="/forgot-password">Forgot pwd?</MudLink>
+                </div>
+
+                 <MudButton Variant="Variant.Filled"
+                                                           Color="Color.Primary"
+                                                           Size="Size.Large"
+                                                           ButtonType="ButtonType.Submit">Sign In</MudButton>
+                <MudButton Variant="Variant.Filled"
+                                           Color="Color.Primary"
+                                           Size="Size.Large"
+                                           ButtonType="ButtonType.Submit"
+                                           OnClick="(HandleValidSubmit)">Sign In</MudButton>
+            </EditForm> 
+        </MudPaper>
+    </MudItem>
+</MudGrid>
+
+@code {
+    bool _success;
+    MudForm _form;
+
+    private LoginModel _model = new LoginModel()
+    {
+        Email = "alice@tst.com",
+        Password = "password"
+    };
+
+    bool PasswordVisibility;
+    InputType PasswordInput = InputType.Password;
+    string PasswordInputIcon = Icons.Material.Filled.VisibilityOff;
+
+    private bool ShowErrors;
+    private string Error;
+    private string ErrorDetail;
+
+    void TogglePasswordVisibility()
+    {
+        @if (PasswordVisibility)
+        {
+            Console.WriteLine("pass");
+            PasswordVisibility = false;
+            PasswordInputIcon = Icons.Material.Filled.VisibilityOff;
+            PasswordInput = InputType.Password;
+        }
+        else
+        {
+            PasswordVisibility = true;
+            PasswordInputIcon = Icons.Material.Filled.Visibility;
+            PasswordInput = InputType.Text;
+        }
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        Console.WriteLine("!!!!!!!!!!!d;alsdfk;l");
+        ShowErrors = false;
+        Error = "";
+        ErrorDetail = "";
+
+        var result = await AuthService.Login(_model);
+
+        if (result.Successful)
+        {
+            NavigationManager.NavigateTo("/");
+        }
+        else
+        {
+            Error = result.Error;
+            ErrorDetail = result.ErrorDescription;
+            ShowErrors = true;
+        }
+    }
+}

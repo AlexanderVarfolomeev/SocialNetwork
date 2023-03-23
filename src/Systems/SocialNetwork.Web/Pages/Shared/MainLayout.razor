@@ -1,13 +1,49 @@
+@using SocialNetwork.Web.Services
 @inherits LayoutComponentBase
+@inject IConfigurationService _configurationService 
+<MudThemeProvider @bind-IsDarkMode="@(_darkMode)" />
+<MudDialogProvider/>
+<MudSnackbarProvider/>
 
-<div>
-    <div>
+<MudLayout>
+    <MudAppBar Elevation="1">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@(DrawerToggle)"/>
+        <MudSpacer/>
+        <MudIconButton Icon="@(_darkMode ? Icons.Material.Filled.LightMode : Icons.Material.Filled.DarkMode)" OnClick="@(DarkModeSwitcher)" Color="Color.Inherit" Edge="Edge.End"/>
         <UserMenu/>
-    </div>
-    <div>
+    </MudAppBar>
+    <MudDrawer @bind-Open="(_navigationMenuVisible)" Elevation="2">
         <NavMenu/>
-    </div>
-    <div>
+    </MudDrawer>
+    <MudMainContent>
         @Body
-    </div>
-</div>
+    </MudMainContent>
+</MudLayout>
+
+<MudScrollToTop>
+    <MudFab Color="Color.Tertiary" Icon="@Icons.Material.Filled.ArrowCircleUp"/>
+</MudScrollToTop>
+
+@code
+{
+    private bool _darkMode = false;
+    private bool _navigationMenuVisible = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _navigationMenuVisible = await _configurationService.GetNavigationMenuVisible();
+        _darkMode = await _configurationService.GetDarkMode();
+    }
+
+    private async void DarkModeSwitcher()
+    {
+        _darkMode = !_darkMode;
+        await _configurationService.SetDarkMode(_darkMode);
+    }
+
+    private async void DrawerToggle()
+    {
+        _navigationMenuVisible = !_navigationMenuVisible;
+        await _configurationService.SetNavigationMenuVisible(_navigationMenuVisible);
+    }
+}
