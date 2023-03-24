@@ -51,7 +51,15 @@ public class ProfileService : IProfileService
         var result = await _userManager.CreateAsync(user, requestModel.Password);
         ProcessException.ThrowIf(() => !result.Succeeded, result.ToString());
 
-        await SendConfirmRegistrationMail(user);
+        try
+        {
+            await SendConfirmRegistrationMail(user);
+        }
+        catch (Exception ex)
+        {
+            throw new ProcessException("Error while sending message", ex);
+        }
+
         await _userManager.AddToRoleAsync(user, Permissions.User.GetName());
         return _mapper.Map<AppAccountModel>(user);
     }

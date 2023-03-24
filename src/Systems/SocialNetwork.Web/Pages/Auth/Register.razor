@@ -1,0 +1,74 @@
+﻿@page "/register"
+@using Microsoft.AspNetCore.Components
+@using Microsoft.AspNetCore.Components.Forms
+@using SocialNetwork.Web.Pages.Auth.Models
+@using AutoMapper
+@using SocialNetwork.Web.Pages.Auth.Services
+
+@inject ISnackbar Snackbar
+@inject IProfileService ProfileService 
+
+<EditForm Model="@model" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator/>
+    <MudGrid>
+        <MudItem xs="12">
+            <MudCard>
+                <MudCardContent>
+                    <MudTextField Label="Username" HelperText="Max. 8 characters"
+                                  @bind-Value="model.Username" For="@(() => model.Username)"/>
+                    <MudTextField Label="Name" HelperText="Max. 8 characters"
+                                  @bind-Value="model.Name" For="@(() => model.Name)"/>
+                    <MudTextField Label="Surname" HelperText="Max. 8 characters"
+                                  @bind-Value="model.Surname" For="@(() => model.Surname)"/>
+
+                    <MudDatePicker @ref="_picker" Label="Choose your birthdate" @bind-Date="model.Birthdate">
+                        <PickerActions Context="picker">
+                            <MudButton Class="mr-auto align-self-start" OnClick="@(() => _picker.Clear())">Clear</MudButton>
+                            <MudButton OnClick="@(() => _picker.Close(false))">Cancel</MudButton>
+                            <MudButton Color="Color.Primary" OnClick="@(() => _picker.Close())">Ok</MudButton>
+                        </PickerActions>
+                    </MudDatePicker>
+
+                    <MudTextField Label="Email" Class="mt-3"
+                                  @bind-Value="model.Email" For="@(() => model.Email)"/>
+                    <MudTextField Label="Password" HelperText="Choose a strong password" Class="mt-3"
+                                  @bind-Value="model.Password" For="@(() => model.Password)" InputType="InputType.Password"/>
+                    <MudTextField Label="Password" HelperText="Repeat the password" Class="mt-3"
+                                  @bind-Value="model.Password2" For="@(() => model.Password2)" InputType="InputType.Password"/>
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Register</MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+    </MudGrid>
+</EditForm>
+
+@code {
+    RegisterAccountForm model = new RegisterAccountForm();
+    bool success;
+    MudDatePicker _picker;
+
+
+    private async void OnValidSubmit(EditContext context)
+    {
+       
+        success = true;
+        StateHasChanged();
+        try
+        {
+          
+            await ProfileService.Register(model);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add(
+                @<div>
+                    @ex.Message
+                </div>
+                );
+            Console.WriteLine(ex.Message);
+        }
+    }
+
+}

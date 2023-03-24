@@ -12,47 +12,51 @@
     <MudItem xs="7" sm="4">
         <MudPaper Class="pa-4">
             <EditForm Model="@_model" OnValidSubmit="HandleValidSubmit">
-                
+
                 <MudText Typo="Typo.h4" GutterBottom="true" Class="mb-3">Sign In</MudText>
 
                 <MudAlert Severity="Severity.Error" Class="@(ShowErrors ? "mb-3 d-block" : "d-none")">
                     @Error
-                    <br />
+                    <br/>
                     @ErrorDetail
                 </MudAlert>
 
                 <MudTextField T="string"
-                                @bind-Value="_model.Email" For="@(() => _model.Email)"
-                                Label="Email" 
-                                Required="true" 
-                                RequiredError="Email is required!"
-                                HelperText="Input your username"
-                                Validation="@(new EmailAddressAttribute() {ErrorMessage = "The email address is invalid"})"/>
+                              @bind-Value="_model.Email" For="@(() => _model.Email)"
+                              Label="Email"
+                              Required="true"
+                              RequiredError="Email is required!"
+                              HelperText="Input your username"
+                              Validation="@(new EmailAddressAttribute() {ErrorMessage = "The email address is invalid"})"/>
                 <MudTextField @bind-Value="_model.Password" For="@(() => _model.Password)"
-                                Label="Password" 
-                                HelperText="Input your password"
-                                InputType="@PasswordInput"
-                                Adornment="Adornment.End"
-                                AdornmentIcon="@PasswordInputIcon"
-                                Required="true"
-                                RequiredError="Password is required!"
-                                OnAdornmentClick="TogglePasswordVisibility" />
+                              Label="Password"
+                              HelperText="Input your password"
+                              InputType="@PasswordInput"
+                              Adornment="Adornment.End"
+                              AdornmentIcon="@PasswordInputIcon"
+                              Required="true"
+                              RequiredError="Password is required!"
+                              OnAdornmentClick="TogglePasswordVisibility"/>
 
                 <div Class="d-flex justify-space-between align-center">
                     <MudCheckBox For="@(() => _model.RememberMe)" @bind-Checked="_model.RememberMe" Label="Remember me?" Color="Color.Primary" Class="ml-n1 my-3"></MudCheckBox>
                     <MudLink Href="/forgot-password">Forgot pwd?</MudLink>
                 </div>
 
-                 <MudButton Variant="Variant.Filled"
-                                                           Color="Color.Primary"
-                                                           Size="Size.Large"
-                                                           ButtonType="ButtonType.Submit">Sign In</MudButton>
                 <MudButton Variant="Variant.Filled"
-                                           Color="Color.Primary"
-                                           Size="Size.Large"
-                                           ButtonType="ButtonType.Submit"
-                                           OnClick="(HandleValidSubmit)">Sign In</MudButton>
-            </EditForm> 
+                           Color="Color.Primary"
+                           Size="Size.Large"
+                           Href="/register">
+                    Register
+                </MudButton>
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           Size="Size.Large"
+                           ButtonType="ButtonType.Submit"
+                           OnClick="(HandleValidSubmit)">
+                    Sign In
+                </MudButton>
+            </EditForm>
         </MudPaper>
     </MudItem>
 </MudGrid>
@@ -112,4 +116,5 @@
             ShowErrors = true;
         }
     }
+
 }
