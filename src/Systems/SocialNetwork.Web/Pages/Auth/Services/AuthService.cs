@@ -25,13 +25,13 @@ public class AuthService : IAuthService
     public async Task<LoginResult> Login(LoginModel loginModel)
     {
         var url = $"{Settings.IdentityRoot}/connect/token";
-
+        
         var request_body = new[] 
         {
             new KeyValuePair<string, string>("grant_type", "password"),
             new KeyValuePair<string, string>("client_id", Settings.ClientId),
             new KeyValuePair<string, string>("client_secret", Settings.ClientSecret),
-            new KeyValuePair<string, string>("username", loginModel.Email!),
+            new KeyValuePair<string, string>("username", loginModel.Username!),
             new KeyValuePair<string, string>("password", loginModel.Password!)
         };
 
@@ -52,7 +52,8 @@ public class AuthService : IAuthService
         await _localStorage.SetItemAsync("authToken", loginResult.AccessToken);
         await _localStorage.SetItemAsync("refreshToken", loginResult.RefreshToken);
 
-        ((ApiAuthenticationStateProvider)_authenticationStateProvider).MarkUserAsAuthenticated(loginModel.Email!);
+        await _localStorage.SetItemAsync("currentUser", loginModel.Username);
+        ((ApiAuthenticationStateProvider)_authenticationStateProvider).MarkUserAsAuthenticated(loginModel.Username!);
 
         _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", loginResult.AccessToken);
 

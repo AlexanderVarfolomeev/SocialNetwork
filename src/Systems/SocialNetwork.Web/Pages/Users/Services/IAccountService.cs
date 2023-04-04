@@ -6,4 +6,6 @@ public interface IAccountService
 {
     Task<IEnumerable<AccountModel>> GetAccounts(int offset = 0, int limit = 100);
     Task<AccountModel> GetAccount(Guid accountId);
+    Task<AccountModel> GetAccountByUsername(string username);
+    Task<IEnumerable<AvatarModel>> GetAvatars(Guid accountId);
 }

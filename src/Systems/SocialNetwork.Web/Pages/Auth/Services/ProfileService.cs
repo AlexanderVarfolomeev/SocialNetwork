@@ -2,16 +2,19 @@
 using System.Text.Json;
 using SocialNetwork.Web.Pages.Auth.Models;
 using SocialNetwork.Web.Pages.Users.Models;
+using SocialNetwork.Web.Pages.Users.Services;
 
 namespace SocialNetwork.Web.Pages.Auth.Services;
 
 public class ProfileService : IProfileService
 {
     private readonly HttpClient _httpClient;
+    private readonly IAccountService _accountService;
 
-    public ProfileService(HttpClient httpClient)
+    public ProfileService(HttpClient httpClient, IAccountService accountService)
     {
         _httpClient = httpClient;
+        _accountService = accountService;
     }
     
     public async Task Register(RegisterAccountForm registerAccountModel)
@@ -27,5 +30,10 @@ public class ProfileService : IProfileService
         {
             throw new Exception(content);
         }
+    }
+
+    public Task<AccountModel> GetProfile()
+    {
+        throw new NotImplementedException();
     }
 }

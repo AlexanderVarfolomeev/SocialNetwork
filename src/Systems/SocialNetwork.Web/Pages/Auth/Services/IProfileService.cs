@@ -6,4 +6,5 @@ namespace SocialNetwork.Web.Pages.Auth.Services;
 public interface IProfileService
 {
     Task Register(RegisterAccountForm registerAccountModel);
+    Task<AccountModel> GetProfile();
 }
