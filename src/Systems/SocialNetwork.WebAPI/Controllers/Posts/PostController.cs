@@ -41,7 +41,7 @@ public class PostController : ControllerBase
     /// <summary>
     /// Получить посты пользователя по его Id
     /// </summary>
-    [HttpGet("accounts/{userId}/posts")]
+    [HttpGet("accounts/{userId:guid}/posts")]
     public async Task<IEnumerable<PostResponse>> GetUsersPosts([FromRoute] Guid userId,
         [FromQuery] int offset = 0,
         [FromQuery] int limit = 10)

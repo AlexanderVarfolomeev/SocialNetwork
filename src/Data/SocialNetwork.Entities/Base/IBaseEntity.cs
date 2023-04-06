@@ -5,9 +5,9 @@ public interface IBaseEntity
     public Guid Id { get; set; }
 
 
-    public DateTimeOffset CreationDateTime { get; set; }
+    public DateTime CreationDateTime { get; set; }
 
-    public DateTimeOffset ModificationDateTime { get; set; }
+    public DateTime ModificationDateTime { get; set; }
 
     void Init();
     /// <summary>

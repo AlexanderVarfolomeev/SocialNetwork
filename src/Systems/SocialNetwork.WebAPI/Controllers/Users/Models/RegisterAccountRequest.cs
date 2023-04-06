@@ -10,7 +10,7 @@ public class RegisterAccountRequest
     public string Name { get; set; } = string.Empty;
     public string Surname { get; set; } = string.Empty;
 
-    public DateTimeOffset Birthday { get; set; }
+    public DateTime Birthday { get; set; }
     public string Status { get; set; } = string.Empty;
     
     public string UserName { get; set; } = string.Empty;

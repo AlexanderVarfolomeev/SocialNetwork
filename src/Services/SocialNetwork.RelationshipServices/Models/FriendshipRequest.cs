@@ -7,7 +7,7 @@ public class FriendshipRequest
 {
     public Guid Id { get; set; }
     public Guid FromUserId { get; set; }
-    public DateTimeOffset CreationDateTime { get; set; }
+    public DateTime CreationDateTime { get; set; }
 }
 
 public class FriendshipRequestProfile : Profile

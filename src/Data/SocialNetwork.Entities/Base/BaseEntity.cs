@@ -3,12 +3,12 @@ namespace SocialNetwork.Entities.Base;
 public class BaseEntity : IBaseEntity
 {
     public Guid Id { get; set; }
-    public DateTimeOffset CreationDateTime { get; set; }
-    public DateTimeOffset ModificationDateTime { get; set; }
+    public DateTime CreationDateTime { get; set; }
+    public DateTime ModificationDateTime { get; set; }
     
     public void Init()
     {
-        CreationDateTime = DateTimeOffset.Now;
+        CreationDateTime = DateTime.Now;
         ModificationDateTime = CreationDateTime;
     }
 
@@ -17,6 +17,6 @@ public class BaseEntity : IBaseEntity
     /// </summary>
     public void Touch()
     {
-        ModificationDateTime = DateTimeOffset.Now;
+        ModificationDateTime = DateTime.Now;
     }
 }

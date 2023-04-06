@@ -1,7 +1,11 @@
 ﻿@page "/Profile/{username}"
 @using SocialNetwork.Web.Pages.Users.Services
 @using SocialNetwork.Web.Pages.Users.Models
+@using SocialNetwork.Web.Pages.Posts.Models
+@using SocialNetwork.Web.Pages.Posts.Services
+@using System.Net.Mail
 @inject IAccountService AccountService
+@inject IPostService PostService
 @layout MainLayout
 
 <MudGrid Spacing="5" Justify="Justify.Center">
@@ -17,7 +21,7 @@
     </MudItem>
     <MudItem xs="10">
         <MudStack>
-            @for (int i = 0; i < 2; i++)
+            @foreach(var post in _posts)
             {
                 <MudCard>
                     <MudCardHeader>
@@ -34,8 +38,12 @@
                         </CardHeaderActions>
                     </MudCardHeader>
                     <MudCardContent>
-                        <MudText Typo="Typo.body2">This photo was taken in a small village in Istra Croatia.</MudText>
-                        <MudImage Src="@($"data:image/jpeg;base64,{_avatars.ToList().FirstOrDefault()?.Content}")" Width="200" Height="200"></MudImage>
+                        <MudText Typo="Typo.body2">@post.Text</MudText>
+                        @foreach (var image in post.Attachments)
+                        {
+                            <MudImage Src="@($"data:image/jpeg;base64,{image}")" Width="200" Height="200"></MudImage>
+
+                        }
                     </MudCardContent>
                     <MudCardActions>
                         <MudIconButton Icon="@Icons.Material.Filled.Favorite" Color="Color.Default"/>
@@ -52,6 +60,8 @@
     [Parameter]
     public string Username { get; set; }
 
+    private IEnumerable<PostModel> _posts = new List<PostModel>();
+
     private AccountModel User { get; set; } = new AccountModel();
     private IEnumerable<AvatarModel> _avatars = new List<AvatarModel>();
 
@@ -63,6 +73,13 @@
             var avatars = await AccountService.GetAvatars(account.Id);
             User = account;
             _avatars = avatars;
+            _posts = await PostService.GetPostsByUser(User.Id);
+
+            foreach (var post in _posts)
+            {
+                post.Attachments = (await PostService.GetAttachments(post.Id)).Select(x => x.Content);
+            }
+
         }
         catch (Exception e)
         {

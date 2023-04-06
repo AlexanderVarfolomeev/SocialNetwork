@@ -14,7 +14,7 @@ public class RegisterAccountForm
     public string Surname { get; set; }
 
     [Required]
-    public DateTime? Birthdate { get; set; }
+    public DateTime Birthday { get; set; }
 
     [Required]
     [EmailAddress]

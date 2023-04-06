@@ -7,7 +7,7 @@ public class UserInChat : BaseEntity
 {
     public bool IsCreator { get; set; }
     
-    public DateTimeOffset EntryDate { get; set; }
+    public DateTime EntryDate { get; set; }
     
     public Guid ChatId { get; set; }
     public virtual Chat Chat { get; set; }

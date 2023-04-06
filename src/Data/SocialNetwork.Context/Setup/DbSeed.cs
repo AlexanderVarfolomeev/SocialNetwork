@@ -29,22 +29,22 @@ public static class DbSeed
             {
                 Name = Permissions.User.GetName(),
                 Permissions = Permissions.User,
-                CreationDateTime = DateTimeOffset.Now,
-                ModificationDateTime = DateTimeOffset.Now
+                CreationDateTime = DateTime.Now,
+                ModificationDateTime = DateTime.Now
             });
             await roleManager.CreateAsync(new AppRole
             {
                 Name = Permissions.Admin.GetName(),
                 Permissions = Permissions.Admin,
-                CreationDateTime = DateTimeOffset.Now,
-                ModificationDateTime = DateTimeOffset.Now
+                CreationDateTime = DateTime.Now,
+                ModificationDateTime = DateTime.Now
             });
             await roleManager.CreateAsync(new AppRole
             {
                 Name = Permissions.GodAdmin.GetName(),
                 Permissions = Permissions.GodAdmin,
-                CreationDateTime = DateTimeOffset.Now,
-                ModificationDateTime = DateTimeOffset.Now
+                CreationDateTime = DateTime.Now,
+                ModificationDateTime = DateTime.Now
             });
             await context.SaveChangesAsync();
 
@@ -53,9 +53,9 @@ public static class DbSeed
                 Id = Guid.NewGuid(),
                 Name = "Admin",
                 Surname = "",
-                Birthday = DateTimeOffset.Now,
-                CreationDateTime = DateTimeOffset.Now,
-                ModificationDateTime = DateTimeOffset.Now,
+                Birthday = DateTime.Now,
+                CreationDateTime = DateTime.Now,
+                ModificationDateTime = DateTime.Now,
                 UserName = "admin",
                 Email = "admin",
                 EmailConfirmed = true

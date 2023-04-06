@@ -8,21 +8,21 @@ public class AppRole : IdentityRole<Guid>, IBaseEntity
 {
     public Permissions Permissions { get; set; }
     
-    public DateTimeOffset CreationDateTime { get; set; }
+    public DateTime CreationDateTime { get; set; }
     
-    public DateTimeOffset ModificationDateTime { get; set; }
+    public DateTime ModificationDateTime { get; set; }
   
     public virtual ICollection<AppUserRole> Users { get; set; }
     
     public void Init()
     {
-        CreationDateTime = DateTimeOffset.Now;
+        CreationDateTime = DateTime.Now;
         ModificationDateTime = CreationDateTime;
     }
 
     public void Touch()
     {
-        ModificationDateTime = DateTimeOffset.Now;
+        ModificationDateTime = DateTime.Now;
     }
 
 }

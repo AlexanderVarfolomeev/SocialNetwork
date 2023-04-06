@@ -21,7 +21,7 @@
                     <MudTextField Label="Surname" HelperText="Max. 8 characters"
                                   @bind-Value="model.Surname" For="@(() => model.Surname)"/>
 
-                    <MudDatePicker @ref="_picker" Label="Choose your birthdate" @bind-Date="model.Birthdate">
+                    <MudDatePicker @ref="_picker" Label="Choose your birthdate" @bind-Date="birthdate">
                         <PickerActions Context="picker">
                             <MudButton Class="mr-auto align-self-start" OnClick="@(() => _picker.Clear())">Clear</MudButton>
                             <MudButton OnClick="@(() => _picker.Close(false))">Cancel</MudButton>
@@ -48,8 +48,7 @@
     RegisterAccountForm model = new RegisterAccountForm();
     bool success;
     MudDatePicker _picker;
-
-
+    DateTime? birthdate;
     private async void OnValidSubmit(EditContext context)
     {
        
@@ -57,7 +56,7 @@
         StateHasChanged();
         try
         {
-          
+            model.Birthday = (DateTime)birthdate;
             await ProfileService.Register(model);
         }
         catch (Exception ex)

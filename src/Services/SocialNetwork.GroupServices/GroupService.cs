@@ -61,7 +61,7 @@ public class GroupService : IGroupService
             UserId = userId,
             IsCreator = true,
             IsAdmin = true,
-            DateOfEntry = DateTimeOffset.Now
+            DateOfEntry = DateTime.Now
         });
 
         return _mapper.Map<GroupModelResponse>(group);
@@ -99,7 +99,7 @@ public class GroupService : IGroupService
                 UserId = userId,
                 IsCreator = false,
                 IsAdmin = false,
-                DateOfEntry = DateTimeOffset.Now
+                DateOfEntry = DateTime.Now
             });
         }
         else

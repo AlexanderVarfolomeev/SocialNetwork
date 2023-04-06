@@ -12,7 +12,7 @@ public class UserInGroupResponse : BaseEntity
     public bool IsCreator { get; set; }
     public bool IsAdmin { get; set; }
 
-    public DateTimeOffset DateOfEntry { get; set; }
+    public DateTime DateOfEntry { get; set; }
 }
 
 public class UserInGroupResponseProfile : Profile

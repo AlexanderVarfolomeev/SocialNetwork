@@ -8,7 +8,7 @@ public class UserInGroup : BaseEntity
     public bool IsCreator { get; set; }
     public bool IsAdmin { get; set; }
 
-    public DateTimeOffset DateOfEntry { get; set; }
+    public DateTime DateOfEntry { get; set; }
 
     public Guid UserId { get; set; }
     public virtual AppUser User { get; set; }

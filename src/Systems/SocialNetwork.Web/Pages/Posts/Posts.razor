@@ -1,0 +1,20 @@
+﻿@page "/Posts/{userId}"
+@using SocialNetwork.Web.Pages.Posts.Services
+@using SocialNetwork.Web.Pages.Posts.Models
+@inject IPostService PostService
+<h3>Posts</h3>
+<h1>@_posts.Count()</h1>
+@code {
+
+    [Parameter]
+    public string userId { get; set; }
+
+    public IEnumerable<PostModel> _posts { get; set; } = new List<PostModel>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Console.WriteLine(userId);
+        _posts =  await PostService.GetPostsByUser(Guid.Parse(userId));
+    }
+
+}

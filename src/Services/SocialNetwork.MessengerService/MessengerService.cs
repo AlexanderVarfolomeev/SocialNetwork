@@ -111,14 +111,14 @@ public class MessengerService : IMessengerService
                 ChatId = chat.Id,
                 IsCreator = false,
                 UserId = user1,
-                EntryDate = DateTimeOffset.Now
+                EntryDate = DateTime.Now
             };
             var userInChat2 = new UserInChat()
             {
                 ChatId = chat.Id,
                 IsCreator = false,
                 UserId = user2,
-                EntryDate = DateTimeOffset.Now
+                EntryDate = DateTime.Now
             };
 
             await _userInChatRepository.AddAsync(userInChat1);
