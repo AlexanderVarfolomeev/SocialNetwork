@@ -57,7 +57,7 @@ public class AuthService : IAuthService
         
         await _localStorage.SetItemAsync("authToken", loginResult.AccessToken);
         await _localStorage.SetItemAsync("refreshToken", loginResult.RefreshToken);
-
+        Settings.AccessToken = loginResult.AccessToken;
         await _localStorage.SetItemAsync("currentUserId", userId.Id);
         ((ApiAuthenticationStateProvider)_authenticationStateProvider).MarkUserAsAuthenticated(loginModel.Username!);
 

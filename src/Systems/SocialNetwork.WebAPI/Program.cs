@@ -54,9 +54,10 @@ app.UseAppSwagger();
 
 app.UseHttpsRedirection();
 
+app.UseRouting();
 app.UseAuthorization();
 
 app.MapControllers();
-app.MapHub<MessengerHub>("/chat");
+app.MapHub<MessengerHub>("/Chat");
 
 app.Run();

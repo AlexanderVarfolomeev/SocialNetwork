@@ -3,7 +3,9 @@
 @using SocialNetwork.Web.Pages.Users.Services
 @using SocialNetwork.Web.Pages.Messenger.Models
 @using SocialNetwork.Web.Pages.Users.Models
+@using Microsoft.AspNetCore;
 @using Blazored.LocalStorage
+@using Microsoft.AspNetCore.SignalR.Client
 @layout MainLayout
 @inject IMessengerService MessengerService
 @inject IAccountService AccountService
@@ -43,6 +45,8 @@
 {
     [Parameter]
     public string dialogId { get; set; }
+    
+    public HubConnection hubConnection { get; set; }
 
     public string TextValue { get; set; }
 
@@ -67,14 +71,39 @@
         {
             message.User = _userInChatModels.FirstOrDefault(x => x.Id == message.SenderId);
         }
+
+        hubConnection = new HubConnectionBuilder()
+            .WithUrl($"http://localhost:5000/Chat", opts => opts.Headers.Add("Authorization", $"Bearer {Settings.AccessToken}"))
+            .WithAutomaticReconnect()
+            .Build();
+        Console.WriteLine(hubConnection.State.ToString());
+
+        hubConnection.On<MessageResponse>("ReceiveMessage", (response) =>
+        {
+            if (response.SenderId.ToString() == _toUserId.ToString() || response.SenderId.ToString() == userId.ToString())
+            {
+                MessageModel msg = new MessageModel()
+                {
+                    CreationDateTime = response.CreationDateTime,
+                    Id = response.Id,
+                    SenderId = response.SenderId,
+                    Text = response.Text,
+                    ChatId = response.ChatId,
+                    User = _userInChatModels.FirstOrDefault(x => x.Id == response.SenderId)
+                };
+                _messages.Add(msg);
+            }
+            return Task.CompletedTask;
+        });
     }
 
     private async Task SendMessage()
     {
-        var msg = await MessengerService.SendMessage(_toUserId, TextValue);
+        /*var msg = await MessengerService.SendMessage(_toUserId, TextValue);
         msg.User = _userInChatModels.FirstOrDefault(x => x.Id == msg.SenderId);
         _messages.Add(msg);
         _messages = _messages.OrderByDescending(x => x.CreationDateTime).ToList();
-        TextValue = "";
+        TextValue = "";*/
+        await hubConnection.InvokeAsync("SendMessage", TextValue, _toUserId);
     }
 }

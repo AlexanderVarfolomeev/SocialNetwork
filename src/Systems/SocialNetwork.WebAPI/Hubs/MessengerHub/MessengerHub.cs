@@ -70,11 +70,12 @@ public class MessengerHub : Hub
             connections.Add(connection);
         }
 
-        var response =
+        MessageResponse response =
             _mapper.Map<MessageResponse>(_messengerService.SendMessageToUser(senderId, userId, new MessageModelRequest()
             {
                 Text = message
             }));
+        
         await Clients.Clients(connections)
             .SendAsync("ReceiveMessage",
                 response); // При получении на клиенте мы сразу вызовем запрос на получение картинок
