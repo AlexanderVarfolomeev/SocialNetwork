@@ -4,6 +4,7 @@ using SocialNetwork.Settings.Source;
 using SocialNetwork.WebAPI;
 using SocialNetwork.WebAPI.Configuration;
 using SocialNetwork.WebAPI.Configuration.HealthChecks;
+using SocialNetwork.WebAPI.Hubs.MessengerHub;
 
 var builder = WebApplication.CreateBuilder(args);
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
@@ -33,6 +34,8 @@ services.AddAppAutomapper();
 
 services.AddAppCors();
 
+services.AddSignalR();
+
 var app = builder.Build();
 
 app.UseAppDbContext();
@@ -54,5 +57,6 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHub<MessengerHub>("/chat");
 
 app.Run();
