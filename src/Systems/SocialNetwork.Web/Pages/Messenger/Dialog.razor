@@ -1,0 +1,80 @@
+﻿@page "/Chats/{dialogId}"
+@using SocialNetwork.Web.Pages.Messenger.Services
+@using SocialNetwork.Web.Pages.Users.Services
+@using SocialNetwork.Web.Pages.Messenger.Models
+@using SocialNetwork.Web.Pages.Users.Models
+@using Blazored.LocalStorage
+@layout MainLayout
+@inject IMessengerService MessengerService
+@inject IAccountService AccountService
+@inject IDialogService DialogService
+@inject ILocalStorageService LocalStorageService
+@inject NavigationManager NavigationManager
+
+<MudGrid>
+    <MudItem xs="12">
+        <MudStack>
+            <div class="d-flex flex-column px-4" style="max-height:65vh;min-height:65vh;   overflow-y: scroll;" id="chatContainer">
+                @foreach (var message in _messages)
+                {
+                    <div class="d-flex flex-row my-4">
+                        <div class="mr-4">
+                            <MudAvatar Color="Color.Secondary" Style="height:50px; width:50px;">@message.User.Email.ToUpper().FirstOrDefault()</MudAvatar>
+                        </div>
+                        <div>
+                            <MudText Typo="Typo.body1">@message.User.Email</MudText>
+                            <MudText Typo="Typo.caption" Style="font-size: xx-small!important;">@message.CreationDateTime.ToString("dd MMM, yyyy hh:mm tt")</MudText>
+                            <MudText T="string" Lines="5" Typo="Typo.body2" Style=" padding: 15px;background-color: beige;border-radius: 5px;margin-top:5px">@message.Text</MudText>
+                        </div>
+                    </div>
+                }
+            </div>
+        </MudStack>
+    </MudItem>
+    <MudItem xs="8">
+        <MudTextField T="string" @bind-Value="TextValue" Label="Outlined" Variant="Variant.Outlined" Lines="5"></MudTextField>
+    </MudItem>
+    <MudItem xs="4">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(async  () => await SendMessage())">Send</MudButton>
+    </MudItem>
+</MudGrid>
+
+@code
+{
+    [Parameter]
+    public string dialogId { get; set; }
+
+    public string TextValue { get; set; }
+
+    private List<AccountModel> _userInChatModels = new List<AccountModel>();
+    
+    public List<MessageModel> _messages = new List<MessageModel>();
+    private Guid _toUserId; 
+    protected override async Task OnInitializedAsync()
+    {
+        var userId =  await LocalStorageService.GetItemAsync<Guid>("currentUserId");
+        
+        var id = Guid.Parse(dialogId);
+        var ids = (await MessengerService.GetUsersInChat(id)).ToList();
+        _toUserId = ids.FirstOrDefault(x => x.UserId != userId)!.UserId;
+        
+        foreach (var userInChatModel in ids)
+        {
+            _userInChatModels.Add(await AccountService.GetAccount(userInChatModel.UserId));
+        }
+        _messages = (await MessengerService.GetMessages(id)).OrderByDescending(x => x.CreationDateTime).ToList();
+        foreach (var message in _messages)
+        {
+            message.User = _userInChatModels.FirstOrDefault(x => x.Id == message.SenderId);
+        }
+    }
+
+    private async Task SendMessage()
+    {
+        var msg = await MessengerService.SendMessage(_toUserId, TextValue);
+        msg.User = _userInChatModels.FirstOrDefault(x => x.Id == msg.SenderId);
+        _messages.Add(msg);
+        _messages = _messages.OrderByDescending(x => x.CreationDateTime).ToList();
+        TextValue = "";
+    }
+}

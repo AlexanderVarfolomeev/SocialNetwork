@@ -7,7 +7,9 @@ namespace SocialNetwork.MessengerService.Models;
 public class ChatModelResponse : BaseEntity
 {
     public bool IsDialog { get; set; }
-    public string ChatName { get; set; }
+    public string ChatName { get; set; }    
+    
+    
 }
 
 public class ChatModelResponseProfile : Profile

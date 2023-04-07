@@ -19,7 +19,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Pages\Messenger" />
       <Folder Include="Pages\Profile\Services" />
     </ItemGroup>
 

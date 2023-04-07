@@ -1,0 +1,105 @@
+﻿@page "/Chats"
+@using SocialNetwork.Web.Pages.Messenger.Services
+@using SocialNetwork.Web.Pages.Users.Services
+@using SocialNetwork.Web.Pages.Messenger.Models
+@using SocialNetwork.Web.Pages.Users.Models
+@using Blazored.LocalStorage
+@layout MainLayout
+@inject IMessengerService MessengerService
+@inject IAccountService AccountService
+@inject IDialogService DialogService
+@inject ILocalStorageService LocalStorageService
+@inject NavigationManager NavigationManager
+<MudTable Items="@_dialogForms" Dense="true" Hover="true" Bordered="true" Filter="new Func<DialogForm, bool>(FilterFunc1)" @bind-SelectedItem="_selectedItem1">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Accounts</MudText>
+        <MudSpacer/>
+        <MudTextField @bind-Value="_searchString1" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Avatar</MudTh>
+        <MudTh>Username</MudTh>
+        <MudTh>Name</MudTh>
+        <MudTh>Surname</MudTh>
+        <MudTh>Link</MudTh>
+        <MudTh>Go to dialog</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd>
+            <MudAvatar Color="Color.Secondary">
+                <MudImage Src="@($"data:image/jpeg;base64,{context.Avatar}")"></MudImage>
+            </MudAvatar>
+        </MudTd>
+        <MudTd DataLabel="Username">@context.Username</MudTd>
+        <MudTd DataLabel="Name">@context.Name</MudTd>
+        <MudTd DataLabel="Surname">@context.Surname</MudTd>
+        <MudTd DataLabel="Go to page">
+            <MudButton Variant="Variant.Filled" @onclick="() => RedirectToProfile(context.Username)">Go to page</MudButton>
+        </MudTd>
+        <MudTd DataLabel="Go to page">
+                    <MudButton Variant="Variant.Filled" @onclick="() => RedirectToDialog(context.DialogId)">Go to page</MudButton>
+                </MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager/>
+    </PagerContent>
+</MudTable>
+
+
+@code {
+    private string _searchString1 = "";
+    private DialogForm _selectedItem1 = null;
+    List<ChatModel> _chats = new List<ChatModel>();
+    List<AccountModel> _accounts = new List<AccountModel>();
+    List<DialogForm> _dialogForms = new List<DialogForm>();
+    
+    protected override async Task OnInitializedAsync()
+    {
+        var userId =  await LocalStorageService.GetItemAsync<Guid>("currentUserId");
+        _chats = (await MessengerService.GetChats()).ToList();
+        foreach (var chat in _chats)
+        {
+            var anotherUserId = (await MessengerService.GetUsersInChat(chat.Id))
+                .Where(x => x.UserId != userId)
+                .Select(x => x.UserId).FirstOrDefault();
+
+            var acc = await AccountService.GetAccount(anotherUserId);
+            _accounts.Add(acc);
+            
+            _dialogForms.Add(new DialogForm()
+            {
+                Username = acc.UserName,
+                Name = acc.Name,
+                Surname = acc.Surname,
+                //TODO avatar
+                DialogId = chat.Id
+            });
+        }
+    }
+    
+    private bool FilterFunc1(DialogForm element) => FilterFunc(element, _searchString1);
+
+    private bool FilterFunc(DialogForm element, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (element.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (element.Surname.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (element.Username.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        return false;
+    }
+    
+    void RedirectToProfile(string userName)
+    {
+        NavigationManager.NavigateTo($"/profile/{userName}");
+    }
+    void RedirectToDialog(Guid dialogId)
+    {
+        NavigationManager.NavigateTo($"/chats/{dialogId}");
+    }
+
+
+}

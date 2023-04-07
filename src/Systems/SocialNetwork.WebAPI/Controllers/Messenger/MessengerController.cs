@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SocialNetwork.MessengerService;
 using SocialNetwork.MessengerService.Models;
@@ -10,6 +11,7 @@ namespace SocialNetwork.WebAPI.Controllers.Messenger;
 [ApiVersion("1.0")]
 [Route("api/v{version:apiVersion}/")]
 [ApiController]
+[Authorize]
 public class MessengerController : ControllerBase
 {
     private readonly IMessengerService _messengerService;
@@ -43,5 +45,11 @@ public class MessengerController : ControllerBase
     {
         var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
         return _mapper.Map<IEnumerable<MessageResponse>>(await _messengerService.GetMessages(userId, chatId));
+    }
+    
+    [HttpGet("messenger/chats/{chatId}/users")]
+    public async Task<IEnumerable<UserInChatResponse>> GetUsersInChat([FromRoute] Guid chatId)
+    {
+        return _mapper.Map<IEnumerable<UserInChatResponse>>(await _messengerService.GetUsersInChat(chatId));
     }
 }

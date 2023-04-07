@@ -8,4 +8,5 @@ public interface IMessengerService
 
     Task<IEnumerable<MessageModelResponse>> GetMessages(Guid userId, Guid dialogId, int offset = 0, int limit = 10);
     Task<IEnumerable<ChatModelResponse>> GetChats(Guid userId, int offset = 0, int limit = 10);
+    Task<IEnumerable<UserInChatModelResponse>> GetUsersInChat(Guid chatId);
 }

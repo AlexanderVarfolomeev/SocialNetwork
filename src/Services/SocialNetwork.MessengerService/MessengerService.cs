@@ -81,8 +81,8 @@ public class MessengerService : IMessengerService
 
         return chats.Select(x => _mapper.Map<ChatModelResponse>(x));
     }
-
-    private async Task<IEnumerable<UserInChatModelResponse>> GetUsersInChat(Guid chatId)
+    
+    public async Task<IEnumerable<UserInChatModelResponse>> GetUsersInChat(Guid chatId)
     {
         await _chatRepository.GetAsync(chatId);
         var users = await _userInChatRepository.GetAllAsync(x => x.ChatId == chatId);
