@@ -1,9 +1,9 @@
-@page "/accounts"
-@using SocialNetwork.Web.Pages.Users.Services
-@using SocialNetwork.Web.Pages.Users.Models
+﻿@page "/Friends"
 @using Blazored.LocalStorage
 @using SocialNetwork.Web.Components
 @using SocialNetwork.Web.Pages.Friends.Services
+@using SocialNetwork.Web.Pages.Users.Models
+@using SocialNetwork.Web.Pages.Users.Services
 @inject IAccountService AccountService
 @inject ILocalStorageService LocalStorageService
 @inject NavigationManager NavigationManager
@@ -23,7 +23,6 @@
         <MudTh>Name</MudTh>
         <MudTh>Surname</MudTh>
         <MudTh>Link</MudTh>
-        <MudTh>Add to friendlist</MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd>
@@ -37,20 +36,15 @@
         <MudTd DataLabel="Go to page">
             <MudButton Variant="Variant.Filled" @onclick="() => RedirectToProfile(context.UserName)">Go to page</MudButton>
         </MudTd>
-        <MudTd DataLabel="Add to friend">
-                    <MudButton Variant="Variant.Filled" @onclick="() => AddFriend(context.Id)">Add to friends</MudButton>
-                </MudTd>
     </RowTemplate>
     <PagerContent>
         <MudTablePager/>
     </PagerContent>
 </MudTable>
 
-
 @code {
     private string _searchString1 = "";
     private AccountModel _selectedItem1 = null;
-    private HashSet<AccountModel> _selectedItems = new HashSet<AccountModel>();
 
     private IEnumerable<AccountModel> _elements = new List<AccountModel>();
 
@@ -61,7 +55,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        _elements = await AccountService.GetAccounts();
+        _elements = await AccountService.GetFriends();
         foreach (var accountModel in _elements)
         {
             var avatars = (await AccountService.GetAvatars(accountModel.Id)).ToList();
@@ -69,19 +63,6 @@
         }
     }
 
-    private async Task AddFriend(Guid userId)
-    {
-        try
-        {
-            await FriendService.SendFriendshipRequest(userId);
-        }
-        catch (Exception ex)
-        {
-            var parameters = new DialogParameters { { "Text", ex.Message } };
-            await DialogService.ShowAsync<ErrorDialog>("Error!", parameters, new DialogOptions() { CloseButton = true });
-        }
-    }
-    
     private bool FilterFunc1(AccountModel element) => FilterFunc(element, _searchString1);
 
     private bool FilterFunc(AccountModel element, string searchString)

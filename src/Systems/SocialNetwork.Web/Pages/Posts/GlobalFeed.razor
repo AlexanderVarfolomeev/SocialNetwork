@@ -1,0 +1,65 @@
+﻿@page "/Feed/Global"
+@using SocialNetwork.Web.Pages.Posts.Services
+@using SocialNetwork.Web.Pages.Posts.Models
+@using SocialNetwork.Web.Pages.Users.Services
+@inject IAccountService AccountService
+@inject IPostService PostService
+@layout MainLayout
+<MudStack>
+    @foreach (var post in _posts)
+    {
+        <MudCard>
+            <MudCardHeader>
+                <CardHeaderAvatar>
+                    <MudAvatar Color="Color.Secondary">
+                        <MudImage Src="@($"data:image/jpeg;base64,{post.UserAvatar}")"></MudImage>
+                    </MudAvatar>
+                </CardHeaderAvatar>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.body1">@post.UserName</MudText>
+                    <MudText Typo="Typo.body2">@post.CreationDateTime.ToString("dd MMMM yyyy")</MudText>
+                    <MudText Typo="Typo.body2">@post.CreationDateTime.ToString("HH:mm")</MudText>
+                </CardHeaderContent>
+                <CardHeaderActions>
+                    <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Default"/>
+                </CardHeaderActions>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudText Typo="Typo.body2">@post.Text</MudText>
+                @foreach (var image in post.Attachments)
+                {
+                    <MudImage Src="@($"data:image/jpeg;base64,{image}")" Width="200" Height="200"></MudImage>
+                }
+            </MudCardContent>
+            <MudCardActions>
+                <MudIconButton Icon="@Icons.Material.Filled.Favorite" Color="Color.Default"/>
+                <MudIconButton Icon="@Icons.Material.Filled.Comment" Color="Color.Default"/>
+            </MudCardActions>
+        </MudCard>
+    }
+</MudStack>
+
+@code {
+    private IEnumerable<PostModel> _posts = new List<PostModel>();
+    
+    protected override async Task OnInitializedAsync()
+    {
+        _posts = await PostService.GetAllPosts();
+        foreach (var post in _posts)
+        {
+            var creator = await AccountService.GetAccount(post.CreatorId);
+            var avatars = (await AccountService.GetAvatars(post.CreatorId)).ToList();
+            post.Attachments = (await PostService.GetAttachments(post.Id)).Select(x => x.Content);
+            post.UserName = creator.UserName;
+            if (!avatars.Any())
+            {
+                post.UserAvatar = Settings.StandardAvatar;
+            }
+            else
+            {
+                post.UserAvatar = avatars.OrderByDescending(x => x.CreationDateTime).Select(x => x.Content).FirstOrDefault();
+            }
+        }
+    }
+
+}

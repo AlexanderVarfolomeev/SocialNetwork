@@ -1,0 +1,133 @@
+﻿@page "/friends/requests"
+@using SocialNetwork.Web.Pages.Friends.Models
+@using SocialNetwork.Web.Pages.Friends.Services
+@using SocialNetwork.Web.Pages.Users.Models
+@using SocialNetwork.Web.Pages.Users.Services
+@using SocialNetwork.Web.Components
+@layout MainLayout
+@inject IAccountService AccountService
+@inject IFriendService FriendService
+@inject IDialogService DialogService
+@inject NavigationManager NavigationManager
+
+<MudTable Items="@_accounts" Dense="true" Hover="true" Bordered="true" Filter="new Func<AccountModel, bool>(FilterFunc1)" @bind-SelectedItem="_selectedItem1">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Accounts</MudText>
+        <MudSpacer/>
+        <MudTextField @bind-Value="_searchString1" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Avatar</MudTh>
+        <MudTh>Username</MudTh>
+        <MudTh>Name</MudTh>
+        <MudTh>Surname</MudTh>
+        <MudTh>Link</MudTh>
+        <MudTh>Accept</MudTh>
+        <MudTh>Reject</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd>
+            <MudAvatar Color="Color.Secondary">
+                <MudImage Src="@($"data:image/jpeg;base64,{context.CurAvatar}")"></MudImage>
+            </MudAvatar>
+        </MudTd>
+        <MudTd DataLabel="Username">@context.UserName</MudTd>
+        <MudTd DataLabel="Name">@context.UserName</MudTd>
+        <MudTd DataLabel="Surname">@context.Name</MudTd>
+        <MudTd DataLabel="Go to page">
+            <MudButton Variant="Variant.Filled" @onclick="() => RedirectToProfile(context.UserName)">Go to page</MudButton>
+        </MudTd>
+        <MudTd DataLabel="Accept">
+            <MudButton Variant="Variant.Filled" OnClick="() => AcceptRequest(context.Id)">Accept</MudButton>
+        </MudTd>
+        <MudTd DataLabel="Reject">
+            <MudButton Variant="Variant.Filled" OnClick="() => RejectRequest(context.Id)">Reject</MudButton>
+        </MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager/>
+    </PagerContent>
+</MudTable>
+
+@code {
+    private IEnumerable<FriendShipRequest> _requests = new List<FriendShipRequest>();
+    private List<AccountModel> _accounts = new List<AccountModel>();
+    private string _searchString1 = "";
+    private AccountModel _selectedItem1 = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Reload();
+    }
+
+    private async Task Reload()
+    {
+        _requests = await FriendService.GetFriendshipRequests();
+
+        foreach (var req in _requests)
+        {
+            _accounts.Add(await AccountService.GetAccount(req.FromUserId));
+        }
+
+        foreach (var accountModel in _accounts)
+        {
+            var avatars = (await AccountService.GetAvatars(accountModel.Id)).ToList();
+            accountModel.CurAvatar = !avatars.Any() ? Settings.StandardAvatar : avatars.FirstOrDefault()?.Content;
+        }
+    }
+
+
+    private bool FilterFunc1(AccountModel element) => FilterFunc(element, _searchString1);
+
+    private bool FilterFunc(AccountModel element, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (element.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (element.Surname.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (element.UserName.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (element.Email.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        return false;
+    }
+
+    private async Task AcceptRequest(Guid userId)
+    {
+        try
+        {
+            var reqId = _requests.FirstOrDefault(x => x.FromUserId == userId);
+            await FriendService.AcceptFriendshipRequest(reqId!.Id);
+            await Reload();
+        }
+        catch (Exception ex)
+        {
+            var parameters = new DialogParameters { { "Text", ex.Message } };
+            await DialogService.ShowAsync<ErrorDialog>("Error!", parameters, new DialogOptions() { CloseButton = true });
+        }
+    }
+
+    private async Task RejectRequest(Guid userId)
+    {
+        try
+        {
+            var reqId = _requests.FirstOrDefault(x => x.FromUserId == userId);
+            await FriendService.RejectFriendshipRequest(reqId!.FromUserId);
+            await Reload();
+        }
+        catch (Exception ex)
+        {
+            var parameters = new DialogParameters { { "Text", ex.Message } };
+            await DialogService.ShowAsync<ErrorDialog>("Error!", parameters, new DialogOptions() { CloseButton = true });
+        }
+    }
+
+    void RedirectToProfile(string userName)
+    {
+        NavigationManager.NavigateTo($"/profile/{userName}");
+    }
+
+
+}

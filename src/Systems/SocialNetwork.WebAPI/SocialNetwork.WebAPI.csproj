@@ -54,6 +54,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="wwwroot\Avatar" />
       <Folder Include="wwwroot\Comment" />
       <Folder Include="wwwroot\Message" />
       <Folder Include="wwwroot\Post" />

@@ -30,9 +30,39 @@ public class AccountService : IAccountService
         return data;
     }
 
-    public Task<AccountModel> GetAccount(Guid accountId)
+    public async Task<IEnumerable<AccountModel>> GetFriends(int offset = 0, int limit = 100)
     {
-        throw new NotImplementedException();
+        string url = $"{Settings.ApiRoot}/Relationships/friends?offset={offset}&limit={limit}";
+
+        var response = await _httpClient.GetAsync(url);
+        var content = await response.Content.ReadAsStringAsync();
+
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception(content);
+        }
+
+        var data = JsonSerializer.Deserialize<IEnumerable<AccountModel>>(content,
+            new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new List<AccountModel>();
+
+        return data;
+    }
+
+    public async Task<AccountModel> GetAccount(Guid accountId)
+    {
+        string url = $"{Settings.ApiRoot}/accounts/{accountId}";
+        var response = await _httpClient.GetAsync(url);
+        var content = await response.Content.ReadAsStringAsync();
+
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception(content);
+        }
+
+        var data = JsonSerializer.Deserialize<AccountModel>(content,
+            new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new AccountModel();
+
+        return data;
     }
 
     public async Task<AccountModel> GetAccountByUsername(string username)

@@ -1,0 +1,16 @@
+﻿<MudDialog>
+    <DialogContent>
+        @Text
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Ok</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    [Parameter] public string Text { get; set; }
+    
+    void Cancel() => MudDialog.Cancel();
+}
+

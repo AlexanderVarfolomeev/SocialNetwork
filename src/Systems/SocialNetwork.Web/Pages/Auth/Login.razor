@@ -83,7 +83,6 @@
     {
         @if (PasswordVisibility)
         {
-            Console.WriteLine("pass");
             PasswordVisibility = false;
             PasswordInputIcon = Icons.Material.Filled.VisibilityOff;
             PasswordInput = InputType.Password;
@@ -98,7 +97,6 @@
 
     private async Task HandleValidSubmit()
     {
-        Console.WriteLine("!!!!!!!!!!!d;alsdfk;l");
         ShowErrors = false;
         Error = "";
         ErrorDetail = "";
