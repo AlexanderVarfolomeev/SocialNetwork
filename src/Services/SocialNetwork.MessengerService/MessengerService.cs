@@ -60,13 +60,13 @@ public class MessengerService : IMessengerService
     }
     
     public async Task<IEnumerable<MessageModelResponse>> GetMessages(Guid userId, Guid dialogId, int offset = 0,
-        int limit = 10)
+        int limit = 10000)
     {
         var chat = await _chatRepository.GetAsync(dialogId);
         var users = (await GetUsersInChat(dialogId)).Select(x => x.UserId);
         ProcessException.ThrowIf(() => !users.Contains(userId), ErrorMessages.AccessRightsError);
 
-        var messages = await _messageRepository.GetAllAsync(x => x.ChatId == dialogId);
+        var messages = await _messageRepository.GetAllAsync(x => x.ChatId == dialogId, offset, limit);
         return _mapper.Map<IEnumerable<MessageModelResponse>>(messages);
     }
 

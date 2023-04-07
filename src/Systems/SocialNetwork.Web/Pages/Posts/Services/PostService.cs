@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using Microsoft.JSInterop;
 using SocialNetwork.Web.Pages.Posts.Models;
 
 namespace SocialNetwork.Web.Pages.Posts.Services;
@@ -26,7 +27,7 @@ public class PostService : IPostService
 
         var data = JsonSerializer.Deserialize<IEnumerable<PostModel>>(content,
             new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new List<PostModel>();
-
+        
         return data.OrderByDescending(x => x.CreationDateTime);
     }
     

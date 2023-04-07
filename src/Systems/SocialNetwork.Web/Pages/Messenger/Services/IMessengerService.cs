@@ -5,7 +5,7 @@ namespace SocialNetwork.Web.Pages.Messenger.Services;
 public interface IMessengerService
 {
     Task<IEnumerable<ChatModel>> GetChats();
-    Task<IEnumerable<MessageModel>> GetMessages(Guid chatId);
+    Task<IEnumerable<MessageModel>> GetMessages(Guid chatId, int offset = 0, int limit = 10000);
     Task<MessageModel> SendMessage(Guid receiverId, string text);
     Task<IEnumerable<UserInChatModel>> GetUsersInChat(Guid chatId);
 }

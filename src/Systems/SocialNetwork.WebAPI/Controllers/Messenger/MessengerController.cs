@@ -41,10 +41,11 @@ public class MessengerController : ControllerBase
 
 
     [HttpGet("messenger/chats/{chatId}")]
-    public async Task<IEnumerable<MessageResponse>> GetMessages([FromRoute] Guid chatId)
+    public async Task<IEnumerable<MessageResponse>> GetMessages([FromRoute] Guid chatId, [FromQuery] int offset = 0,
+        [FromQuery] int limit = 1000)
     {
         var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
-        return _mapper.Map<IEnumerable<MessageResponse>>(await _messengerService.GetMessages(userId, chatId));
+        return _mapper.Map<IEnumerable<MessageResponse>>(await _messengerService.GetMessages(userId, chatId, offset, limit));
     }
     
     [HttpGet("messenger/chats/{chatId}/users")]

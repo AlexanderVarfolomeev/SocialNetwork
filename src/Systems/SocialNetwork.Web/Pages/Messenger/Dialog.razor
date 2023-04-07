@@ -26,7 +26,7 @@
                         <div>
                             <MudText Typo="Typo.body1">@message.User.Email</MudText>
                             <MudText Typo="Typo.caption" Style="font-size: xx-small!important;">@message.CreationDateTime.ToString("dd MMM, yyyy hh:mm tt")</MudText>
-                            <MudText T="string" Lines="5" Typo="Typo.body2" Style=" padding: 15px;background-color: beige;border-radius: 5px;margin-top:5px">@message.Text</MudText>
+                            <MudText T="string" Lines="5" Typo="Typo.body2" Style=" padding: 15px;background-color: black;border-radius: 5px;margin-top:5px">@message.Text</MudText>
                         </div>
                     </div>
                 }
@@ -37,7 +37,7 @@
         <MudTextField T="string" @bind-Value="TextValue" Label="Outlined" Variant="Variant.Outlined" Lines="5"></MudTextField>
     </MudItem>
     <MudItem xs="4">
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(async  () => await SendMessage())">Send</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(async () => await SendMessage())">Send</MudButton>
     </MudItem>
 </MudGrid>
 
@@ -45,23 +45,25 @@
 {
     [Parameter]
     public string dialogId { get; set; }
-    
+
     public HubConnection hubConnection { get; set; }
 
     public string TextValue { get; set; }
 
     private List<AccountModel> _userInChatModels = new List<AccountModel>();
-    
+
     public List<MessageModel> _messages = new List<MessageModel>();
-    private Guid _toUserId; 
+    private Guid _toUserId;
+
+
     protected override async Task OnInitializedAsync()
     {
-        var userId =  await LocalStorageService.GetItemAsync<Guid>("currentUserId");
-        
+        var userId = await LocalStorageService.GetItemAsync<Guid>("currentUserId");
+
         var id = Guid.Parse(dialogId);
         var ids = (await MessengerService.GetUsersInChat(id)).ToList();
         _toUserId = ids.FirstOrDefault(x => x.UserId != userId)!.UserId;
-        
+
         foreach (var userInChatModel in ids)
         {
             _userInChatModels.Add(await AccountService.GetAccount(userInChatModel.UserId));
@@ -71,17 +73,19 @@
         {
             message.User = _userInChatModels.FirstOrDefault(x => x.Id == message.SenderId);
         }
-
+        var accessToken = await LocalStorageService.GetItemAsync<string>("authToken");
+        Console.WriteLine(accessToken);
         hubConnection = new HubConnectionBuilder()
-            .WithUrl($"http://localhost:5000/Chat", opts => opts.Headers.Add("Authorization", $"Bearer {Settings.AccessToken}"))
+            .WithUrl($"http://localhost:5000/Chat", opts => opts.Headers.Add("Authorization", $"Bearer {accessToken}"))
             .WithAutomaticReconnect()
             .Build();
-        Console.WriteLine(hubConnection.State.ToString());
 
         hubConnection.On<MessageResponse>("ReceiveMessage", (response) =>
         {
-            if (response.SenderId.ToString() == _toUserId.ToString() || response.SenderId.ToString() == userId.ToString())
+            Console.WriteLine("ПОЛУЧИЛ");
+            if (response.ChatId.ToString() == dialogId)
             {
+                Console.WriteLine("ЗАШЕЛ");
                 MessageModel msg = new MessageModel()
                 {
                     CreationDateTime = response.CreationDateTime,
@@ -92,18 +96,19 @@
                     User = _userInChatModels.FirstOrDefault(x => x.Id == response.SenderId)
                 };
                 _messages.Add(msg);
+                Console.WriteLine("ДОБАВИЛ");
+                Console.WriteLine(msg.Text);
+                _messages = _messages.OrderByDescending(x => x.CreationDateTime).ToList();
+                InvokeAsync(StateHasChanged);
             }
-            return Task.CompletedTask;
         });
+
+        await hubConnection.StartAsync();
     }
 
     private async Task SendMessage()
     {
-        /*var msg = await MessengerService.SendMessage(_toUserId, TextValue);
-        msg.User = _userInChatModels.FirstOrDefault(x => x.Id == msg.SenderId);
-        _messages.Add(msg);
-        _messages = _messages.OrderByDescending(x => x.CreationDateTime).ToList();
-        TextValue = "";*/
         await hubConnection.InvokeAsync("SendMessage", TextValue, _toUserId);
+        TextValue = "";
     }
 }

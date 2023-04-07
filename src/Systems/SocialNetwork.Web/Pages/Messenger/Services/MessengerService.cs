@@ -32,9 +32,9 @@ public class MessengerService : IMessengerService
         return data;
     }
 
-    public async Task<IEnumerable<MessageModel>> GetMessages(Guid chatId)
+    public async Task<IEnumerable<MessageModel>> GetMessages(Guid chatId, int offset = 0, int limit = 10000)
     {
-        string url = $"{Settings.ApiRoot}/messenger/chats/{chatId}";
+        string url = $"{Settings.ApiRoot}/messenger/chats/{chatId}?offset={offset}&limit={limit}";
 
         var response = await _httpClient.GetAsync(url);
         var content = await response.Content.ReadAsStringAsync();
@@ -50,7 +50,7 @@ public class MessengerService : IMessengerService
         return data.OrderByDescending(x => x.CreationDateTime);
     }
 
-    public async Task<MessageModel> SendMessage(Guid receiverId, string text)
+    public async Task<MessageModel> SendMessage(Guid receiverId, string text )
     {
         string url = $"{Settings.ApiRoot}/messenger/{receiverId}";
 
