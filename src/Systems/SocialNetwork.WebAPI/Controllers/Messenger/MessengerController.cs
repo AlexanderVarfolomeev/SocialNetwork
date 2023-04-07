@@ -2,8 +2,12 @@ using System.Security.Claims;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SocialNetwork.AttachmentServices;
+using SocialNetwork.AttachmentServices.Models;
+using SocialNetwork.Common.Enum;
 using SocialNetwork.MessengerService;
 using SocialNetwork.MessengerService.Models;
+using SocialNetwork.WebAPI.Controllers.CommonModels;
 using SocialNetwork.WebAPI.Controllers.Messenger.Models;
 
 namespace SocialNetwork.WebAPI.Controllers.Messenger;
@@ -16,11 +20,13 @@ public class MessengerController : ControllerBase
 {
     private readonly IMessengerService _messengerService;
     private readonly IMapper _mapper;
+    private readonly IAttachmentService _attachmentService;
 
-    public MessengerController(IMessengerService messengerService, IMapper mapper)
+    public MessengerController(IMessengerService messengerService, IMapper mapper, IAttachmentService attachmentService)
     {
         _messengerService = messengerService;
         _mapper = mapper;
+        _attachmentService = attachmentService;
     }
 
     [HttpPost("messenger/{receiverId}")]
@@ -52,5 +58,28 @@ public class MessengerController : ControllerBase
     public async Task<IEnumerable<UserInChatResponse>> GetUsersInChat([FromRoute] Guid chatId)
     {
         return _mapper.Map<IEnumerable<UserInChatResponse>>(await _messengerService.GetUsersInChat(chatId));
+    }
+    
+    [HttpPost("messenger/{messageId}/upload")]
+    public async Task<IEnumerable<AttachmentResponse>> AddAttachments([FromRoute] Guid messageId,
+        [FromForm] IEnumerable<IFormFile> attachments)
+    {
+        var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+
+        var createdFiles = await _attachmentService.UploadFiles(userId, new AttachmentModelRequest()
+        {
+            MessageId = messageId,
+            FileType = FileType.Message,
+            Files = attachments
+        });
+
+        return _mapper.Map<IEnumerable<AttachmentResponse>>(createdFiles);
+    }
+
+    [HttpGet("messenger/{messageId}")]
+    public async Task<IEnumerable<AttachmentViewResponse>> GetAttachments([FromRoute] Guid messageId)
+    {
+        return _mapper.Map<IEnumerable<AttachmentViewResponse>>(
+            await _attachmentService.GetAttachments(FileType.Message, messageId));
     }
 }

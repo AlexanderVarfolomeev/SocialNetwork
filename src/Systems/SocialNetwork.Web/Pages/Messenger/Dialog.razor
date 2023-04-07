@@ -5,7 +5,9 @@
 @using SocialNetwork.Web.Pages.Users.Models
 @using Microsoft.AspNetCore;
 @using Blazored.LocalStorage
+@using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.AspNetCore.SignalR.Client
+@using System.Net.Http.Headers
 @layout MainLayout
 @inject IMessengerService MessengerService
 @inject IAccountService AccountService
@@ -21,12 +23,17 @@
                 {
                     <div class="d-flex flex-row my-4">
                         <div class="mr-4">
-                            <MudAvatar Color="Color.Secondary" Style="height:50px; width:50px;">@message.User.Email.ToUpper().FirstOrDefault()</MudAvatar>
+                            <MudAvatar Color="Color.Secondary" Style="height:50px; width:50px;">@message.User.CurAvatar</MudAvatar>
                         </div>
                         <div>
-                            <MudText Typo="Typo.body1">@message.User.Email</MudText>
+                            <MudText Typo="Typo.body1">@message.User.Name @message.User.Surname</MudText>
+                            <MudText Typo="Typo.body2">@message.User.UserName</MudText>
                             <MudText Typo="Typo.caption" Style="font-size: xx-small!important;">@message.CreationDateTime.ToString("dd MMM, yyyy hh:mm tt")</MudText>
                             <MudText T="string" Lines="5" Typo="Typo.body2" Style=" padding: 15px;background-color: black;border-radius: 5px;margin-top:5px">@message.Text</MudText>
+                            @foreach (var image in message.Attachments)
+                            {
+                                <MudImage Src="@($"data:image/jpeg;base64,{image.Content}")" Width="200" Height="200"></MudImage>
+                            }
                         </div>
                     </div>
                 }
@@ -39,12 +46,39 @@
     <MudItem xs="4">
         <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(async () => await SendMessage())">Send</MudButton>
     </MudItem>
+    <MudItem xs="6">
+        <MudFileUpload T="IBrowserFile" FilesChanged="UploadFiles">
+            <ButtonTemplate>
+                <MudButton HtmlTag="label"
+                           Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           StartIcon="@Icons.Material.Filled.CloudUpload"
+                           for="@context">
+                    Upload Files
+                </MudButton>
+            </ButtonTemplate>
+        </MudFileUpload>
+        @if (files != null)
+        {
+            <MudText Typo="@Typo.h6">@files.Count() File@(files.Count() == 1 ? "" : "s"):</MudText>
+            <MudList>
+                @foreach (var file in files)
+                {
+                    <MudListItem Icon="@Icons.Material.Filled.AttachFile" @key="@file">
+                        @file.Name <code>@file.Size bytes</code>
+                    </MudListItem>
+                }
+            </MudList>
+        }
+    </MudItem>
 </MudGrid>
 
 @code
 {
     [Parameter]
     public string dialogId { get; set; }
+
+    IList<IBrowserFile> files = new List<IBrowserFile>();
 
     public HubConnection hubConnection { get; set; }
 
@@ -66,26 +100,28 @@
 
         foreach (var userInChatModel in ids)
         {
-            _userInChatModels.Add(await AccountService.GetAccount(userInChatModel.UserId));
+            var user = await AccountService.GetAccount(userInChatModel.UserId);
+            _userInChatModels.Add(user);
+            user.CurAvatar = (await AccountService.GetAvatars(user.Id)).MaxBy(x => x.CreationDateTime)?.Content;
         }
         _messages = (await MessengerService.GetMessages(id)).OrderByDescending(x => x.CreationDateTime).ToList();
         foreach (var message in _messages)
         {
             message.User = _userInChatModels.FirstOrDefault(x => x.Id == message.SenderId);
+            message.Attachments = (await MessengerService.GetAttachments(message.Id)).ToList();
         }
+
+
         var accessToken = await LocalStorageService.GetItemAsync<string>("authToken");
-        Console.WriteLine(accessToken);
         hubConnection = new HubConnectionBuilder()
             .WithUrl($"http://localhost:5000/Chat", opts => opts.Headers.Add("Authorization", $"Bearer {accessToken}"))
             .WithAutomaticReconnect()
             .Build();
 
-        hubConnection.On<MessageResponse>("ReceiveMessage", (response) =>
+        hubConnection.On<MessageResponse>("ReceiveMessage", async (response) =>
         {
-            Console.WriteLine("ПОЛУЧИЛ");
             if (response.ChatId.ToString() == dialogId)
             {
-                Console.WriteLine("ЗАШЕЛ");
                 MessageModel msg = new MessageModel()
                 {
                     CreationDateTime = response.CreationDateTime,
@@ -95,11 +131,14 @@
                     ChatId = response.ChatId,
                     User = _userInChatModels.FirstOrDefault(x => x.Id == response.SenderId)
                 };
+               
+                await MessengerService.AddAttachments(msg.Id, files);
                 _messages.Add(msg);
-                Console.WriteLine("ДОБАВИЛ");
-                Console.WriteLine(msg.Text);
                 _messages = _messages.OrderByDescending(x => x.CreationDateTime).ToList();
-                InvokeAsync(StateHasChanged);
+                msg.Attachments = (await MessengerService.GetAttachments(msg.Id)).ToList();
+
+                files = new List<IBrowserFile>();
+                await InvokeAsync(StateHasChanged);
             }
         });
 
@@ -110,5 +149,11 @@
     {
         await hubConnection.InvokeAsync("SendMessage", TextValue, _toUserId);
         TextValue = "";
+    }
+
+    private void UploadFiles(IBrowserFile file)
+    {
+        files.Add(file);
+       
     }
 }

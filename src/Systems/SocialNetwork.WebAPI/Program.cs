@@ -52,7 +52,7 @@ app.UseAppHealthChecks();
 app.UseAppSerilog();
 
 app.UseAppSwagger();
-
+app.UseStaticFiles();
 app.UseHttpsRedirection();
 app.UseRouting();
 app.UseAuthorization();

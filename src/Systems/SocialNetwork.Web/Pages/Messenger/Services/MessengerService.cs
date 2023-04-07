@@ -1,7 +1,10 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Net.Http.Headers;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
+using Microsoft.AspNetCore.Components.Forms;
 using SocialNetwork.Web.Pages.Messenger.Models;
+using SocialNetwork.Web.Pages.Posts.Models;
 
 namespace SocialNetwork.Web.Pages.Messenger.Services;
 
@@ -87,5 +90,51 @@ public class MessengerService : IMessengerService
             new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new List<UserInChatModel>();
 
         return data;
+    }
+
+    public async Task<IEnumerable<AttachmentModel>> GetAttachments(Guid messageId)
+    {
+        string url = $"{Settings.ApiRoot}/messenger/{messageId}";
+        var response = await _httpClient.GetAsync(url);
+        var content = await response.Content.ReadAsStringAsync();
+
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception(content);
+        }
+
+        var data = JsonSerializer.Deserialize<IEnumerable<AttachmentModel>>(content,
+            new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new List<AttachmentModel>();
+
+        return data;
+    }
+
+    public async Task AddAttachments(Guid messageId, IEnumerable<IBrowserFile> files)
+    {
+        using var content = new MultipartFormDataContent();
+        foreach (var browserFile in files)
+        {
+            var fileContent = new StreamContent(browserFile.OpenReadStream());
+            fileContent.Headers.ContentType = new MediaTypeHeaderValue(browserFile.ContentType);
+            content.Add(content: fileContent, name: "\"files\"", fileName: browserFile.Name);
+        }
+        
+        string url = $"{Settings.ApiRoot}/messenger/{messageId}/upload";
+
+        //var body = JsonSerializer.Serialize(content);
+        //var request = new StringContent(body, Encoding.UTF8, "application/json");
+        var response = await _httpClient.PostAsync(url, content);
+
+        var cont = await response.Content.ReadAsStringAsync();
+
+        if (!response.IsSuccessStatusCode)
+        {
+            Console.WriteLine("???????????????????");
+            throw new Exception(cont);
+        }
+        else
+        {
+            Console.WriteLine("!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        }
     }
 }
