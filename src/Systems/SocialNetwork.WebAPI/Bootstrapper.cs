@@ -1,5 +1,6 @@
 using SocialNetwork.AccountServices;
 using SocialNetwork.AttachmentServices;
+using SocialNetwork.Cache;
 using SocialNetwork.CommentService;
 using SocialNetwork.ComplaintsServices;
 using SocialNetwork.EmailService;
@@ -27,6 +28,7 @@ public static class Bootstrapper
         services.AddCommentService();
         services.AddComplaintService();
         services.AddMessengerService();
+        services.AddCache();
         return services;
     }
 }

@@ -41,6 +41,7 @@
       <ProjectReference Include="..\..\Data\SocialNetwork.Repository\SocialNetwork.Repository.csproj" />
       <ProjectReference Include="..\..\Services\SocialNetwork.AccountServices\SocialNetwork.AccountServices.csproj" />
       <ProjectReference Include="..\..\Services\SocialNetwork.AttachmentServices\SocialNetwork.AttachmentServices.csproj" />
+      <ProjectReference Include="..\..\Services\SocialNetwork.Cache\SocialNetwork.Cache.csproj" />
       <ProjectReference Include="..\..\Services\SocialNetwork.CommentService\SocialNetwork.CommentService.csproj" />
       <ProjectReference Include="..\..\Services\SocialNetwork.ComplaintsServices\SocialNetwork.ComplaintsServices.csproj" />
       <ProjectReference Include="..\..\Services\SocialNetwork.EmailServices\SocialNetwork.EmailServices.csproj" />
@@ -58,6 +59,12 @@
       <Folder Include="wwwroot\Comment" />
       <Folder Include="wwwroot\Message" />
       <Folder Include="wwwroot\Post" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="..\..\..\.dockerignore">
+        <Link>.dockerignore</Link>
+      </Content>
     </ItemGroup>
 
 </Project>

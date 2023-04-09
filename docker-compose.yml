@@ -25,3 +25,6 @@ services:
   
   social_network_pgsl:
     image: postgres
+    
+  social_network_redis:
+    image: redis
