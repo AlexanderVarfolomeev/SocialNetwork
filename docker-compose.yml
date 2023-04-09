@@ -31,3 +31,14 @@ services:
 
   social_network_rabbitmq:
     image: rabbitmq:management
+    
+  social_network_worker:
+    image: ${DOCKER_REGISTRY-}social_network_worker
+    build:
+      context: .
+      dockerfile: src/Systems/SocialNetwork.Worker/Dockerfile
+    depends_on:
+      - social_network_pgsl
+      - social_network_redis
+      - social_network_rabbitmq
+      - social_network_api

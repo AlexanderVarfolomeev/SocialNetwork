@@ -50,6 +50,12 @@ services:
       - shared_soc_net
     volumes:
       - ./rabbitmq:/var/lib/rabbitmq
+        
+  social_network_worker:
+    networks:
+      - shared_soc_net
+    env_file:
+      - env.worker
 
 networks:
   shared_soc_net:

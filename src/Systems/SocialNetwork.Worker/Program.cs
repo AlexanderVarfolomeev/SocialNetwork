@@ -1,7 +1,6 @@
 using SocialNetwork.Settings.Settings;
 using SocialNetwork.Settings.Source;
-using SocialNetwork.WebAPI;
-using SocialNetwork.WebAPI.Configuration;
+using SocialNetwork.Worker;
 using SocialNetwork.Worker.Configuration;
 using SocialNetwork.Worker.TaskExecutor;
 
@@ -17,10 +16,10 @@ var services = builder.Services;
 services.AddHttpContextAccessor();
 
 services.AddAppDbContext(settings);
-
+    
 services.AddAppHealthChecks();
 
-services.AddAppServices();
+services.RegisterAppServices();
 
 
 // Configure the HTTP request pipeline.
