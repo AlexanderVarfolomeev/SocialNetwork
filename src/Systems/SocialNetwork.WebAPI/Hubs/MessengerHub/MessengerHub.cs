@@ -10,8 +10,6 @@ using SocialNetwork.WebAPI.Controllers.Messenger.Models;
 using SocialNetwork.WebAPI.Hubs.Models;
 
 namespace SocialNetwork.WebAPI.Hubs.MessengerHub;
-
-
 [Authorize]
 public class MessengerHub : Hub
 {

@@ -18,12 +18,14 @@ class AccountService : IAccountService
     private readonly IAdminService _adminService;
     private readonly ICacheService _cacheService;
 
+    
     public AccountService(IRepository<AppUser> userRepository, IMapper mapper, IAdminService adminService, ICacheService cacheService)
     {
         _userRepository = userRepository;
         _mapper = mapper;
         _adminService = adminService;
         _cacheService = cacheService;
+
     }
 
     public async Task<AppAccountModel> GetAccountAsync(Guid id)
