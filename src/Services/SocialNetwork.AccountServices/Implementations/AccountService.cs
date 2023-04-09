@@ -1,6 +1,8 @@
 using AutoMapper;
+using Serilog;
 using SocialNetwork.AccountServices.Interfaces;
 using SocialNetwork.AccountServices.Models;
+using SocialNetwork.Cache;
 using SocialNetwork.Common.Exceptions;
 using SocialNetwork.Constants.Errors;
 using SocialNetwork.Entities.User;
@@ -10,15 +12,18 @@ namespace SocialNetwork.AccountServices.Implementations;
 
 class AccountService : IAccountService
 {
+    private readonly string _accountsCacheKey = "accounts_cache_key";
     private readonly IRepository<AppUser> _userRepository;
     private readonly IMapper _mapper;
     private readonly IAdminService _adminService;
+    private readonly ICacheService _cacheService;
 
-    public AccountService(IRepository<AppUser> userRepository, IMapper mapper, IAdminService adminService)
+    public AccountService(IRepository<AppUser> userRepository, IMapper mapper, IAdminService adminService, ICacheService cacheService)
     {
         _userRepository = userRepository;
         _mapper = mapper;
         _adminService = adminService;
+        _cacheService = cacheService;
     }
 
     public async Task<AppAccountModel> GetAccountAsync(Guid id)
@@ -33,18 +38,36 @@ class AccountService : IAccountService
 
     public async Task<IEnumerable<AppAccountModel>> GetAccountsAsync(int offset = 0, int limit = 10)
     {
-        return _mapper.Map<IEnumerable<AppAccountModel>>(await _userRepository.GetAllAsync(offset, limit));
+        try
+        {
+            var cachedData = await _cacheService.Get<IEnumerable<AppAccountModel>>(_accountsCacheKey);
+            if (cachedData != null)
+                return cachedData;
+        }
+        catch (Exception e)
+        {
+            Log.Logger.Error(e, ErrorMessages.GetCacheError);
+        }
+        
+        var data = _mapper.Map<IEnumerable<AppAccountModel>>(await _userRepository.GetAllAsync(offset, limit)).ToList();
+        await _cacheService.Put(_accountsCacheKey, data, TimeSpan.FromSeconds(30));
+        
+        return data;
     }
 
     public async Task<AppAccountModel> UpdateAccountAsync(Guid userId, Guid accountId, AppAccountUpdateModel model)
     {
         var userModel = _mapper.Map(model, await CheckAdminOrAccountOwner(userId, accountId));
-        return _mapper.Map<AppAccountModel>(await _userRepository.UpdateAsync(userModel));
+        var data = _mapper.Map<AppAccountModel>(await _userRepository.UpdateAsync(userModel)); 
+        await _cacheService.Delete(_accountsCacheKey);
+
+        return data;
     }
 
     public async Task DeleteAccountAsync(Guid userId, Guid accountId)
     {
         await _userRepository.DeleteAsync(await CheckAdminOrAccountOwner(userId, accountId));
+        await _cacheService.Delete(_accountsCacheKey);
     }
 
     /// <summary>

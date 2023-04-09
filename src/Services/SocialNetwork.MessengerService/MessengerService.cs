@@ -42,7 +42,7 @@ public class MessengerService : IMessengerService
         ProcessException.ThrowIf(() => receiver.IsBanned, ErrorMessages.UserIsBannedError);
 
         var friends = await _relationshipService.GetFriendList(userId, 0, 1000);
-        ProcessException.ThrowIf(() => !friends.Select(x => x.Id).Contains(receiverId), ErrorMessages.SendMessegeToNotFriendError);
+        ProcessException.ThrowIf(() => !friends.Select(x => x.Id).Contains(receiverId), ErrorMessages.SendMessageToNotFriendError);
 
         var chat = await GetDialogBetweenUsers(userId, receiverId);
        

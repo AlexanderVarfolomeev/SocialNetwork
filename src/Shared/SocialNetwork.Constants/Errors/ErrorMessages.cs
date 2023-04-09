@@ -33,5 +33,6 @@ public static class ErrorMessages
     public const string GroupWithThisNameAlreadyExistsError = "Group with this name already exists.";
     public const string CreatorCantUnsubscribeFromGroupError = "The creator of the group cannot unsubscribe from it.";
     public const string UserNotSubToGroupError = "The user is not subscribed to the group.";
-    public const string SendMessegeToNotFriendError = "You can only send a message to your friends";
+    public const string SendMessageToNotFriendError = "You can only send a message to your friends";
+    public const string GetCacheError = "Error while getting data from cache";
 }

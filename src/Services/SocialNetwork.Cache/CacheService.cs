@@ -55,6 +55,7 @@ public class CacheService : ICacheService
 
     public async Task<bool> Put<T>(string key, T data, TimeSpan? storeTime = null)
     {
+        Console.WriteLine("data is null: " + data is null);
         return await _cacheDb.StringSetAsync(key, data.ToJsonString(), storeTime ?? _defaultLifetime);
     }
 

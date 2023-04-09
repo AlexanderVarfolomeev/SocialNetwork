@@ -1,5 +1,7 @@
 using AutoMapper;
+using Serilog;
 using SocialNetwork.AccountServices.Models;
+using SocialNetwork.Cache;
 using SocialNetwork.Common.Enum;
 using SocialNetwork.Common.Exceptions;
 using SocialNetwork.Constants.Errors;
@@ -11,18 +13,22 @@ namespace SocialNetwork.RelationshipServices;
 
 public class RelationshipService : IRelationshipService
 {
+    private string _friendlistKey = "friend_list_key_";
     private readonly IRepository<AppUser> _userRepository;
     private readonly IMapper _mapper;
     private readonly IRepository<Relationship> _relationshipRepository;
+    private readonly ICacheService _cacheService;
 
     public RelationshipService(
         IRepository<AppUser> userRepository,
         IMapper mapper,
-        IRepository<Relationship> relationshipRepository)
+        IRepository<Relationship> relationshipRepository,
+        ICacheService cacheService)
     {
         _userRepository = userRepository;
         _mapper = mapper;
         _relationshipRepository = relationshipRepository;
+        _cacheService = cacheService;
     }
 
     public async Task SendFriendRequest(Guid senderId, Guid recipientId)
@@ -70,6 +76,7 @@ public class RelationshipService : IRelationshipService
 
         relationship.RelationshipType = RelationshipType.Friend;
         await _relationshipRepository.UpdateAsync(relationship);
+        await _cacheService.Delete(_friendlistKey + recipientId);
     }
 
     public async Task RejectFriendRequest(Guid recipientId, Guid requestId)
@@ -89,11 +96,23 @@ public class RelationshipService : IRelationshipService
     {
         var list = await _relationshipRepository.GetAllAsync(x =>
             x.SecondUserId == userId && x.RelationshipType == RelationshipType.FriendRequest, offset, limit);
+        
         return _mapper.Map<List<FriendshipRequest>>(list);
     }
 
     public async Task<List<AppAccountModel>> GetFriendList(Guid userId, int offset = 0, int limit = 10)
     {
+        try
+        {
+            var cachedData = await _cacheService.Get<List<AppAccountModel>>(_friendlistKey + userId);
+            if (cachedData != null)
+                return cachedData;
+        }
+        catch (Exception e)
+        {
+            Log.Logger.Error(e, ErrorMessages.GetCacheError);
+        }
+        
         var relationships = await _relationshipRepository.GetAllAsync(
             x => (x.FirstUserId == userId || x.SecondUserId == userId) &&
                  x.RelationshipType == RelationshipType.Friend, offset, limit);
@@ -101,7 +120,9 @@ public class RelationshipService : IRelationshipService
         var friendsIds = relationships.Select(x => x.FirstUserId == userId ? x.SecondUserId : x.FirstUserId);
         var friendList = await _userRepository.GetAllAsync(x => friendsIds.Contains(x.Id));
 
-        return _mapper.Map<List<AppAccountModel>>(friendList);
+        var data = _mapper.Map<List<AppAccountModel>>(friendList);
+        await _cacheService.Put(_friendlistKey + userId, data);
+        return data;
     }
 
     public async Task DeleteFromFriendList(Guid userId, Guid friendId)
@@ -111,6 +132,7 @@ public class RelationshipService : IRelationshipService
         {
             var relationship = await GetRelationshipBetweenUsers(friendId, userId);
             await _relationshipRepository.DeleteAsync(relationship!);
+            await _cacheService.Delete(_friendlistKey + userId);
         }
         else
         {

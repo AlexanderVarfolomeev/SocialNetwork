@@ -12,6 +12,10 @@
         <PackageReference Include="FluentValidation" Version="11.4.0" />
         <PackageReference Include="FluentValidation.AspNetCore" Version="11.2.2" />
         <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
+      <PackageReference Include="Serilog" Version="2.12.0" />
+      <PackageReference Include="Serilog.AspNetCore" Version="6.1.0" />
+      <PackageReference Include="Serilog.Enrichers.CorrelationId" Version="3.0.1" />
+      <PackageReference Include="Serilog.Expressions" Version="3.4.1" />
     </ItemGroup>
   <ItemGroup>
     <Reference Include="IdentityModel">
@@ -23,6 +27,7 @@
     <ProjectReference Include="..\..\Data\SocialNetwork.Repository\SocialNetwork.Repository.csproj" />
     <ProjectReference Include="..\..\Shared\SocialNetwork.Constants\SocialNetwork.Constants.csproj" />
     <ProjectReference Include="..\..\Shared\SocialNetwork.Settings\SocialNetwork.Settings.csproj" />
+    <ProjectReference Include="..\SocialNetwork.Cache\SocialNetwork.Cache.csproj" />
     <ProjectReference Include="..\SocialNetwork.EmailServices\SocialNetwork.EmailServices.csproj" />
   </ItemGroup>
 </Project>

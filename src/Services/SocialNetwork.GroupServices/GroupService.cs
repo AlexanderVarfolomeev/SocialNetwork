@@ -1,4 +1,6 @@
 using AutoMapper;
+using Serilog;
+using SocialNetwork.Cache;
 using SocialNetwork.Common.Exceptions;
 using SocialNetwork.Constants.Errors;
 using SocialNetwork.Entities.Groups;
@@ -10,21 +12,25 @@ namespace SocialNetwork.GroupServices;
 
 public class GroupService : IGroupService
 {
+    private string _groupListKey = "group_list_key_";
     private readonly IRepository<AppUser> _userRepository;
     private readonly IRepository<Group> _groupRepository;
     private readonly IMapper _mapper;
     private readonly IRepository<UserInGroup> _userInGroupRepository;
+    private readonly ICacheService _cacheService;
 
     public GroupService(
         IRepository<AppUser> userRepository,
         IRepository<Group> groupRepository,
         IMapper mapper,
-        IRepository<UserInGroup> userInGroupRepository)
+        IRepository<UserInGroup> userInGroupRepository,
+        ICacheService cacheService)
     {
         _userRepository = userRepository;
         _groupRepository = groupRepository;
         _mapper = mapper;
         _userInGroupRepository = userInGroupRepository;
+        _cacheService = cacheService;
     }
 
     public async Task<GroupModelResponse> GetGroup(Guid groupId)
@@ -43,6 +49,27 @@ public class GroupService : IGroupService
     {
         var groups = await _groupRepository.GetAllAsync(offset, limit);
         return _mapper.Map<IEnumerable<GroupModelResponse>>(groups);
+    }
+
+    public async Task<IEnumerable<GroupModelResponse>> GetUsersGroups(Guid userId, int offset = 0, int limit = 10)
+    {
+        try
+        {
+            var cachedData = await _cacheService.Get<IEnumerable<GroupModelResponse>>(_groupListKey + userId);
+            if (cachedData != null)
+                return cachedData;
+        }
+        catch (Exception e)
+        {
+            Log.Logger.Error(e, ErrorMessages.GetCacheError);
+        }
+        
+        var groupsIds = (await _userInGroupRepository.GetAllAsync(x => x.UserId == userId)).Select(x => x.GroupId);
+        var groups = await _groupRepository.GetAllAsync(x => groupsIds.Contains(x.Id),offset, limit);
+        var data = _mapper.Map<IEnumerable<GroupModelResponse>>(groups).ToList();
+
+        await _cacheService.Put(_groupListKey + userId, data);
+        return data;
     }
 
     public async Task<GroupModelResponse> CreateGroup(Guid userId, GroupModelRequest groupModelRequest)
@@ -64,6 +91,7 @@ public class GroupService : IGroupService
             DateOfEntry = DateTime.Now
         });
 
+        await _cacheService.Delete(_groupListKey + userId);
         return _mapper.Map<GroupModelResponse>(group);
     }
 
@@ -107,6 +135,7 @@ public class GroupService : IGroupService
             ProcessException.ThrowIf(() => subscription.IsCreator, ErrorMessages.CreatorCantUnsubscribeFromGroupError);
             await _userInGroupRepository.DeleteAsync(subscription);
         }
+        await _cacheService.Delete(_groupListKey + userId);
     }
 
     public async Task GrantAdminRole(Guid userId, Guid receiverId, Guid groupId)

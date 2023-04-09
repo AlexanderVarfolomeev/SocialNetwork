@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using SocialNetwork.AccountServices.Interfaces;
+using SocialNetwork.Cache;
 using SocialNetwork.Common.Enum;
 using SocialNetwork.Common.Exceptions;
 using SocialNetwork.Common.Extensions;
@@ -11,14 +12,17 @@ namespace SocialNetwork.AccountServices.Implementations;
 
 public class AdminService : IAdminService
 {
+    private readonly string _accountsCacheKey = "accounts_cache_key";
     private readonly IRepository<AppUser> _userRepository;
     private readonly UserManager<AppUser> _userManager;
+    private readonly ICacheService _cacheService;
 
     public AdminService(IRepository<AppUser> userRepository,
-        UserManager<AppUser> userManager)
+        UserManager<AppUser> userManager, ICacheService cacheService)
     {
         _userRepository = userRepository;
         _userManager = userManager;
+        _cacheService = cacheService;
     }
 
     public async Task<bool> IsAdminAsync(Guid userId)
@@ -40,6 +44,7 @@ public class AdminService : IAdminService
             throw new ProcessException(ErrorMessages.UserIsAdminError);
 
         await _userManager.AddToRoleAsync(user, Permissions.Admin.GetName());
+        await _cacheService.Delete(_accountsCacheKey);
     }
 
     public async Task RevokeAdminRoleAsync(Guid userId, Guid accountId)
@@ -53,6 +58,7 @@ public class AdminService : IAdminService
             throw new ProcessException(ErrorMessages.UserIsNotAdminError);
 
         await _userManager.RemoveFromRoleAsync(user, Permissions.Admin.GetName());
+        await _cacheService.Delete(_accountsCacheKey);
     }
 
     public async Task BanAccountAsync(Guid userId, Guid accountId)
@@ -68,6 +74,7 @@ public class AdminService : IAdminService
 
         user.IsBanned = true;
         await _userRepository.UpdateAsync(user);
+        await _cacheService.Delete(_accountsCacheKey);
     }
 
     public async Task UnbanAccountAsync(Guid userId, Guid accountId)

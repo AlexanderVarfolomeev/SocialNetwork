@@ -1,4 +1,5 @@
 using Microsoft.IdentityModel.Logging;
+using Serilog;
 using SocialNetwork.Settings.Settings;
 using SocialNetwork.Settings.Source;
 using SocialNetwork.WebAPI;
@@ -14,7 +15,6 @@ var settings = new AppSettings(new SettingSource());
 IdentityModelEventSource.ShowPII = true;
 
 builder.AddAppSerilog();
-
 services.AddAppDbContext(settings);
 
 services.AddHttpContextAccessor();

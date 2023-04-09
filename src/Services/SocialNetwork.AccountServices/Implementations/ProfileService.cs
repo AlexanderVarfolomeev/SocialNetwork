@@ -3,6 +3,7 @@ using IdentityModel.Client;
 using Microsoft.AspNetCore.Identity;
 using SocialNetwork.AccountServices.Interfaces;
 using SocialNetwork.AccountServices.Models;
+using SocialNetwork.Cache;
 using SocialNetwork.Common.Enum;
 using SocialNetwork.Common.Exceptions;
 using SocialNetwork.Common.Extensions;
@@ -19,16 +20,18 @@ namespace SocialNetwork.AccountServices.Implementations;
 
 public class ProfileService : IProfileService
 {
+    private readonly string _accountsCacheKey = "accounts_cache_key";
     private readonly IRepository<AppUser> _userRepository;
     private readonly UserManager<AppUser> _userManager;
     private readonly SignInManager<AppUser> _signInManager;
     private readonly IMapper _mapper;
     private readonly IAppSettings _apiSettings;
     private readonly IEmailService _emailService;
+    private readonly ICacheService _cacheService;
 
     public ProfileService(IRepository<AppUser> userRepository, UserManager<AppUser> userManager,
         SignInManager<AppUser> signInManager, IMapper mapper, IAppSettings apiSettings,
-        IEmailService emailService)
+        IEmailService emailService, ICacheService cacheService)
     {
         _userRepository = userRepository;
         _userManager = userManager;
@@ -36,6 +39,7 @@ public class ProfileService : IProfileService
         _mapper = mapper;
         _apiSettings = apiSettings;
         _emailService = emailService;
+        _cacheService = cacheService;
     }
 
     public async Task<AppAccountModel> RegisterUserAsync(AppAccountModelRequest requestModel)
@@ -61,6 +65,7 @@ public class ProfileService : IProfileService
         }
 
         await _userManager.AddToRoleAsync(user, Permissions.User.GetName());
+        await _cacheService.Delete(_accountsCacheKey);
         return _mapper.Map<AppAccountModel>(user);
     }
 
@@ -100,6 +105,7 @@ public class ProfileService : IProfileService
             await _userRepository.UpdateAsync(user);
         }
 
+        await _cacheService.Delete(_accountsCacheKey);
         return result.Succeeded;
     }
 
@@ -129,6 +135,7 @@ public class ProfileService : IProfileService
     {
         var result = await _userManager.ResetPasswordAsync(user, resetToken, newPassword);
         ProcessException.ThrowIf(() => !result.Succeeded, ErrorMessages.ErrorWhileResetPassword);
+        await _cacheService.Delete(_accountsCacheKey);
     }
 
     /// <summary>
