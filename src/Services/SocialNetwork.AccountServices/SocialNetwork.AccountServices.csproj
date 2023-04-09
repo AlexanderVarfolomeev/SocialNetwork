@@ -27,6 +27,7 @@
     <ProjectReference Include="..\..\Data\SocialNetwork.Repository\SocialNetwork.Repository.csproj" />
     <ProjectReference Include="..\..\Shared\SocialNetwork.Constants\SocialNetwork.Constants.csproj" />
     <ProjectReference Include="..\..\Shared\SocialNetwork.Settings\SocialNetwork.Settings.csproj" />
+    <ProjectReference Include="..\SocialNetwork.Actions\SocialNetwork.Actions.csproj" />
     <ProjectReference Include="..\SocialNetwork.Cache\SocialNetwork.Cache.csproj" />
     <ProjectReference Include="..\SocialNetwork.EmailServices\SocialNetwork.EmailServices.csproj" />
   </ItemGroup>

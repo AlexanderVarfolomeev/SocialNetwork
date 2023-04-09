@@ -1,4 +1,5 @@
 using SocialNetwork.AccountServices;
+using SocialNetwork.Actions;
 using SocialNetwork.AttachmentServices;
 using SocialNetwork.Cache;
 using SocialNetwork.CommentService;
@@ -7,6 +8,7 @@ using SocialNetwork.EmailService;
 using SocialNetwork.GroupServices;
 using SocialNetwork.MessengerService;
 using SocialNetwork.PostServices;
+using SocialNetwork.RabbitMq;
 using SocialNetwork.RelationshipServices;
 using SocialNetwork.Repository;
 using SocialNetwork.Settings;
@@ -29,6 +31,8 @@ public static class Bootstrapper
         services.AddComplaintService();
         services.AddMessengerService();
         services.AddCache();
+        services.AddRabbitMq();
+        services.AddActions();
         return services;
     }
 }

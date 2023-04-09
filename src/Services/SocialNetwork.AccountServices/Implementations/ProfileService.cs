@@ -3,6 +3,7 @@ using IdentityModel.Client;
 using Microsoft.AspNetCore.Identity;
 using SocialNetwork.AccountServices.Interfaces;
 using SocialNetwork.AccountServices.Models;
+using SocialNetwork.Actions;
 using SocialNetwork.Cache;
 using SocialNetwork.Common.Enum;
 using SocialNetwork.Common.Exceptions;
@@ -10,7 +11,6 @@ using SocialNetwork.Common.Extensions;
 using SocialNetwork.Constants.Email;
 using SocialNetwork.Constants.Errors;
 using SocialNetwork.Constants.Security;
-using SocialNetwork.EmailService;
 using SocialNetwork.EmailService.Models;
 using SocialNetwork.Entities.User;
 using SocialNetwork.Repository;
@@ -26,20 +26,25 @@ public class ProfileService : IProfileService
     private readonly SignInManager<AppUser> _signInManager;
     private readonly IMapper _mapper;
     private readonly IAppSettings _apiSettings;
-    private readonly IEmailService _emailService;
     private readonly ICacheService _cacheService;
+    private readonly IAction _action;
 
-    public ProfileService(IRepository<AppUser> userRepository, UserManager<AppUser> userManager,
-        SignInManager<AppUser> signInManager, IMapper mapper, IAppSettings apiSettings,
-        IEmailService emailService, ICacheService cacheService)
+    public ProfileService(
+        IRepository<AppUser> userRepository, 
+        UserManager<AppUser> userManager,
+        SignInManager<AppUser> signInManager, 
+        IMapper mapper, 
+        IAppSettings apiSettings,
+        ICacheService cacheService,
+        IAction action)
     {
         _userRepository = userRepository;
         _userManager = userManager;
         _signInManager = signInManager;
         _mapper = mapper;
         _apiSettings = apiSettings;
-        _emailService = emailService;
         _cacheService = cacheService;
+        _action = action;
     }
 
     public async Task<AppAccountModel> RegisterUserAsync(AppAccountModelRequest requestModel)
@@ -145,7 +150,7 @@ public class ProfileService : IProfileService
     private async Task SendConfirmRegistrationMail(AppUser user)
     {
         user.EmailConfirmationKey = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-        await _emailService.SendEmailAsync(new EmailModel
+        await _action.SendEmail(new EmailModel
         {
             Email = user.Email,
             Message = MessageConstants.ConfirmRegistration + _apiSettings.Email.ConfirmAddress +

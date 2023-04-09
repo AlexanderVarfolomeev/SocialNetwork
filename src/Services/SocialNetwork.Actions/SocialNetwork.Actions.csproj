@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\Shared\SocialNetwork.Common\SocialNetwork.Common.csproj" />
+      <ProjectReference Include="..\..\Shared\SocialNetwork.Constants\SocialNetwork.Constants.csproj" />
+      <ProjectReference Include="..\SocialNetwork.EmailServices\SocialNetwork.EmailServices.csproj" />
+      <ProjectReference Include="..\SocialNetwork.RabbitMq\SocialNetwork.RabbitMq.csproj" />
+    </ItemGroup>
+
+</Project>
