@@ -6,4 +6,5 @@ public interface IAppSettings
     IIdentitySettings Identity { get; }
     IEmailSettings Email { get; }
     IRedisSettings Redis { get; }
+    IRabbitMqSettings Rabbit { get; }
 }

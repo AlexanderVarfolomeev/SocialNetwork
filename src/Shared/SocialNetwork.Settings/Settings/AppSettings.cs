@@ -10,19 +10,27 @@ public class AppSettings : IAppSettings
     private readonly IIdentitySettings _identity;
     private readonly IEmailSettings _email;
     private readonly IRedisSettings _redis;
+    private readonly IRabbitMqSettings _rabbit;
 
     public AppSettings(ISettingSource source)
     {
         _source = source;
     }
 
-    public AppSettings(IDbSettings db, ISettingSource source, IIdentitySettings identity, IEmailSettings email, IRedisSettings redis)
+    public AppSettings(
+        IDbSettings db, 
+        ISettingSource source,
+        IIdentitySettings identity,
+        IEmailSettings email,
+        IRedisSettings redis,
+        IRabbitMqSettings rabbit)
     {
         _db = db;
         _source = source;
         _identity = identity;
         _email = email;
         _redis = redis;
+        _rabbit = rabbit;
     }
     
     public IDbSettings Db => _db ?? new DbSettings(_source);
@@ -30,4 +38,5 @@ public class AppSettings : IAppSettings
     public IEmailSettings Email => _email ?? new EmailSettings(_source);
 
     public IRedisSettings Redis => _redis ?? new RedisSettings(_source);
+    public IRabbitMqSettings Rabbit => _rabbit ?? new RabbitMqSettings(_source);
 }

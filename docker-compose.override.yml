@@ -41,6 +41,15 @@ services:
     volumes:
       - ~/.docker-conf/redis/data/:/data
       
+  social_network_rabbitmq:
+    ports:
+      - "5672:5672"
+      - "5673:5673"
+      - "15672:15672"
+    networks:
+      - shared_soc_net
+    volumes:
+      - ./rabbitmq:/var/lib/rabbitmq
 
 networks:
   shared_soc_net:

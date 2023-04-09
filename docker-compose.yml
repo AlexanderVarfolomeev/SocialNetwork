@@ -28,3 +28,6 @@ services:
     
   social_network_redis:
     image: redis
+
+  social_network_rabbitmq:
+    image: rabbitmq:management

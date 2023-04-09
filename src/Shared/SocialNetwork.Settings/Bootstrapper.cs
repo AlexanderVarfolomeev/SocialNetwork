@@ -14,6 +14,8 @@ public static class Bootstrapper
         services.AddSingleton<IEmailSettings, EmailSettings>();
         services.AddSingleton<IDbSettings, DbSettings>();
         services.AddSingleton<IIdentitySettings, IdentitySettings>();
+        services.AddSingleton<IRedisSettings, RedisSettings>();
+        services.AddSingleton<IRabbitMqSettings, RabbitMqSettings>();
         return services;
     }
     
