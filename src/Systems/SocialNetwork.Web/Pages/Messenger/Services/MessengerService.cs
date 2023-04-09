@@ -128,7 +128,6 @@ public class MessengerService : IMessengerService
 
         if (!response.IsSuccessStatusCode)
         {
-            Console.WriteLine("???????????????????");
             throw new Exception(cont);
         }
         else

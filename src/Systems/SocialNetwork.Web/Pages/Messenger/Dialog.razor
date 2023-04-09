@@ -130,7 +130,7 @@
                     User = _userInChatModels.FirstOrDefault(x => x.Id == response.SenderId)
                 };
                
-                await MessengerService.AddAttachments(msg.Id, files);
+                // await MessengerService.AddAttachments(msg.Id, files);
                 _messages.Add(msg);
                 _messages = _messages.OrderByDescending(x => x.CreationDateTime).ToList();
                 msg.Attachments = (await MessengerService.GetAttachments(msg.Id)).ToList();
