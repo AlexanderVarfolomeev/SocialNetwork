@@ -42,3 +42,14 @@ services:
       - social_network_redis
       - social_network_rabbitmq
       - social_network_api
+  social_network_web:
+    image: ${DOCKER_REGISTRY-}social_network_web
+    build:
+      context: .
+      dockerfile: src/Systems/SocialNetwork.Web/Dockerfile
+    depends_on:
+      - social_network_pgsl
+      - social_network_redis
+      - social_network_rabbitmq
+      - social_network_api
+      - social_network_worker

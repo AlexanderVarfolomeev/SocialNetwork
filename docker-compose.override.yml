@@ -57,6 +57,13 @@ services:
     env_file:
       - env.worker
 
+
+  social_network_web:
+    ports:
+      - "10002:80"
+    networks:
+      - shared_soc_net
+
 networks:
   shared_soc_net:
     name: soc_net 
