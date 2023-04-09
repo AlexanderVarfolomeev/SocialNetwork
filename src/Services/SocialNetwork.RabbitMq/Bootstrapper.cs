@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using SocialNetwork.Settings.Settings;
 
 namespace SocialNetwork.RabbitMq;
 

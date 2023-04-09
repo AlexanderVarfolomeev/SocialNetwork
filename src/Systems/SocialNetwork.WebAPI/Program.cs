@@ -1,5 +1,4 @@
 using Microsoft.IdentityModel.Logging;
-using Serilog;
 using SocialNetwork.Settings.Settings;
 using SocialNetwork.Settings.Source;
 using SocialNetwork.WebAPI;

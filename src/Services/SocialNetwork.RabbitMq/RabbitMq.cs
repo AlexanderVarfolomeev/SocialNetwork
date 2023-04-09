@@ -4,7 +4,6 @@ using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using RabbitMQ.Client.Exceptions;
 using SocialNetwork.Settings.Interfaces;
-using SocialNetwork.Settings.Settings;
 
 namespace SocialNetwork.RabbitMq;
 

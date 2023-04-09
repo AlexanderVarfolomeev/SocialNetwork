@@ -6,7 +6,6 @@ using SocialNetwork.AccountServices.Interfaces;
 using SocialNetwork.AccountServices.Models;
 using SocialNetwork.AttachmentServices;
 using SocialNetwork.Constants.Security;
-using SocialNetwork.Settings.Interfaces;
 using SocialNetwork.WebAPI.Controllers.Users.Models;
 
 namespace SocialNetwork.WebAPI.Controllers.Users;
@@ -23,29 +22,19 @@ public class AccountsController : ControllerBase
     private readonly IAccountService _accountService;
     private readonly IAdminService _adminService;
     private readonly IAttachmentService _attachmentService;
-    private readonly IAppSettings _settings;
 
     public AccountsController(
         IMapper mapper,
         IAccountService accountService,
         IAdminService adminService,
-        IAttachmentService attachmentService,
-        IAppSettings settings
+        IAttachmentService attachmentService
     )
     {
         _mapper = mapper;
         _accountService = accountService;
         _adminService = adminService;
         _attachmentService = attachmentService;
-        _settings = settings;
     }
-
-    [HttpGet("settings")]
-    public string Settingssad()
-    {
-        return _settings.Redis.Uri + "\n" + _settings.Redis.CacheLifeTime;
-    }
-    
 
     [HttpGet("{id:Guid}")]
     public async Task<AppAccountResponse> GetAccountById([FromRoute] Guid id)

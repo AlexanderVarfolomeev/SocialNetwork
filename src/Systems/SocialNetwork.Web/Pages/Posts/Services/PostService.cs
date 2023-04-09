@@ -1,5 +1,4 @@
 ﻿using System.Text.Json;
-using Microsoft.JSInterop;
 using SocialNetwork.Web.Pages.Posts.Models;
 
 namespace SocialNetwork.Web.Pages.Posts.Services;

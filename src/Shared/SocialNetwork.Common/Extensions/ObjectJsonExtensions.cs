@@ -1,7 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
-using System;
 using SocialNetwork.Common.JsonConverters;
 
 namespace SocialNetwork.Common.Extensions;

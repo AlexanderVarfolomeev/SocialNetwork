@@ -1,5 +1,4 @@
-﻿using Castle.Core.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 
 namespace SocialNetwork.Cache;
 
