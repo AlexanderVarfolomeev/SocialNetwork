@@ -36,7 +36,7 @@ public class PostService : IPostService
         foreach (var model in data)
         {
             model.Creator = user;
-            model.Attachments = await GetAttachments(model.Id);
+            model.Attachments = await GetPostAttachments(model.Id);
             model.Likes = await GetLikes(model.Id);
         }
 
@@ -62,14 +62,14 @@ public class PostService : IPostService
         foreach (var model in data)
         {
             model.Creator = await _accountService.GetAccount(model.CreatorId);
-            model.Attachments = await GetAttachments(model.Id);
+            model.Attachments = await GetPostAttachments(model.Id);
             model.Likes = await GetLikes(model.Id);
         }
 
         return data.OrderByDescending(x => x.CreationDateTime);
     }
 
-    public async Task<IEnumerable<AttachmentModel>> GetAttachments(Guid postId)
+    private async Task<IEnumerable<AttachmentModel>> GetPostAttachments(Guid postId)
     {
         string url = $"{Settings.ApiRoot}/posts/{postId}/attachments";
         var response = await _httpClient.GetAsync(url);
@@ -132,5 +132,47 @@ public class PostService : IPostService
             Console.WriteLine("Err");
             throw new Exception(content);
         }
+    }
+
+    private async Task<IEnumerable<AttachmentModel>> GetCommentAttachments(Guid commentId)
+    {
+        string url = $"{Settings.ApiRoot}/comments/{commentId}/attachments";
+        var response = await _httpClient.GetAsync(url);
+        var content = await response.Content.ReadAsStringAsync();
+
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception(content);
+        }
+
+        var data = JsonSerializer.Deserialize<IEnumerable<AttachmentModel>>(content,
+            new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new List<AttachmentModel>();
+
+        return data;
+    }
+    
+    public async Task<IEnumerable<CommentModel>> GetCommentsByPost(Guid postId)
+    {
+        string url = $"{Settings.ApiRoot}/posts/{postId}/comments";
+        var response = await _httpClient.GetAsync(url);
+        var content = await response.Content.ReadAsStringAsync();
+
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception(content);
+        }
+
+        var data = JsonSerializer.Deserialize<IEnumerable<CommentModel>>(content,
+            new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new List<CommentModel>();
+
+        data = data.ToList();
+        
+        foreach (var model in data)
+        {
+            model.Creator = await _accountService.GetAccount(model.CreatorId);
+            model.Attachments = await GetCommentAttachments(model.Id);
+        }
+        
+        return data;
     }
 }

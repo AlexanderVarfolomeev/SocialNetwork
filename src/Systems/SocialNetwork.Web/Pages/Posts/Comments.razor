@@ -1,0 +1,47 @@
+@using SocialNetwork.Web.Pages.Posts.Models
+@using SocialNetwork.Web.Pages.Posts.Services
+@inject IPostService PostService
+@page "/Comments/{PostId}"
+
+<MudStack Class="border-solid  border-2 mud-border-primary pa-4">
+    @foreach (var comment in Comment)
+    {
+        <MudCard>
+            <MudCardHeader>
+                <CardHeaderAvatar>
+                    <MudAvatar Color="Color.Secondary">
+                        <MudImage Src="@($"data:image/jpeg;base64,{comment.Creator.CurAvatar.Content}")"></MudImage>
+                    </MudAvatar>
+                </CardHeaderAvatar>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.body1">@comment.Creator.UserName</MudText>
+                    <MudText Typo="Typo.body2">@comment.CreationDateTime.ToString("dd MMMM yyyy")</MudText>
+                    <MudText Typo="Typo.body2">@comment.CreationDateTime.ToString("HH:mm")</MudText>
+                </CardHeaderContent>
+                <CardHeaderActions>
+                    <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Default"/>
+                </CardHeaderActions>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudText Typo="Typo.body2">@comment.Text</MudText>
+                @foreach (var image in comment.Attachments)
+                {
+                    <MudImage Src="@($"data:image/jpeg;base64,{image.Content}")" Width="200" Height="200"></MudImage>
+                }
+            </MudCardContent>
+        </MudCard>
+    }
+</MudStack>
+
+
+@code {
+    [Parameter]
+    public string PostId { get; set; }
+
+    private IEnumerable<CommentModel> Comment { get; set; } = new List<CommentModel>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Comment = await PostService.GetCommentsByPost(Guid.Parse(PostId));
+    }
+}

@@ -3,8 +3,11 @@
 @using SocialNetwork.Web.Pages.Users.Models
 @using SocialNetwork.Web.Pages.Posts.Models
 @using SocialNetwork.Web.Pages.Posts.Services
+@using SocialNetwork.Web.Pages.Posts
+@using Blazored.LocalStorage
 @inject IAccountService AccountService
 @inject IPostService PostService
+@inject ILocalStorageService LocalStorage
 @layout MainLayout
 
 <MudGrid Spacing="1" Justify="Justify.Center">
@@ -23,43 +26,7 @@
         </MudPaper>
     </MudItem>
     <MudItem xs="10">
-        <MudStack Class="border-solid  border-2 mud-border-primary pa-4">
-            @foreach (var post in _posts)
-            {
-                <MudCard>
-                    <MudCardHeader>
-                        <CardHeaderAvatar>
-                            <MudAvatar Color="Color.Secondary">
-                                <MudImage Src="@($"data:image/jpeg;base64,{User.CurAvatar.Content}")"></MudImage>
-                            </MudAvatar>
-                        </CardHeaderAvatar>
-                        <CardHeaderContent>
-                            <MudText Typo="Typo.body1">@User.UserName</MudText>
-                            <MudText Typo="Typo.body2">@post.CreationDateTime.ToString("dd MMMM yyyy")</MudText>
-                            <MudText Typo="Typo.body2">@post.CreationDateTime.ToString("HH:mm")</MudText>
-                        </CardHeaderContent>
-                        <CardHeaderActions>
-                            <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Default"/>
-                        </CardHeaderActions>
-                    </MudCardHeader>
-                    <MudCardContent>
-                        <MudText Typo="Typo.body2">@post.Text</MudText>
-                        @foreach (var image in post.Attachments)
-                        {
-                            <MudImage Src="@($"data:image/jpeg;base64,{image.Content}")" Width="200" Height="200"></MudImage>
-                        }
-                    </MudCardContent>
-                    <MudCardActions>
-                        <MudToggleIconButton ToggledChanged="async () => await LikePost(post)"
-                                             Toggled="@post.IsLiked"
-                                             Icon="@Icons.Material.Outlined.FavoriteBorder" Color="@Color.Error" Title="Off"
-                                             ToggledIcon="@Icons.Material.Filled.Favorite" ToggledColor="@Color.Success" ToggledTitle="On"/>
-                        <MudText>@post.Likes</MudText>
-                        <MudIconButton Icon="@Icons.Material.Filled.Comment" Color="Color.Default"/>
-                    </MudCardActions>
-                </MudCard>
-            }
-        </MudStack>
+        <Posts UserPosts="@_posts"></Posts>
     </MudItem>
 </MudGrid>
 
@@ -80,7 +47,8 @@
             _posts = await PostService.GetPostsByUser(User.Id);
             foreach (var post in _posts)
             {
-                post.IsLiked = await PostService.IsUserLikedPost(post.Id, Settings.CurUserId);
+                Console.WriteLine(await LocalStorage.GetItemAsync<Guid>("currentUserId"));
+                post.IsLiked = await PostService.IsUserLikedPost(post.Id, await LocalStorage.GetItemAsync<Guid>("currentUserId"));
             }
         }
         catch (Exception e)
@@ -88,12 +56,4 @@
             Console.WriteLine(e.Message);
         }
     }
-
-    private async Task LikePost(PostModel post)
-    {
-        await PostService.LikePost(post.Id);
-        post.IsLiked = !post.IsLiked;
-        post.Likes += post.IsLiked ? 1 : -1;
-    }
-
 }

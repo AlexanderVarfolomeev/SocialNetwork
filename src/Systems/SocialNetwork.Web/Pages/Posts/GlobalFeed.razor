@@ -1,43 +1,10 @@
 ﻿@page "/Feed/Global"
 @using SocialNetwork.Web.Pages.Posts.Services
 @using SocialNetwork.Web.Pages.Posts.Models
-@using SocialNetwork.Web.Pages.Users.Services
-@inject IAccountService AccountService
 @inject IPostService PostService
 @layout MainLayout
-<MudStack>
-    @foreach (var post in _posts)
-    {
-        <MudCard>
-            <MudCardHeader>
-                <CardHeaderAvatar>
-                    <MudAvatar Color="Color.Secondary">
-                        <MudImage Src="@($"data:image/jpeg;base64,{post.Creator.CurAvatar.Content}")"></MudImage>
-                    </MudAvatar>
-                </CardHeaderAvatar>
-                <CardHeaderContent>
-                    <MudText Typo="Typo.body1">@post.Creator.UserName</MudText>
-                    <MudText Typo="Typo.body2">@post.CreationDateTime.ToString("dd MMMM yyyy")</MudText>
-                    <MudText Typo="Typo.body2">@post.CreationDateTime.ToString("HH:mm")</MudText>
-                </CardHeaderContent>
-                <CardHeaderActions>
-                    <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Default"/>
-                </CardHeaderActions>
-            </MudCardHeader>
-            <MudCardContent>
-                <MudText Typo="Typo.body2">@post.Text</MudText>
-                @foreach (var image in post.Attachments)
-                {
-                    <MudImage Src="@($"data:image/jpeg;base64,{image.Content}")" Width="200" Height="200"></MudImage>
-                }
-            </MudCardContent>
-            <MudCardActions>
-                <MudIconButton Icon="@Icons.Material.Filled.Favorite" Color="Color.Default"/>
-                <MudIconButton Icon="@Icons.Material.Filled.Comment" Color="Color.Default"/>
-            </MudCardActions>
-        </MudCard>
-    }
-</MudStack>
+
+<Posts UserPosts="@_posts"></Posts>
 
 @code {
     private IEnumerable<PostModel> _posts = new List<PostModel>();
