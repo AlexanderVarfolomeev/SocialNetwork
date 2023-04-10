@@ -6,8 +6,8 @@ public interface IPostService
 {
     Task<IEnumerable<PostModel>> GetPostsByUser(Guid userId, int offset = 0, int limit = 10);
     Task<IEnumerable<PostModel>> GetAllPosts(int offset = 0, int limit = 10);
-    Task<bool> IsUserLikedPost(Guid postId, Guid userId);
+    Task<bool> IsUserLikedPost(Guid postId);
     Task LikePost(Guid postId);
-
     Task<IEnumerable<CommentModel>> GetCommentsByPost(Guid postId);
+    Task AddPost(PostAddModel post);
 }

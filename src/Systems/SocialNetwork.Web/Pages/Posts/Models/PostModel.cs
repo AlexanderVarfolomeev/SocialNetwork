@@ -1,5 +1,4 @@
-﻿using System.Net.Mail;
-using SocialNetwork.Web.Pages.Users.Models;
+﻿using SocialNetwork.Web.Pages.Users.Models;
 
 namespace SocialNetwork.Web.Pages.Posts.Models;
 

@@ -190,9 +190,11 @@ public class PostController : ControllerBase
         return await _postService.GetCountOfLikes(postId);
     }
     
-    [HttpGet("posts/{postId}/likes/{userId}")]
-    public async Task<bool> IsUserLikedPost([FromRoute] Guid postId, [FromRoute] Guid userId)
+    [Authorize(AppScopes.NetworkWrite)]
+    [HttpGet("posts/{postId}/likes/isLiked")]
+    public async Task<bool> IsUserLikedPost([FromRoute] Guid postId)
     {
+        var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
         return await _postService.IsUserLikedPost(userId, postId);
     }
 }

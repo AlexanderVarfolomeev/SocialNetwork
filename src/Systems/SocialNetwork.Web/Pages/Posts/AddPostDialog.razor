@@ -1,0 +1,36 @@
+@using SocialNetwork.Web.Pages.Posts.Services
+@using SocialNetwork.Web.Pages.Posts.Models
+@inject IPostService PostService
+@inject ISnackbar Snackbar
+
+<MudDialog>
+    <DialogContent>
+        <MudTextField @bind-Value="TextValue" Label="Outlined" Variant="Variant.Outlined"></MudTextField>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Info" Variant="Variant.Filled" OnClick="async () => await Submit()">Send post.</MudButton>
+    </DialogActions>
+</MudDialog>
+
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    
+    public string TextValue { get; set; }
+    
+    async Task Submit()
+    {
+        try
+        {
+            await PostService.AddPost(new PostAddModel() { Text = TextValue });
+            MudDialog.Close(DialogResult.Ok(true));
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add(ex.Message);
+        }
+    }
+
+    void Cancel() => MudDialog.Cancel();
+}

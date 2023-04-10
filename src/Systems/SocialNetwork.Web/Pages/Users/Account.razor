@@ -1,4 +1,4 @@
-﻿@page "/Profile"
+@page "/{username}"
 @using SocialNetwork.Web.Pages.Users.Services
 @using SocialNetwork.Web.Pages.Users.Models
 @using SocialNetwork.Web.Pages.Posts.Models
@@ -8,32 +8,21 @@
 @inject IAccountService AccountService
 @inject IPostService PostService
 @inject ILocalStorageService LocalStorage
-@inject IDialogService DialogService
 @layout MainLayout
 
 <MudGrid Spacing="1" Justify="Justify.Center">
     <MudItem xs="3">
-        <MudPaper Elevation="0">
+        <MudPaper Class="border-solid  border mud-border-primary pa-4" Elevation="0">
             <MudImage Fluid="true" ObjectFit="ObjectFit.Fill" Src="@($"data:image/jpeg;base64,{User.CurAvatar.Content}")"></MudImage>
         </MudPaper>
     </MudItem>
-    <MudItem xs="7">
-        <MudPaper Elevation="0">
+    <MudItem xs="9">
+        <MudPaper Class="border-solid  border-2 mud-border-primary pa-4" Elevation="0">
             <MudText Typo="Typo.h3">@User.Name @User.Surname</MudText>
             <MudText Typo="Typo.body1">About: @User.Status</MudText>
             <MudText Typo="Typo.body1">Birthdate: @User.Birthday.ToString("dd MMMM yyyy")</MudText>
             <MudText Typo="Typo.body1">Email: @User.Email</MudText>
             <MudText Typo="Typo.body1">Phone: @User.PhoneNumber</MudText>
-        </MudPaper>
-    </MudItem>
-    <MudItem xs="2">
-        <MudPaper >
-            <MudList Clickable="true">
-                <MudListItem Text="Create new post." OnClick="CreatePost" Icon="@Icons.Material.Filled.CreditCard"/>
-                <MudListItem Text="Edit info" Icon="@Icons.Material.Filled.Edit"/>
-                <MudDivider/>
-                <MudListItem Text="Dialogs" Icon="@Icons.Material.Filled.Chat"/>
-            </MudList>
         </MudPaper>
     </MudItem>
     <MudItem xs="10">
@@ -46,38 +35,26 @@
     [Parameter]
     public string Username { get; set; }
 
-
+    
     private IEnumerable<PostModel> _posts = new List<PostModel>();
 
     private AccountModel User { get; set; } = new AccountModel();
 
     protected override async Task OnInitializedAsync()
     {
-        await Reload();
-    }
-
-    private async Task Reload()
-    {
         try
         {
-            User = await AccountService.GetAccount(await LocalStorage.GetItemAsync<Guid>("currentUserId"));
+            User = await AccountService.GetAccountByUsername(Username);
             _posts = await PostService.GetPostsByUser(User.Id);
             foreach (var post in _posts)
             {
                 Console.WriteLine(await LocalStorage.GetItemAsync<Guid>("currentUserId"));
                 post.IsLiked = await PostService.IsUserLikedPost(post.Id);
             }
-            await InvokeAsync(StateHasChanged);
         }
         catch (Exception e)
         {
             Console.WriteLine(e.Message);
         }
-    }
-
-    private async Task CreatePost()
-    {
-        await DialogService.ShowAsync<AddPostDialog>();
-        await Reload();
     }
 }

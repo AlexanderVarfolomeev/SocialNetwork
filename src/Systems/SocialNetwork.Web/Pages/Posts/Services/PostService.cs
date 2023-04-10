@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Text;
+using System.Text.Json;
 using SocialNetwork.Web.Pages.Posts.Models;
 using SocialNetwork.Web.Pages.Users.Services;
 
@@ -103,9 +104,9 @@ public class PostService : IPostService
         return data;
     }
     
-    public async Task<bool> IsUserLikedPost(Guid postId, Guid userId)
+    public async Task<bool> IsUserLikedPost(Guid postId)
     {
-        string url = $"{Settings.ApiRoot}/posts/{postId}/likes/{userId}";
+        string url = $"{Settings.ApiRoot}/posts/{postId}/likes/isLiked";
         var response = await _httpClient.GetAsync(url);
         var content = await response.Content.ReadAsStringAsync();
 
@@ -174,5 +175,21 @@ public class PostService : IPostService
         }
         
         return data;
+    }
+
+    public async Task AddPost(PostAddModel post)
+    {
+        string url = $"{Settings.ApiRoot}/posts";
+
+        var body = JsonSerializer.Serialize(post);
+        var request = new StringContent(body, Encoding.UTF8, "application/json");
+        var response = await _httpClient.PostAsync(url, request);
+
+        var content = await response.Content.ReadAsStringAsync();
+
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception(content);
+        }
     }
 }
