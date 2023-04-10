@@ -7,4 +7,6 @@ public interface IPostService
     Task<IEnumerable<PostModel>> GetPostsByUser(Guid userId, int offset = 0, int limit = 10);
     Task<IEnumerable<AttachmentModel>> GetAttachments(Guid postId);
     Task<IEnumerable<PostModel>> GetAllPosts(int offset = 0, int limit = 10);
+    Task<bool> IsUserLikedPost(Guid postId, Guid userId);
+    Task LikePost(Guid postId);
 }

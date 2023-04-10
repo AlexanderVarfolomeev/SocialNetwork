@@ -13,5 +13,6 @@ public interface IPostService
     Task<PostModelResponse> UpdatePost(Guid userId, Guid postId, PostModelUpdate postModel);
     Task DeletePost(Guid userId, Guid postId);
     Task LikePost(Guid userId, Guid postId);
-    Task<int> GetCountOfLikes(Guid postId); // тут надо возвращать модельки пользователей
+    Task<int> GetCountOfLikes(Guid postId);
+    Task<bool> IsUserLikedPost(Guid userId, Guid postId);
 }

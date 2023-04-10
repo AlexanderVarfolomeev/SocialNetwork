@@ -1,10 +1,12 @@
-﻿namespace SocialNetwork.Web.Pages.Posts.Models;
+﻿using System.Net.Mail;
+using SocialNetwork.Web.Pages.Users.Models;
+
+namespace SocialNetwork.Web.Pages.Posts.Models;
 
 public class PostModel
 {
     public Guid Id { get; set; }
     public string Text { get; set; } = string.Empty;
-    public string UserName { get; set; }
     public bool IsInGroup { get; set; }
 
     public Guid CreatorId { get; set; }
@@ -12,6 +14,8 @@ public class PostModel
     
     public DateTime CreationDateTime { get; set; }
     
-    public IEnumerable<string> Attachments { get; set; }
-    public string UserAvatar { get; set; }
+    public IEnumerable<AttachmentModel> Attachments { get; set; }
+    public AccountModel Creator { get; set; }
+    public int Likes { get; set; }
+    public bool IsLiked { get; set; } = false;
 }

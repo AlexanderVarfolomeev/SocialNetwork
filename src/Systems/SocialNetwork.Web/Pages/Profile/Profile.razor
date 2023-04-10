@@ -7,26 +7,30 @@
 @inject IPostService PostService
 @layout MainLayout
 
-<MudGrid Spacing="5" Justify="Justify.Center">
-    <MudItem xs="2">
-        <MudImage Src="@($"data:image/jpeg;base64,{_avatars.ToList().FirstOrDefault()?.Content}")" Width="180" Height="200"></MudImage>
+<MudGrid Spacing="1" Justify="Justify.Center">
+    <MudItem xs="3">
+        <MudPaper Class="border-solid  border mud-border-primary pa-4" Elevation="0">
+            <MudImage Fluid="true" ObjectFit="ObjectFit.Fill" Src="@($"data:image/jpeg;base64,{User.CurAvatar.Content}")"></MudImage>
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="9">
+        <MudPaper Class="border-solid  border-2 mud-border-primary pa-4" Elevation="0">
+            <MudText Typo="Typo.h3">@User.Name @User.Surname</MudText>
+            <MudText Typo="Typo.body1">About: @User.Status</MudText>
+            <MudText Typo="Typo.body1">Birthdate: @User.Birthday.ToString("dd MMMM yyyy")</MudText>
+            <MudText Typo="Typo.body1">Email: @User.Email</MudText>
+            <MudText Typo="Typo.body1">Phone: @User.PhoneNumber</MudText>
+        </MudPaper>
     </MudItem>
     <MudItem xs="10">
-        <MudText Typo="Typo.h3">@User.Name @User.Surname</MudText>
-        <MudText Typo="Typo.body1">About: @User.Status</MudText>
-        <MudText Typo="Typo.body1">Birthdate:@User.Birthday.ToString("dd MMMM yyyy")</MudText>
-        <MudText Typo="Typo.body1">Email: @User.Email</MudText>
-        <MudText Typo="Typo.body1">Phone: @User.PhoneNumber</MudText>
-    </MudItem>
-    <MudItem xs="10">
-        <MudStack>
+        <MudStack Class="border-solid  border-2 mud-border-primary pa-4">
             @foreach (var post in _posts)
             {
                 <MudCard>
                     <MudCardHeader>
                         <CardHeaderAvatar>
                             <MudAvatar Color="Color.Secondary">
-                                <MudImage Src="@($"data:image/jpeg;base64,{_avatars.ToList().FirstOrDefault()?.Content}")"></MudImage>
+                                <MudImage Src="@($"data:image/jpeg;base64,{User.CurAvatar.Content}")"></MudImage>
                             </MudAvatar>
                         </CardHeaderAvatar>
                         <CardHeaderContent>
@@ -42,11 +46,15 @@
                         <MudText Typo="Typo.body2">@post.Text</MudText>
                         @foreach (var image in post.Attachments)
                         {
-                            <MudImage Src="@($"data:image/jpeg;base64,{image}")" Width="200" Height="200"></MudImage>
+                            <MudImage Src="@($"data:image/jpeg;base64,{image.Content}")" Width="200" Height="200"></MudImage>
                         }
                     </MudCardContent>
                     <MudCardActions>
-                        <MudIconButton Icon="@Icons.Material.Filled.Favorite" Color="Color.Default"/>
+                        <MudToggleIconButton ToggledChanged="async () => await LikePost(post)"
+                                             Toggled="@post.IsLiked"
+                                             Icon="@Icons.Material.Outlined.FavoriteBorder" Color="@Color.Error" Title="Off"
+                                             ToggledIcon="@Icons.Material.Filled.Favorite" ToggledColor="@Color.Success" ToggledTitle="On"/>
+                        <MudText>@post.Likes</MudText>
                         <MudIconButton Icon="@Icons.Material.Filled.Comment" Color="Color.Default"/>
                     </MudCardActions>
                 </MudCard>
@@ -63,35 +71,29 @@
     private IEnumerable<PostModel> _posts = new List<PostModel>();
 
     private AccountModel User { get; set; } = new AccountModel();
-    private List<AvatarModel> _avatars = new List<AvatarModel>();
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            var account = await AccountService.GetAccountByUsername(Username);
-            var avatars = await AccountService.GetAvatars(account.Id);
-            User = account;
-            _avatars = avatars.ToList();
+            User = await AccountService.GetAccountByUsername(Username);
             _posts = await PostService.GetPostsByUser(User.Id);
-
             foreach (var post in _posts)
             {
-                post.Attachments = (await PostService.GetAttachments(post.Id)).Select(x => x.Content);
-            }
-
-            if (!_avatars.Any())
-            {
-                _avatars.Add(new AvatarModel()
-                {
-                    Content = Settings.StandardAvatar
-                });
+                post.IsLiked = await PostService.IsUserLikedPost(post.Id, Settings.CurUserId);
             }
         }
         catch (Exception e)
         {
             Console.WriteLine(e.Message);
         }
+    }
+
+    private async Task LikePost(PostModel post)
+    {
+        await PostService.LikePost(post.Id);
+        post.IsLiked = !post.IsLiked;
+        post.Likes += post.IsLiked ? 1 : -1;
     }
 
 }

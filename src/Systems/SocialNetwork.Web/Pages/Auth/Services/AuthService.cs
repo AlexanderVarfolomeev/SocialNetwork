@@ -53,12 +53,13 @@ public class AuthService : IAuthService
             return loginResult;
         }
 
-        var userId = await _accountService.GetAccountByUsername(loginModel.Username);
+        var user = await _accountService.GetAccountByUsername(loginModel.Username);
         
         await _localStorage.SetItemAsync("authToken", loginResult.AccessToken);
         await _localStorage.SetItemAsync("refreshToken", loginResult.RefreshToken);
         Settings.AccessToken = loginResult.AccessToken;
-        await _localStorage.SetItemAsync("currentUserId", userId.Id);
+        Settings.CurUserId = user.Id;
+        await _localStorage.SetItemAsync("currentUserId", user.Id);
         ((ApiAuthenticationStateProvider)_authenticationStateProvider).MarkUserAsAuthenticated(loginModel.Username!);
 
         _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", loginResult.AccessToken);

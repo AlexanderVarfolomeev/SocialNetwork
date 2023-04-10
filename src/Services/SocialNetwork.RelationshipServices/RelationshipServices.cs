@@ -5,6 +5,7 @@ using SocialNetwork.Cache;
 using SocialNetwork.Common.Enum;
 using SocialNetwork.Common.Exceptions;
 using SocialNetwork.Constants.Errors;
+using SocialNetwork.Entities.Messenger;
 using SocialNetwork.Entities.User;
 using SocialNetwork.RelationshipServices.Models;
 using SocialNetwork.Repository;
@@ -18,17 +19,23 @@ public class RelationshipService : IRelationshipService
     private readonly IMapper _mapper;
     private readonly IRepository<Relationship> _relationshipRepository;
     private readonly ICacheService _cacheService;
+    private readonly IRepository<UserInChat> _userInChatRepository;
+    private readonly IRepository<Chat> _chatRepository;
 
     public RelationshipService(
         IRepository<AppUser> userRepository,
         IMapper mapper,
         IRepository<Relationship> relationshipRepository,
-        ICacheService cacheService)
+        ICacheService cacheService,
+        IRepository<UserInChat> userInChatRepository,
+        IRepository<Chat> chatRepository)
     {
         _userRepository = userRepository;
         _mapper = mapper;
         _relationshipRepository = relationshipRepository;
         _cacheService = cacheService;
+        _userInChatRepository = userInChatRepository;
+        _chatRepository = chatRepository;
     }
 
     public async Task SendFriendRequest(Guid senderId, Guid recipientId)
@@ -76,6 +83,8 @@ public class RelationshipService : IRelationshipService
 
         relationship.RelationshipType = RelationshipType.Friend;
         await _relationshipRepository.UpdateAsync(relationship);
+        await CreateDialogBetweenUsers(relationship.FirstUserId, relationship.SecondUserId);
+        
         await _cacheService.Delete(_friendlistKey + recipientId);
     }
 
@@ -153,5 +162,34 @@ public class RelationshipService : IRelationshipService
         {
             return null; // УБРАТЬ
         }
+    }
+    
+    private async Task CreateDialogBetweenUsers(Guid user1, Guid user2)
+    {
+        var chat = new Chat()
+        {
+            ChatName = "Dialog",
+            IsDialog = true
+        };
+
+        chat = await _chatRepository.AddAsync(chat);
+
+        var userInChat1 = new UserInChat()
+        {
+            ChatId = chat.Id,
+            IsCreator = false,
+            UserId = user1,
+            EntryDate = DateTime.Now
+        };
+        var userInChat2 = new UserInChat()
+        {
+            ChatId = chat.Id,
+            IsCreator = false,
+            UserId = user2,
+            EntryDate = DateTime.Now
+        };
+
+        await _userInChatRepository.AddAsync(userInChat1);
+        await _userInChatRepository.AddAsync(userInChat2);
     }
 }

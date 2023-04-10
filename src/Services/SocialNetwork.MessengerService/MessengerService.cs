@@ -8,6 +8,7 @@ using SocialNetwork.RelationshipServices;
 using SocialNetwork.Repository;
 
 namespace SocialNetwork.MessengerService;
+
 public class MessengerService : IMessengerService
 {
     private readonly IRepository<AppUser> _userRepository;
@@ -42,10 +43,11 @@ public class MessengerService : IMessengerService
         ProcessException.ThrowIf(() => receiver.IsBanned, ErrorMessages.UserIsBannedError);
 
         var friends = await _relationshipService.GetFriendList(userId, 0, 1000);
-        ProcessException.ThrowIf(() => !friends.Select(x => x.Id).Contains(receiverId), ErrorMessages.SendMessageToNotFriendError);
+        ProcessException.ThrowIf(() => !friends.Select(x => x.Id).Contains(receiverId),
+            ErrorMessages.SendMessageToNotFriendError);
 
         var chat = await GetDialogBetweenUsers(userId, receiverId);
-       
+
         var msg = new Message()
         {
             Text = message.Text,
@@ -58,7 +60,7 @@ public class MessengerService : IMessengerService
         msg = await _messageRepository.AddAsync(msg);
         return _mapper.Map<MessageModelResponse>(msg);
     }
-    
+
     public async Task<IEnumerable<MessageModelResponse>> GetMessages(Guid userId, Guid dialogId, int offset = 0,
         int limit = 10000)
     {
@@ -81,7 +83,7 @@ public class MessengerService : IMessengerService
 
         return chats.Select(x => _mapper.Map<ChatModelResponse>(x));
     }
-    
+
     public async Task<IEnumerable<UserInChatModelResponse>> GetUsersInChat(Guid chatId)
     {
         await _chatRepository.GetAsync(chatId);
@@ -95,36 +97,14 @@ public class MessengerService : IMessengerService
         var users = await _userInChatRepository.GetAllAsync(x => chatsIds.Contains(x.ChatId) && x.UserId == user2);
         var chatId = chatsIds.FirstOrDefault(x => x == users.First().ChatId);
         var chat = (await _chatRepository.GetAllAsync(x => x.Id == chatId)).FirstOrDefault();
-        
-        if (chat is null)
+
+        /*if (chat is null)
         {
-            chat = new Chat()
-            {
-                ChatName = "Dialog",
-                IsDialog = true
-            };
-
-            chat = await _chatRepository.AddAsync(chat);
-
-            var userInChat1 = new UserInChat()
-            {
-                ChatId = chat.Id,
-                IsCreator = false,
-                UserId = user1,
-                EntryDate = DateTime.Now
-            };
-            var userInChat2 = new UserInChat()
-            {
-                ChatId = chat.Id,
-                IsCreator = false,
-                UserId = user2,
-                EntryDate = DateTime.Now
-            };
-
-            await _userInChatRepository.AddAsync(userInChat1);
-            await _userInChatRepository.AddAsync(userInChat2);
-        }
+            chat = await CreateDialogBetweenUsers(user1, user2);
+        }*/
 
         return chat;
     }
+
+   
 }

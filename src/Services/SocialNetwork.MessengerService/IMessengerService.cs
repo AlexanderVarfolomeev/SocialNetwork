@@ -1,3 +1,4 @@
+using SocialNetwork.Entities.Messenger;
 using SocialNetwork.MessengerService.Models;
 
 namespace SocialNetwork.MessengerService;

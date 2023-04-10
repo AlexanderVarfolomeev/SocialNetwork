@@ -65,13 +65,13 @@
 
             var acc = await AccountService.GetAccount(anotherUserId);
             _accounts.Add(acc);
-            
+            var avatars = (await AccountService.GetAvatars(anotherUserId)).ToList();
             _dialogForms.Add(new DialogForm()
             {
                 Username = acc.UserName,
                 Name = acc.Name,
                 Surname = acc.Surname,
-                //TODO avatar
+                Avatar = avatars.Any() ? avatars.OrderByDescending(x => x.CreationDateTime).First().Content : Settings.StandardAvatar,
                 DialogId = chat.Id
             });
         }

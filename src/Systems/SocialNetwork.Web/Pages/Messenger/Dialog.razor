@@ -21,17 +21,17 @@
                 {
                     <div class="d-flex flex-row my-4">
                         <div class="mr-4">
-                            <MudAvatar Color="Color.Secondary" Style="height:50px; width:50px;">@message.User.CurAvatar</MudAvatar>
+                            <MudAvatar Color="Color.Secondary" Style="height:50px; width:50px;">@message.User.CurAvatar.Content</MudAvatar>
                         </div>
                         <div>
                             <MudText Typo="Typo.body1">@message.User.Name @message.User.Surname</MudText>
                             <MudText Typo="Typo.body2">@message.User.UserName</MudText>
                             <MudText Typo="Typo.caption" Style="font-size: xx-small!important;">@message.CreationDateTime.ToString("dd MMM, yyyy hh:mm tt")</MudText>
                             <MudText T="string" Lines="5" Typo="Typo.body2" Style=" padding: 15px;background-color: black;border-radius: 5px;margin-top:5px">@message.Text</MudText>
-                            @foreach (var image in message.Attachments)
+                            @*@foreach (var image in message.Attachments)
                             {
                                 <MudImage Src="@($"data:image/jpeg;base64,{image.Content}")" Width="200" Height="200"></MudImage>
-                            }
+                            }*@
                         </div>
                     </div>
                 }
@@ -100,8 +100,8 @@
         {
             var user = await AccountService.GetAccount(userInChatModel.UserId);
             _userInChatModels.Add(user);
-            user.CurAvatar = (await AccountService.GetAvatars(user.Id)).MaxBy(x => x.CreationDateTime)?.Content;
         }
+        
         _messages = (await MessengerService.GetMessages(id)).OrderByDescending(x => x.CreationDateTime).ToList();
         foreach (var message in _messages)
         {
@@ -130,7 +130,6 @@
                     User = _userInChatModels.FirstOrDefault(x => x.Id == response.SenderId)
                 };
                
-                // await MessengerService.AddAttachments(msg.Id, files);
                 _messages.Add(msg);
                 _messages = _messages.OrderByDescending(x => x.CreationDateTime).ToList();
                 msg.Attachments = (await MessengerService.GetAttachments(msg.Id)).ToList();

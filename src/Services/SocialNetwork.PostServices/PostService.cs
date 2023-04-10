@@ -132,6 +132,15 @@ public class PostService : IPostService
         return (await _likesRepository.GetAllAsync(x => x.PostId == postId)).Count();
     }
 
+    public async  Task<bool> IsUserLikedPost(Guid userId, Guid postId)
+    {
+        var user = await _userRepository.GetAsync(userId);
+        ProcessException.ThrowIf(() => user.IsBanned, ErrorMessages.YouBannedError);
+
+        var likes = (await _likesRepository.GetAllAsync(x => x.PostId == postId && x.UserId == userId)).ToList();
+        return likes.Any();
+    }
+
     /// <summary>
     /// Проверка что пользователь создатель поста и админ в группе в которой пост создан
     /// </summary>

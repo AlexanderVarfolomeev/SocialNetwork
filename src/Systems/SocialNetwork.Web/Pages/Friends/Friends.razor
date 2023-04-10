@@ -26,7 +26,7 @@
     <RowTemplate>
         <MudTd>
             <MudAvatar Color="Color.Secondary">
-                <MudImage Src="@($"data:image/jpeg;base64,{context.CurAvatar}")"></MudImage>
+                <MudImage Src="@($"data:image/jpeg;base64,{context.CurAvatar.Content}")"></MudImage>
             </MudAvatar>
         </MudTd>
         <MudTd DataLabel="Username">@context.UserName</MudTd>
@@ -55,11 +55,6 @@
     protected override async Task OnInitializedAsync()
     {
         _elements = await AccountService.GetFriends();
-        foreach (var accountModel in _elements)
-        {
-            var avatars = (await AccountService.GetAvatars(accountModel.Id)).ToList();
-            accountModel.CurAvatar = !avatars.Any() ? Settings.StandardAvatar : avatars.FirstOrDefault()?.Content;
-        }
     }
 
     private bool FilterFunc1(AccountModel element) => FilterFunc(element, _searchString1);

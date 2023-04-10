@@ -1,4 +1,5 @@
 using SocialNetwork.AccountServices.Models;
+using SocialNetwork.Entities.Messenger;
 using SocialNetwork.RelationshipServices.Models;
 
 namespace SocialNetwork.RelationshipServices;

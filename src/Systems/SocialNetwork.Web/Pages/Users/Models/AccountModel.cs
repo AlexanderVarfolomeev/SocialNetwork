@@ -17,5 +17,6 @@ public class AccountModel
     public string UserName { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
     public string PhoneNumber { get; set; } = string.Empty;
-    public string CurAvatar { get; set; }
+    public AvatarModel CurAvatar { get; set; } = new AvatarModel() { Content = Settings.StandardAvatar };
+    public IEnumerable<AvatarModel> Avatars { get; set; }
 }
