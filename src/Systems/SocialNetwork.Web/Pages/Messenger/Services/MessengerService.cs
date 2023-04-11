@@ -52,7 +52,7 @@ public class MessengerService : IMessengerService
         return data.OrderByDescending(x => x.CreationDateTime);
     }
 
-    public async Task<MessageModel> SendMessage(Guid receiverId, string text )
+    public async Task<MessageModel> SendMessage(Guid receiverId, string text)
     {
         string url = $"{Settings.ApiRoot}/messenger/{receiverId}";
 
@@ -69,7 +69,7 @@ public class MessengerService : IMessengerService
 
         var data = JsonSerializer.Deserialize<MessageModel>(content,
             new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-        
+
         return data;
     }
 
@@ -107,32 +107,25 @@ public class MessengerService : IMessengerService
 
         return data;
     }
-
-    public async Task AddAttachments(Guid messageId, IEnumerable<IBrowserFile> files)
+    
+    public async Task AddAttachments(Guid messageId, List<IBrowserFile> files)
     {
+        // TODO при отправке более 1 файла запрос даже не выполняется
         using var content = new MultipartFormDataContent();
+        string url = $"{Settings.ApiRoot}/messenger/{messageId}/upload";
         foreach (var browserFile in files)
         {
             var fileContent = new StreamContent(browserFile.OpenReadStream());
             fileContent.Headers.ContentType = new MediaTypeHeaderValue(browserFile.ContentType);
-            content.Add(content: fileContent, name: "\"files\"", fileName: browserFile.Name);
+            content.Add(content: fileContent, name: $"\"attachments_{Guid.NewGuid()}\"", fileName: browserFile.Name);
         }
-        
-        string url = $"{Settings.ApiRoot}/messenger/{messageId}/upload";
-
-        //var body = JsonSerializer.Serialize(content);
-        //var request = new StringContent(body, Encoding.UTF8, "application/json");
         var response = await _httpClient.PostAsync(url, content);
-
         var cont = await response.Content.ReadAsStringAsync();
 
         if (!response.IsSuccessStatusCode)
         {
+            Console.WriteLine(cont);
             throw new Exception(cont);
-        }
-        else
-        {
-            Console.WriteLine("!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         }
     }
 }

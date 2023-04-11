@@ -61,16 +61,17 @@ public class MessengerController : ControllerBase
     }
     
     [HttpPost("messenger/{messageId}/upload")]
-    public async Task<IEnumerable<AttachmentResponse>> AddAttachments([FromRoute] Guid messageId,
-        [FromForm] IEnumerable<IFormFile> attachments)
+    public async Task<IEnumerable<AttachmentResponse>> AddAttachments([FromRoute] Guid messageId)
     {
+        Console.WriteLine("LOH: " + Request.Form.Files);
+        
         var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
 
         var createdFiles = await _attachmentService.UploadFiles(userId, new AttachmentModelRequest()
         {
             MessageId = messageId,
             FileType = FileType.Message,
-            Files = attachments
+            Files = Request.Form.Files
         });
 
         return _mapper.Map<IEnumerable<AttachmentResponse>>(createdFiles);

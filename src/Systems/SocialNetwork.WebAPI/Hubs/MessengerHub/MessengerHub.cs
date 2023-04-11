@@ -53,10 +53,6 @@ public class MessengerHub : Hub
 
     public async Task SendMessage(string message, Guid userId)
     {
-        Console.WriteLine("BBBBBBBBBBBBBBBBBBBBBB");
-        Console.WriteLine(message);
-        Console.WriteLine(userId);
-        
         var senderId = Guid.Parse(Context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
         Console.WriteLine(senderId);
         

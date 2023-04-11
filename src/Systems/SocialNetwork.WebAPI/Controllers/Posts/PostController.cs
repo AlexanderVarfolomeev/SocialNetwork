@@ -138,8 +138,7 @@ public class PostController : ControllerBase
     /// </summary>
     [Authorize(AppScopes.NetworkWrite)]
     [HttpPost("posts/{postId}/attachments")]
-    public async Task<IEnumerable<AttachmentResponse>> AddAttachments([FromRoute] Guid postId,
-        IEnumerable<IFormFile> attachments)
+    public async Task<IEnumerable<AttachmentResponse>> AddAttachments([FromRoute] Guid postId)
     {
         var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
 
@@ -147,7 +146,7 @@ public class PostController : ControllerBase
         {
             PostId = postId,
             FileType = FileType.Post,
-            Files = attachments
+            Files = Request.Form.Files
         });
 
         return _mapper.Map<IEnumerable<AttachmentResponse>>(createdFiles);

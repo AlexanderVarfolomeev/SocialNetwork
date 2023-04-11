@@ -11,5 +11,5 @@ public interface IMessengerService
     Task<MessageModel> SendMessage(Guid receiverId, string text);
     Task<IEnumerable<UserInChatModel>> GetUsersInChat(Guid chatId);
     Task<IEnumerable<AttachmentModel>> GetAttachments(Guid messageId);
-    Task AddAttachments(Guid messageId, IEnumerable<IBrowserFile> files);
+    Task AddAttachments(Guid messageId, List<IBrowserFile> files);
 }

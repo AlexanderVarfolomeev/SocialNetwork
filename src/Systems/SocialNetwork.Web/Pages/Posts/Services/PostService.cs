@@ -1,5 +1,7 @@
-﻿using System.Text;
+﻿using System.Net.Http.Headers;
+using System.Text;
 using System.Text.Json;
+using Microsoft.AspNetCore.Components.Forms;
 using SocialNetwork.Web.Pages.Posts.Models;
 using SocialNetwork.Web.Pages.Users.Services;
 
@@ -72,7 +74,7 @@ public class PostService : IPostService
         return data.OrderByDescending(x => x.CreationDateTime);
     }
 
-    private async Task<IEnumerable<AttachmentModel>> GetPostAttachments(Guid postId)
+    public async Task<IEnumerable<AttachmentModel>> GetPostAttachments(Guid postId)
     {
         string url = $"{Settings.ApiRoot}/posts/{postId}/attachments";
         var response = await _httpClient.GetAsync(url);
@@ -178,7 +180,7 @@ public class PostService : IPostService
         return data;
     }
 
-    public async Task AddPost(PostAddModel post)
+    public async Task<PostModel> AddPost(PostAddModel post)
     {
         string url = $"{Settings.ApiRoot}/posts";
 
@@ -191,6 +193,36 @@ public class PostService : IPostService
         if (!response.IsSuccessStatusCode)
         {
             throw new Exception(content);
+        }
+        
+        var model = JsonSerializer.Deserialize<PostModel>(content,
+            new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+        
+        model.Creator = await _accountService.GetAccount(model.CreatorId);
+        model.Attachments = await GetPostAttachments(model.Id);
+        model.Likes = await GetLikes(model.Id);
+        model.Comments = await GetCommentsByPost(model.Id);
+        return model;
+    }
+    
+    public async Task AddAttachments(Guid postId, List<IBrowserFile> files)
+    {
+        // TODO при отправке более 1 файла запрос даже не выполняется
+        using var content = new MultipartFormDataContent();
+        string url = $"{Settings.ApiRoot}/posts/{postId}/attachments";
+        foreach (var browserFile in files)
+        {
+            var fileContent = new StreamContent(browserFile.OpenReadStream());
+            fileContent.Headers.ContentType = new MediaTypeHeaderValue(browserFile.ContentType);
+            content.Add(content: fileContent, name: $"\"attachments_{Guid.NewGuid()}\"", fileName: browserFile.Name);
+        }
+        var response = await _httpClient.PostAsync(url, content);
+        var cont = await response.Content.ReadAsStringAsync();
+
+        if (!response.IsSuccessStatusCode)
+        {
+            Console.WriteLine(cont);
+            throw new Exception(cont);
         }
     }
 }

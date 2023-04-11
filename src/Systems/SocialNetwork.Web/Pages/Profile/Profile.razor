@@ -47,7 +47,7 @@
     public string Username { get; set; }
 
 
-    private IEnumerable<PostModel> _posts = new List<PostModel>();
+    private List<PostModel> _posts = new List<PostModel>();
 
     private AccountModel User { get; set; } = new AccountModel();
 
@@ -61,7 +61,7 @@
         try
         {
             User = await AccountService.GetAccount(await LocalStorage.GetItemAsync<Guid>("currentUserId"));
-            _posts = await PostService.GetPostsByUser(User.Id, 0, 1000);
+            _posts = (await PostService.GetPostsByUser(User.Id, 0, 1000)).ToList();
             foreach (var post in _posts)
             {
                 Console.WriteLine(await LocalStorage.GetItemAsync<Guid>("currentUserId"));
@@ -77,7 +77,15 @@
 
     private async Task CreatePost()
     {
-        await DialogService.ShowAsync<AddPostDialog>();
-        await Reload();
+        DialogOptions opts = new DialogOptions() { MaxWidth = MaxWidth.Medium, FullWidth = true};
+        var dialog = await DialogService.ShowAsync<AddPostDialog>("Add post", opts);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            _posts.Insert(0, (PostModel)result.Data);
+            await InvokeAsync(StateHasChanged);
+        }
     }
+
 }
