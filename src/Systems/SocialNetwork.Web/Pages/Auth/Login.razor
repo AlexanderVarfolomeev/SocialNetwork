@@ -26,8 +26,7 @@
                               Label="Username"
                               Required="true"
                               RequiredError="Username is required!"
-                              HelperText="Input your username"
-                              Validation="@(new EmailAddressAttribute() {ErrorMessage = "The email address is invalid"})"/>
+                              HelperText="Input your username"/>
                 <MudTextField @bind-Value="_model.Password" For="@(() => _model.Password)"
                               Label="Password"
                               HelperText="Input your password"

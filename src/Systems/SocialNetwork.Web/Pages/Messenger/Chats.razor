@@ -10,6 +10,7 @@
 @inject IDialogService DialogService
 @inject ILocalStorageService LocalStorageService
 @inject NavigationManager NavigationManager
+@attribute [Authorize]
 <MudTable Items="@_dialogForms" Dense="true" Hover="true" Bordered="true" Filter="new Func<DialogForm, bool>(FilterFunc1)" @bind-SelectedItem="_selectedItem1">
     <ToolBarContent>
         <MudText Typo="Typo.h6">Accounts</MudText>
