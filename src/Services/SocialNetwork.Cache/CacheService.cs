@@ -1,5 +1,4 @@
 ﻿using Serilog;
-using Serilog.Core;
 using SocialNetwork.Common.Extensions;
 using SocialNetwork.Settings.Interfaces;
 using StackExchange.Redis;
@@ -59,7 +58,8 @@ public class CacheService : ICacheService
         }
         catch (Exception ex)
         {
-            throw new Exception($"Can`t get data from cache for {key}", ex);
+          Log.Logger.Error(ex, $"Can`t get data from cache for {key}");
+          return default;
         }
     }
 
@@ -72,7 +72,8 @@ public class CacheService : ICacheService
         }
         catch (Exception ex)
         {
-            throw new Exception($"Can't put cache {key}", ex);
+            Log.Logger.Error(ex, $"Can't put cache {key}");
+            return default;
         }
     }
 

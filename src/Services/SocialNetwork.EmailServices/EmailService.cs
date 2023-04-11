@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Logging;
 using SocialNetwork.EmailService.Models;
 using SocialNetwork.Settings.Interfaces;
 

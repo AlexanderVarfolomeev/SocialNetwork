@@ -61,7 +61,7 @@
         try
         {
             User = await AccountService.GetAccount(await LocalStorage.GetItemAsync<Guid>("currentUserId"));
-            _posts = await PostService.GetPostsByUser(User.Id);
+            _posts = await PostService.GetPostsByUser(User.Id, 0, 1000);
             foreach (var post in _posts)
             {
                 Console.WriteLine(await LocalStorage.GetItemAsync<Guid>("currentUserId"));

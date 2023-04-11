@@ -11,7 +11,7 @@
     
     protected override async Task OnInitializedAsync()
     {
-        _posts = await PostService.GetAllPosts();
+        _posts = await PostService.GetAllPosts(0, 10000);
     }
 
 }
