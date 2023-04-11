@@ -16,5 +16,6 @@ public class PostModel
     public IEnumerable<AttachmentModel> Attachments { get; set; }
     public AccountModel Creator { get; set; }
     public int Likes { get; set; }
+    public IEnumerable<CommentModel> Comments { get; set; }
     public bool IsLiked { get; set; } = false;
 }

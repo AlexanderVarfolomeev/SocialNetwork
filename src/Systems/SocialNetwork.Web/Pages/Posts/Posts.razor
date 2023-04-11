@@ -2,7 +2,7 @@
 @using SocialNetwork.Web.Pages.Posts.Services
 @inject IPostService PostService
 @inject NavigationManager NavigationManager
-
+@inject IDialogService DialogService
 
 <MudStack Class="border-solid  border-2 mud-border-primary pa-4">
     @foreach (var post in UserPosts)
@@ -36,7 +36,8 @@
                                      Icon="@Icons.Material.Outlined.FavoriteBorder" Color="@Color.Error" Title="Off"
                                      ToggledIcon="@Icons.Material.Filled.Favorite" ToggledColor="@Color.Success" ToggledTitle="On"/>
                 <MudText>@post.Likes</MudText>
-                <MudIconButton OnClick="() => GoToComments(post.Id)"  Icon="@Icons.Material.Filled.Comment" Color="Color.Default"/>
+                <MudIconButton OnClick="() => GoToComments(post)"  Icon="@Icons.Material.Filled.Comment" Color="Color.Default"/>
+                <MudText>@post.Comments.Count()</MudText>
             </MudCardActions>
         </MudCard>
     }
@@ -54,8 +55,10 @@
         post.Likes += post.IsLiked ? 1 : -1;
     }
 
-    private void GoToComments(Guid postId)
+    private void GoToComments(PostModel post)
     {
-        NavigationManager.NavigateTo("Comments/" + postId);
+        var parameters = new DialogParameters { { "Post", post } };
+        DialogOptions opts = new DialogOptions() { FullScreen = true, CloseButton = true};
+        DialogService.Show<CommentsDialog>("Comments", parameters, opts);
     }
 }

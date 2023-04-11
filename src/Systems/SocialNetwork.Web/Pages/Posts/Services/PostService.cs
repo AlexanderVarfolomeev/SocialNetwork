@@ -39,6 +39,7 @@ public class PostService : IPostService
             model.Creator = user;
             model.Attachments = await GetPostAttachments(model.Id);
             model.Likes = await GetLikes(model.Id);
+            model.Comments = await GetCommentsByPost(model.Id);
         }
 
         return data.OrderByDescending(x => x.CreationDateTime);
@@ -65,6 +66,7 @@ public class PostService : IPostService
             model.Creator = await _accountService.GetAccount(model.CreatorId);
             model.Attachments = await GetPostAttachments(model.Id);
             model.Likes = await GetLikes(model.Id);
+            model.Comments = await GetCommentsByPost(model.Id);
         }
 
         return data.OrderByDescending(x => x.CreationDateTime);
@@ -103,7 +105,7 @@ public class PostService : IPostService
 
         return data;
     }
-    
+
     public async Task<bool> IsUserLikedPost(Guid postId)
     {
         string url = $"{Settings.ApiRoot}/posts/{postId}/likes/isLiked";
@@ -130,7 +132,6 @@ public class PostService : IPostService
         Console.WriteLine(response.IsSuccessStatusCode);
         if (!response.IsSuccessStatusCode)
         {
-            Console.WriteLine("Err");
             throw new Exception(content);
         }
     }
@@ -151,10 +152,10 @@ public class PostService : IPostService
 
         return data;
     }
-    
-    public async Task<IEnumerable<CommentModel>> GetCommentsByPost(Guid postId)
+
+    public async Task<IEnumerable<CommentModel>> GetCommentsByPost(Guid postId, int offset = 0, int limit = 1000)
     {
-        string url = $"{Settings.ApiRoot}/posts/{postId}/comments";
+        string url = $"{Settings.ApiRoot}/posts/{postId}/comments?offset={offset}&limit={limit}";
         var response = await _httpClient.GetAsync(url);
         var content = await response.Content.ReadAsStringAsync();
 
@@ -167,13 +168,13 @@ public class PostService : IPostService
             new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new List<CommentModel>();
 
         data = data.ToList();
-        
+
         foreach (var model in data)
         {
             model.Creator = await _accountService.GetAccount(model.CreatorId);
             model.Attachments = await GetCommentAttachments(model.Id);
         }
-        
+
         return data;
     }
 

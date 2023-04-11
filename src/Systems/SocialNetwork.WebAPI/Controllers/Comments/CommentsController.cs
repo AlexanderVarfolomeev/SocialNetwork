@@ -30,9 +30,9 @@ public class CommentsController : ControllerBase
     }
 
     [HttpGet("posts/{postId}/comments")]
-    public async Task<IEnumerable<CommentResponse>> GetCommentsByPostId([FromRoute] Guid postId)
+    public async Task<IEnumerable<CommentResponse>> GetCommentsByPostId([FromRoute] Guid postId, [FromQuery] int offset = 0, [FromQuery] int limit = 10)
     {
-        var posts = await _commentService.GetCommentsByPost(postId);
+        var posts = await _commentService.GetCommentsByPost(postId, offset, limit);
         return _mapper.Map<IEnumerable<CommentResponse>>(posts);
     }
 

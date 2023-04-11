@@ -1,4 +1,6 @@
-﻿using SocialNetwork.Common.Extensions;
+﻿using Serilog;
+using Serilog.Core;
+using SocialNetwork.Common.Extensions;
 using SocialNetwork.Settings.Interfaces;
 using StackExchange.Redis;
 
@@ -29,7 +31,15 @@ public class CacheService : ICacheService
 
     public async Task<bool> Delete(string key)
     {
-        return await _cacheDb.KeyDeleteAsync(key);
+        try
+        {
+            return await _cacheDb.KeyDeleteAsync(key);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Can`t delete data from cache for {key}", ex);
+        }
+        
     }
 
     public async Task<T> Get<T>(string key, bool resetLifeTime = false)
@@ -55,8 +65,15 @@ public class CacheService : ICacheService
 
     public async Task<bool> Put<T>(string key, T data, TimeSpan? storeTime = null)
     {
-        Console.WriteLine("data is null: " + data is null);
-        return await _cacheDb.StringSetAsync(key, data.ToJsonString(), storeTime ?? _defaultLifetime);
+        try
+        {
+            return await _cacheDb.StringSetAsync(key, data.ToJsonString(), storeTime ?? _defaultLifetime);
+
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Can't put cache {key}", ex);
+        }
     }
 
     public async Task SetStoreTime(string key, TimeSpan? storeTime = null)
