@@ -31,7 +31,7 @@
         <MudPaper >
             <MudList Clickable="true">
                 <MudListItem Text="Create new post." OnClick="CreatePost" Icon="@Icons.Material.Filled.CreditCard"/>
-                <MudListItem Text="Edit info" Icon="@Icons.Material.Filled.Edit"/>
+                <MudListItem Text="Edit info" OnClick="EditInfo"  Icon="@Icons.Material.Filled.Edit"/>
                 <MudDivider/>
                 <MudListItem Text="Dialogs" Icon="@Icons.Material.Filled.Chat"/>
             </MudList>
@@ -65,7 +65,6 @@
             _posts = (await PostService.GetPostsByUser(User.Id, 0, 1000)).ToList();
             foreach (var post in _posts)
             {
-                Console.WriteLine(await LocalStorage.GetItemAsync<Guid>("currentUserId"));
                 post.IsLiked = await PostService.IsUserLikedPost(post.Id);
             }
             await InvokeAsync(StateHasChanged);
@@ -85,6 +84,20 @@
         if (!result.Canceled)
         {
             _posts.Insert(0, (PostModel)result.Data);
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private async Task EditInfo()
+    {
+        var parameters = new DialogParameters { { "Model", User } };
+        DialogOptions opts = new DialogOptions() { MaxWidth = MaxWidth.Medium, FullWidth = true};
+        var dialog = await DialogService.ShowAsync<EditProfileDialog>("Edit profile", parameters, opts);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            User = await AccountService.GetAccount(await LocalStorage.GetItemAsync<Guid>("currentUserId"));
             await InvokeAsync(StateHasChanged);
         }
     }

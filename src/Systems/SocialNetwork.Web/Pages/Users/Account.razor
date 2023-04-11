@@ -48,7 +48,6 @@
             _posts = await PostService.GetPostsByUser(User.Id, 0, 1000);
             foreach (var post in _posts)
             {
-                Console.WriteLine(await LocalStorage.GetItemAsync<Guid>("currentUserId"));
                 post.IsLiked = await PostService.IsUserLikedPost(post.Id);
             }
         }

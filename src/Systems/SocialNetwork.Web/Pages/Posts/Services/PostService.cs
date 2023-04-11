@@ -129,7 +129,6 @@ public class PostService : IPostService
     {
         string url = $"{Settings.ApiRoot}/posts/{postId}/likes";
         var response = await _httpClient.PostAsync(url, null);
-        Console.WriteLine("like");
         var content = await response.Content.ReadAsStringAsync();
         Console.WriteLine(response.IsSuccessStatusCode);
         if (!response.IsSuccessStatusCode)

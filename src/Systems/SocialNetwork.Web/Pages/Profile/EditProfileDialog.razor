@@ -1,0 +1,62 @@
+@using SocialNetwork.Web.Pages.Users.Models
+@using SocialNetwork.Web.Pages.Profile.Model
+@using SocialNetwork.Web.Pages.Auth.Services
+@inject ISnackbar Snackbar
+@inject IProfileService ProfileService
+
+<MudDialog>
+    <DialogContent>
+        <MudTextField @bind-Value="_name" Label="Name" Variant="Variant.Filled"></MudTextField>
+        <MudTextField @bind-Value="_surname" Label="Surname" Variant="Variant.Filled"></MudTextField>
+        <MudTextField @bind-Value="_status" Label="Status" Variant="Variant.Filled"></MudTextField>
+        <MudTextField @bind-Value="_phoneNumber" Label="Phone number" Variant="Variant.Filled"></MudTextField>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit">Ok</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+
+    [CascadingParameter]
+    MudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public AccountModel Model { get; set; }
+
+    private string _name;
+    private string _surname;
+    private string _status;
+    private string _phoneNumber;
+
+    protected override void OnInitialized()
+    {
+        _name = Model.Name;
+        _status = Model.Status;
+        _surname = Model.Surname;
+        _phoneNumber = Model.PhoneNumber;
+    }
+
+    void Cancel() => MudDialog.Cancel();
+
+    async Task Submit()
+    {
+        if (_name == Model.Name && _status == Model.Status && _surname == Model.Surname && _phoneNumber == Model.PhoneNumber)
+        {
+            Snackbar.Add("You didn't change anything");
+        }
+        else
+        {
+            UpdateAccount acc = new UpdateAccount()
+            {
+                Name = _name, Status = _status, Surname = _surname, PhoneNumber = _phoneNumber
+            };
+
+            await ProfileService.UpdateAccount(Model.Id, acc);
+            
+            MudDialog.Close(DialogResult.Ok(true));
+        }
+    }
+
+}

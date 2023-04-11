@@ -31,7 +31,6 @@ public class MessengerHub : Hub
         
         var a = Context.User.FindFirst("nickname");
         var user = Context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        //Console.WriteLine(userId);
         var currentUserName = (await _accountService.GetAccountAsync(Guid.Parse(user))).UserName;
         var connectionId = Context.ConnectionId;
 
@@ -54,7 +53,6 @@ public class MessengerHub : Hub
     public async Task SendMessage(string message, Guid userId)
     {
         var senderId = Guid.Parse(Context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
-        Console.WriteLine(senderId);
         
         ProcessException.ThrowIf(() => senderId == userId, "You can't send a message to yourself");
 
@@ -79,8 +77,6 @@ public class MessengerHub : Hub
             {
                 Text = message
             }));
-        Console.WriteLine(response.Text);
-        Console.WriteLine(Clients.Clients(connections));
         await Clients.Clients(connections)
             .SendAsync("ReceiveMessage",
                 response); // При получении на клиенте мы сразу вызовем запрос на получение картинок

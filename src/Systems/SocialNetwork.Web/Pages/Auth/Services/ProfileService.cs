@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using System.Text.Json;
 using SocialNetwork.Web.Pages.Auth.Models;
+using SocialNetwork.Web.Pages.Profile.Model;
 using SocialNetwork.Web.Pages.Users.Models;
 using SocialNetwork.Web.Pages.Users.Services;
 
@@ -32,8 +33,20 @@ public class ProfileService : IProfileService
         }
     }
 
-    public Task<AccountModel> GetProfile()
+    public async Task UpdateAccount(Guid accountId, UpdateAccount model)
     {
-        throw new NotImplementedException();
+        string url = $"{Settings.ApiRoot}/accounts/{accountId}";
+
+        var body = JsonSerializer.Serialize(model);
+        var request = new StringContent(body, Encoding.UTF8, "application/json");
+
+        var response = await _httpClient.PutAsync(url, request);
+
+        var content = await response.Content.ReadAsStringAsync();
+
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception(content);
+        }
     }
 }

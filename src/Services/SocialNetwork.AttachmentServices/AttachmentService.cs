@@ -35,8 +35,6 @@ public class AttachmentService : IAttachmentService
 
     public async Task<IEnumerable<AttachmentModel>> UploadFiles(Guid userId, AttachmentModelRequest attachments)
     {
-        Console.WriteLine("LOH: " + attachments.Files.Count());
-        
         bool isCreator = await IsCreatorOfContent(userId, attachments);
         ProcessException.ThrowIf(() => !isCreator, ErrorMessages.OnlyAccountOwnerCanDoIdError);
         ProcessException.ThrowIf(() => attachments.FileType == FileType.Avatar && attachments.Files.Count() > 1,
@@ -50,7 +48,6 @@ public class AttachmentService : IAttachmentService
         Directory.CreateDirectory("./wwwroot/Post");
         Directory.CreateDirectory("./wwwroot/Comment");
 
-        Console.WriteLine("LOH: return upFile" );
         return await CreateFiles(attachments);
     }
 
@@ -134,7 +131,6 @@ public class AttachmentService : IAttachmentService
         // Cоздаем файл в файловой системе и сохраняем путь к нему в бд
         foreach (var file in attachments.Files)
         {
-            Console.WriteLine("LOH: every f ");
             Attachment fileModel = new Attachment { FileType = attachments.FileType, Name = Path.GetRandomFileName(), };
 
             switch (attachments.FileType)
