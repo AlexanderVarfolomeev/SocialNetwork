@@ -4,7 +4,6 @@ using SocialNetwork.Entities.Groups;
 
 namespace SocialNetwork.GroupServices.Models;
 
-// TODO avatar?
 public class UserInGroupModel : BaseEntity
 {
     public string Name { get; set; } = string.Empty;

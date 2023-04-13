@@ -36,12 +36,12 @@ public class AttachmentService : IAttachmentService
     public async Task<IEnumerable<AttachmentModel>> UploadFiles(Guid userId, AttachmentModelRequest attachments)
     {
         bool isCreator = await IsCreatorOfContent(userId, attachments);
-        ProcessException.ThrowIf(() => !isCreator, ErrorMessages.OnlyAccountOwnerCanDoIdError);
+        ProcessException.ThrowIf(() => !isCreator, ErrorMessages.OnlyAccountOwnerCanDoIdError, HttpErrorsCode.Forbidden);
         ProcessException.ThrowIf(() => attachments.FileType == FileType.Avatar && attachments.Files.Count() > 1,
-            ErrorMessages.MorThanOneAvatarError);
+            ErrorMessages.MoreThanOneAvatarError, HttpErrorsCode.BadRequest);
 
 
-        ProcessException.ThrowIf(() => attachments.Files.Count() > 10, ErrorMessages.InvestmentLimitExceededError);
+        ProcessException.ThrowIf(() => attachments.Files.Count() > 10, ErrorMessages.InvestmentLimitExceededError, HttpErrorsCode.BadRequest);
 
         Directory.CreateDirectory("./wwwroot/Avatar");
         Directory.CreateDirectory("./wwwroot/Message");
@@ -62,7 +62,7 @@ public class AttachmentService : IAttachmentService
         FileType.Comment => await GetCommentAttachments(contentId),
         FileType.Message => await GetMessageAttachments(contentId),
         FileType.Post => await GetPostAttachments(contentId),
-        _ => throw new ProcessException(ErrorMessages.UnsupportedTypeError)
+        _ => throw new ProcessException(HttpErrorsCode.BadRequest, ErrorMessages.UnsupportedTypeError)
     };
 
     public async Task<IEnumerable<AvatarModel>> GetAvatars(Guid userId)
@@ -84,7 +84,7 @@ public class AttachmentService : IAttachmentService
     {
         var attachment = await _attachmentsRepository.GetAsync(attachmentId);
         var post = await _postRepository.GetAsync(postId);
-        ProcessException.ThrowIf(() => userId != post.CreatorId, ErrorMessages.OnlyAccountOwnerCanDoIdError);
+        ProcessException.ThrowIf(() => userId != post.CreatorId, ErrorMessages.OnlyAccountOwnerCanDoIdError, HttpErrorsCode.Forbidden);
 
         await DeleteFile(attachment);
     }
@@ -93,7 +93,7 @@ public class AttachmentService : IAttachmentService
     {
         var attachment = await _attachmentsRepository.GetAsync(attachmentId);
         var comment = await _commentRepository.GetAsync(commentId);
-        ProcessException.ThrowIf(() => userId != comment.CreatorId, ErrorMessages.OnlyAccountOwnerCanDoIdError);
+        ProcessException.ThrowIf(() => userId != comment.CreatorId, ErrorMessages.OnlyAccountOwnerCanDoIdError, HttpErrorsCode.Forbidden);
 
         await DeleteFile(attachment);
     }
@@ -101,14 +101,13 @@ public class AttachmentService : IAttachmentService
     public async Task DeleteAvatar(Guid userId, Guid avatarId)
     {
         var attachment = await _attachmentsRepository.GetAsync(avatarId);
-        ProcessException.ThrowIf(() => userId != attachment.UserId, ErrorMessages.OnlyAccountOwnerCanDoIdError);
+        ProcessException.ThrowIf(() => userId != attachment.UserId, ErrorMessages.OnlyAccountOwnerCanDoIdError, HttpErrorsCode.Forbidden);
 
         await DeleteFile(attachment);
     }
 
     /// <summary>
     /// Проверка что пользователь который добавляет фото к посту/комменту/сообщению, является создателем этого
-    /// TODO тоже убрать? 
     /// </summary>
     private async Task<bool> IsCreatorOfContent(Guid userId, AttachmentModelRequest attachments) =>
         attachments.FileType switch

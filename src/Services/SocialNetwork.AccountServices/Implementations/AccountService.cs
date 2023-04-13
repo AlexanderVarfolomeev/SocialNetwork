@@ -18,14 +18,14 @@ class AccountService : IAccountService
     private readonly IAdminService _adminService;
     private readonly ICacheService _cacheService;
 
-    
-    public AccountService(IRepository<AppUser> userRepository, IMapper mapper, IAdminService adminService, ICacheService cacheService)
+
+    public AccountService(IRepository<AppUser> userRepository, IMapper mapper, IAdminService adminService,
+        ICacheService cacheService)
     {
         _userRepository = userRepository;
         _mapper = mapper;
         _adminService = adminService;
         _cacheService = cacheService;
-
     }
 
     public async Task<AppAccountModel> GetAccountAsync(Guid id)
@@ -50,17 +50,17 @@ class AccountService : IAccountService
         {
             Log.Logger.Error(e, ErrorMessages.GetCacheError);
         }
-        
+
         var data = _mapper.Map<IEnumerable<AppAccountModel>>(await _userRepository.GetAllAsync(offset, limit)).ToList();
         await _cacheService.Put(_accountsCacheKey, data, TimeSpan.FromSeconds(30));
-        
+
         return data;
     }
 
     public async Task<AppAccountModel> UpdateAccountAsync(Guid userId, Guid accountId, AppAccountUpdateModel model)
     {
         var userModel = _mapper.Map(model, await CheckAdminOrAccountOwner(userId, accountId));
-        var data = _mapper.Map<AppAccountModel>(await _userRepository.UpdateAsync(userModel)); 
+        var data = _mapper.Map<AppAccountModel>(await _userRepository.UpdateAsync(userModel));
         await _cacheService.Delete(_accountsCacheKey);
 
         return data;
@@ -81,13 +81,13 @@ class AccountService : IAccountService
     {
         if (userId != accountId && !await _adminService.IsAdminAsync(userId))
         {
-            throw new ProcessException(ErrorMessages.OnlyAdminOrAccountOwnerCanDoIdError);
+            throw new ProcessException(HttpErrorsCode.Forbidden, ErrorMessages.OnlyAdminOrAccountOwnerCanDoIdError);
         }
 
         var user = await _userRepository.GetAsync(accountId);
         if (user.IsBanned)
         {
-            throw new ProcessException(ErrorMessages.YouBannedError);
+            throw new ProcessException(HttpErrorsCode.Forbidden, ErrorMessages.YouBannedError);
         }
 
         return user;

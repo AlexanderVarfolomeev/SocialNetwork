@@ -1,3 +1,5 @@
+using SocialNetwork.Constants.Errors;
+
 namespace SocialNetwork.Common.Exceptions;
 
 public class ProcessException : Exception
@@ -5,7 +7,7 @@ public class ProcessException : Exception
     /// <summary>
     /// Error code
     /// </summary>
-    public string Code { get; }
+    public int Code { get; }
 
     /// <summary>
     /// Error name
@@ -16,6 +18,18 @@ public class ProcessException : Exception
     {
         if (predicate.Invoke())
             throw new ProcessException(message);
+    }
+
+    public static void ThrowIf(Func<bool> predicate, string message, int code)
+    {
+        if (predicate.Invoke())
+            throw new ProcessException(code, message);
+    }
+    
+    public static void ThrowIf(Func<bool> predicate, string message, HttpErrorsCode code)
+    {
+        if (predicate.Invoke())
+            throw new ProcessException(code, message);
     }
     
     public static void ThrowIf(Func<bool> predicate, Exception ex)
@@ -42,14 +56,24 @@ public class ProcessException : Exception
     {
     }
 
-    public ProcessException(string code, string message) : base(message)
+    public ProcessException(int code, string message) : base(message)
     {
         Code = code;
     }
 
-    public ProcessException(string code, string message, Exception inner) : base(message, inner)
+    public ProcessException(int code, string message, Exception inner) : base(message, inner)
     {
         Code = code;
+    }
+
+    public ProcessException(HttpErrorsCode code, string message) : base(message)
+    {
+        Code = (int)code;
+    }
+    
+    public ProcessException(HttpErrorsCode code, string message, Exception inner) : base(message, inner)
+    {
+        Code = (int)code;
     }
 
     #endregion

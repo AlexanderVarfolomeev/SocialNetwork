@@ -18,13 +18,14 @@ public class SqlRepository<T> : IRepository<T> where T : class, IBaseEntity
 
     public async Task<T> GetAsync(Guid id)
     {
-        return await _context.Set<T>().FindAsync(id) ?? throw new ProcessException(ErrorMessages.NotFoundError);
+        return await _context.Set<T>().FindAsync(id) ??
+               throw new ProcessException(HttpErrorsCode.NotFound, ErrorMessages.NotFoundError);
     }
 
     public async Task<T> GetAsync(Expression<Func<T, bool>> predicate)
     {
         return await _context.Set<T>().Where(predicate).FirstOrDefaultAsync() ??
-               throw new ProcessException(ErrorMessages.NotFoundError);
+               throw new ProcessException(HttpErrorsCode.NotFound, ErrorMessages.NotFoundError);
     }
 
     public async Task<IEnumerable<T>> GetAllAsync(int offset = 0, int limit = 10)
@@ -55,7 +56,7 @@ public class SqlRepository<T> : IRepository<T> where T : class, IBaseEntity
         }
         catch (Exception exc)
         {
-            throw new ProcessException(ErrorMessages.SaveEntityError, exc);
+            throw new ProcessException(HttpErrorsCode.InternalServerError, ErrorMessages.SaveEntityError, exc);
         }
     }
 
@@ -82,7 +83,7 @@ public class SqlRepository<T> : IRepository<T> where T : class, IBaseEntity
         }
         catch (Exception exc)
         {
-            throw new ProcessException(ErrorMessages.UpdateEntityError, exc);
+            throw new ProcessException(HttpErrorsCode.InternalServerError, ErrorMessages.UpdateEntityError, exc);
         }
     }
 
@@ -95,7 +96,7 @@ public class SqlRepository<T> : IRepository<T> where T : class, IBaseEntity
         }
         catch (Exception exc)
         {
-            throw new ProcessException(ErrorMessages.UpdateEntityError, exc);
+            throw new ProcessException(HttpErrorsCode.InternalServerError, ErrorMessages.UpdateEntityError, exc);
         }
     }
 
@@ -103,5 +104,4 @@ public class SqlRepository<T> : IRepository<T> where T : class, IBaseEntity
     {
         return await _context.Set<T>().FindAsync(entityId) is not null;
     }
-    
 }

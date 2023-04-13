@@ -30,7 +30,8 @@ public static class ExceptionExtensions
     {
         var res = new ErrorResponse
         {
-            Message = data.Message
+            Message = data.Message,
+            ErrorCode = data.Code
         };
 
         return res;
@@ -40,7 +41,7 @@ public static class ExceptionExtensions
     {
         var res = new ErrorResponse
         {
-            Message = data.Message
+            Message = data.Message,
         };
 
         return res;

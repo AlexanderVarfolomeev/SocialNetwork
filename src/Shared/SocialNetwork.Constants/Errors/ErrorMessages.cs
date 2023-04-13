@@ -24,7 +24,7 @@ public static class ErrorMessages
     public const string RequestFriendshipIrrelevantError = "The request for friendship is irrelevant.";
     public const string UserAlreadyRejectFriendshipRequest = "The user has already rejected friendship request.";
     public const string InvestmentLimitExceededError = "The maximum number of attachments is 10!";
-    public const string MorThanOneAvatarError = "You can attach only one photo for the avatar.";
+    public const string MoreThanOneAvatarError = "You can attach only one photo for the avatar.";
     public const string UnsupportedTypeError = "Unsupported type.";
     public const string UserNotFoundError = "User not found.";
     public const string GroupNotFoundError = "Group not found.";

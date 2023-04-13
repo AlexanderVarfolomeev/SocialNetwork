@@ -75,10 +75,10 @@ public class GroupService : IGroupService
     public async Task<GroupModelResponse> CreateGroup(Guid userId, GroupModelRequest groupModelRequest)
     {
         var user = await _userRepository.GetAsync(userId);
-        ProcessException.ThrowIf(() => user.IsBanned, ErrorMessages.YouBannedError);
+        ProcessException.ThrowIf(() => user.IsBanned, ErrorMessages.YouBannedError, HttpErrorsCode.Forbidden);
 
         var isGroupAlreadyExists = (await _groupRepository.GetAllAsync(x => x.Name == groupModelRequest.Name)).Any();
-        ProcessException.ThrowIf(() => isGroupAlreadyExists, ErrorMessages.GroupWithThisNameAlreadyExistsError);
+        ProcessException.ThrowIf(() => isGroupAlreadyExists, ErrorMessages.GroupWithThisNameAlreadyExistsError, HttpErrorsCode.BadRequest);
 
         var group = await _groupRepository.AddAsync(_mapper.Map<Group>(groupModelRequest));
 
@@ -111,7 +111,7 @@ public class GroupService : IGroupService
     public async Task SubscribeToGroup(Guid userId, Guid groupId)
     {
         var user = await _userRepository.GetAsync(userId);
-        ProcessException.ThrowIf(() => user.IsBanned, ErrorMessages.YouBannedError);
+        ProcessException.ThrowIf(() => user.IsBanned, ErrorMessages.YouBannedError, HttpErrorsCode.Forbidden);
 
         var group = await _groupRepository.GetAsync(groupId);
         var subscribers = group.Users;
@@ -132,7 +132,7 @@ public class GroupService : IGroupService
         }
         else
         {
-            ProcessException.ThrowIf(() => subscription.IsCreator, ErrorMessages.CreatorCantUnsubscribeFromGroupError);
+            ProcessException.ThrowIf(() => subscription.IsCreator, ErrorMessages.CreatorCantUnsubscribeFromGroupError, HttpErrorsCode.BadRequest);
             await _userInGroupRepository.DeleteAsync(subscription);
         }
         await _cacheService.Delete(_groupListKey + userId);
@@ -141,10 +141,10 @@ public class GroupService : IGroupService
     public async Task GrantAdminRole(Guid userId, Guid receiverId, Guid groupId)
     {
         var userInGroup = await GetUserInGroup(receiverId, groupId);
-        ProcessException.ThrowIf(() => userInGroup is null, ErrorMessages.UserNotSubToGroupError);
+        ProcessException.ThrowIf(() => userInGroup is null, ErrorMessages.UserNotSubToGroupError, HttpErrorsCode.BadRequest);
         
         var admin = await GetUserInGroup(userId, groupId);
-        ProcessException.ThrowIf(() => !admin.IsCreator, ErrorMessages.UserIsNotAdminError);
+        ProcessException.ThrowIf(() => !admin.IsCreator, ErrorMessages.UserIsNotAdminError, HttpErrorsCode.BadRequest);
         
         userInGroup!.IsAdmin = true;
         await _userInGroupRepository.UpdateAsync(userInGroup);
@@ -153,10 +153,10 @@ public class GroupService : IGroupService
     public async Task RevokeAdminRole(Guid userId, Guid receiverId, Guid groupId)
     {
         var userInGroup = await GetUserInGroup(receiverId, groupId);
-        ProcessException.ThrowIf(() => userInGroup is null, ErrorMessages.UserNotSubToGroupError);
+        ProcessException.ThrowIf(() => userInGroup is null, ErrorMessages.UserNotSubToGroupError, HttpErrorsCode.BadRequest);
         
         var admin = await GetUserInGroup(userId, groupId);
-        ProcessException.ThrowIf(() => !admin.IsCreator, ErrorMessages.UserIsNotAdminError);
+        ProcessException.ThrowIf(() => !admin.IsCreator, ErrorMessages.UserIsNotAdminError, HttpErrorsCode.BadRequest);
         
         userInGroup!.IsAdmin = false;
         await _userInGroupRepository.UpdateAsync(userInGroup);
@@ -165,7 +165,7 @@ public class GroupService : IGroupService
     private async Task<UserInGroup?> GetUserInGroup(Guid userId, Guid groupId)
     {
         var user = await _userRepository.GetAsync(userId);
-        ProcessException.ThrowIf(() => user.IsBanned, ErrorMessages.UserIsBannedError);
+        ProcessException.ThrowIf(() => user.IsBanned, ErrorMessages.UserIsBannedError, HttpErrorsCode.Forbidden);
         
         var group = await _groupRepository.GetAsync(groupId);
         var subscribers = group.Users;

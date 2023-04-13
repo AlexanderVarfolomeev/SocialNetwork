@@ -39,12 +39,12 @@ public class MessengerService : IMessengerService
         var sender = await _userRepository.GetAsync(userId);
         var receiver = await _userRepository.GetAsync(receiverId);
 
-        ProcessException.ThrowIf(() => sender.IsBanned, ErrorMessages.YouBannedError);
-        ProcessException.ThrowIf(() => receiver.IsBanned, ErrorMessages.UserIsBannedError);
+        ProcessException.ThrowIf(() => sender.IsBanned, ErrorMessages.YouBannedError, HttpErrorsCode.Forbidden);
+        ProcessException.ThrowIf(() => receiver.IsBanned, ErrorMessages.UserIsBannedError, HttpErrorsCode.Forbidden);
 
         var friends = await _relationshipService.GetFriendList(userId, 0, 1000);
         ProcessException.ThrowIf(() => !friends.Select(x => x.Id).Contains(receiverId),
-            ErrorMessages.SendMessageToNotFriendError);
+            ErrorMessages.SendMessageToNotFriendError, HttpErrorsCode.BadRequest);
 
         var chat = await GetDialogBetweenUsers(userId, receiverId);
 
@@ -66,7 +66,7 @@ public class MessengerService : IMessengerService
     {
         var chat = await _chatRepository.GetAsync(dialogId);
         var users = (await GetUsersInChat(dialogId)).Select(x => x.UserId);
-        ProcessException.ThrowIf(() => !users.Contains(userId), ErrorMessages.AccessRightsError);
+        ProcessException.ThrowIf(() => !users.Contains(userId), ErrorMessages.AccessRightsError, HttpErrorsCode.Forbidden);
 
         var messages = await _messageRepository.GetAllAsync(x => x.ChatId == dialogId, offset, limit);
         return _mapper.Map<IEnumerable<MessageModelResponse>>(messages);

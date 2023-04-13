@@ -36,7 +36,7 @@ public class CommentService : ICommentService
     public async Task<CommentModelResponse> AddComment(Guid userId, Guid postId, CommentModelRequest commentModel)
     {
         var user = await _usersRepository.GetAsync(userId);
-        ProcessException.ThrowIf(() => user.IsBanned, ErrorMessages.YouBannedError);
+        ProcessException.ThrowIf(() => user.IsBanned, ErrorMessages.YouBannedError, HttpErrorsCode.Forbidden);
         await _postRepository.GetAsync(postId);
         
         var createdPost = await _commentsRepository.AddAsync(new Comment()
@@ -52,9 +52,9 @@ public class CommentService : ICommentService
     public async Task<CommentModelResponse> UpdateComment(Guid userId, Guid commentId, CommentModelRequest commentModel)
     {
         var user = await _usersRepository.GetAsync(userId);
-        ProcessException.ThrowIf(() => user.IsBanned, ErrorMessages.YouBannedError);
+        ProcessException.ThrowIf(() => user.IsBanned, ErrorMessages.YouBannedError, HttpErrorsCode.Forbidden);
         var comment = await _commentsRepository.GetAsync(commentId);
-        ProcessException.ThrowIf(() => comment.CreatorId != userId, ErrorMessages.OnlyCreatorOfContentCanDoItError);
+        ProcessException.ThrowIf(() => comment.CreatorId != userId, ErrorMessages.OnlyCreatorOfContentCanDoItError, HttpErrorsCode.Forbidden);
         comment.Text = commentModel.Text;
         return _mapper.Map<CommentModelResponse>(await _commentsRepository.UpdateAsync(comment));
     }
@@ -62,9 +62,9 @@ public class CommentService : ICommentService
     public async Task DeleteComment(Guid userId, Guid commentId)
     {
         var user = await _usersRepository.GetAsync(userId);
-        ProcessException.ThrowIf(() => user.IsBanned, ErrorMessages.YouBannedError);
+        ProcessException.ThrowIf(() => user.IsBanned, ErrorMessages.YouBannedError, HttpErrorsCode.Forbidden);
         var comment = await _commentsRepository.GetAsync(commentId);
-        ProcessException.ThrowIf(() => comment.CreatorId != userId, ErrorMessages.OnlyCreatorOfContentCanDoItError);
+        ProcessException.ThrowIf(() => comment.CreatorId != userId, ErrorMessages.OnlyCreatorOfContentCanDoItError, HttpErrorsCode.Forbidden);
 
         await _commentsRepository.DeleteAsync(comment);
     }

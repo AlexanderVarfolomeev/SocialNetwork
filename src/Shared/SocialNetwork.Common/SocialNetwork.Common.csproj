@@ -21,4 +21,8 @@
       <Folder Include="Validations" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\SocialNetwork.Constants\SocialNetwork.Constants.csproj" />
+    </ItemGroup>
+
 </Project>

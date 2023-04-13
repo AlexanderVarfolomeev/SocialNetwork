@@ -40,11 +40,12 @@ public class RelationshipService : IRelationshipService
 
     public async Task SendFriendRequest(Guid senderId, Guid recipientId)
     {
-        ProcessException.ThrowIf(() => senderId == recipientId, ErrorMessages.CantSendFriendRequestYourselfError);
+        ProcessException.ThrowIf(() => senderId == recipientId, ErrorMessages.CantSendFriendRequestYourselfError,
+            HttpErrorsCode.BadRequest);
         var fromUser = await _userRepository.GetAsync(senderId);
         var toUser = await _userRepository.GetAsync(recipientId);
-        ProcessException.ThrowIf(() => fromUser.IsBanned || toUser.IsBanned, ErrorMessages.UserIsBannedError);
-    
+        ProcessException.ThrowIf(() => fromUser.IsBanned || toUser.IsBanned, ErrorMessages.UserIsBannedError, HttpErrorsCode.Forbidden);
+
         var relationship = await GetRelationshipBetweenUsers(senderId, recipientId);
 
         if (relationship is not null)
@@ -52,13 +53,13 @@ public class RelationshipService : IRelationshipService
             ProcessException.ThrowIf(
                 () => relationship.RelationshipType == RelationshipType.Friend ||
                       relationship.RelationshipType == RelationshipType.FriendRequest,
-                ErrorMessages.RelationshipExistsError);
+                ErrorMessages.RelationshipExistsError, HttpErrorsCode.BadRequest);
 
             // Если запрос на дружбу уже отклоняли, и запрос шлет человек, который это уже делал, то кидаем ошибку
             ProcessException.ThrowIf(
                 () => relationship.RelationshipType == RelationshipType.Rejected &&
                       relationship.FirstUserId == senderId,
-                ErrorMessages.UserAlreadyRejectFriendshipRequest);
+                ErrorMessages.UserAlreadyRejectFriendshipRequest, HttpErrorsCode.BadRequest);
         }
         else
         {
@@ -78,14 +79,14 @@ public class RelationshipService : IRelationshipService
         var relationship = await _relationshipRepository.GetAsync(requestId);
 
         ProcessException.ThrowIf(() => relationship.SecondUserId != recipientId,
-            ErrorMessages.RelationshipDoesntExistsError);
+            ErrorMessages.RelationshipDoesntExistsError, HttpErrorsCode.BadRequest);
         ProcessException.ThrowIf(() => relationship.RelationshipType != RelationshipType.FriendRequest,
-            ErrorMessages.RequestFriendshipIrrelevantError);
+            ErrorMessages.RequestFriendshipIrrelevantError, HttpErrorsCode.BadRequest);
 
         relationship.RelationshipType = RelationshipType.Friend;
         await _relationshipRepository.UpdateAsync(relationship);
         await CreateDialogBetweenUsers(relationship.FirstUserId, relationship.SecondUserId);
-        
+
         await _cacheService.Delete(_friendlistKey + recipientId);
     }
 
@@ -94,9 +95,9 @@ public class RelationshipService : IRelationshipService
         var relationship = await _relationshipRepository.GetAsync(requestId);
 
         ProcessException.ThrowIf(() => relationship.SecondUserId != recipientId,
-            ErrorMessages.RelationshipDoesntExistsError);
+            ErrorMessages.RelationshipDoesntExistsError, HttpErrorsCode.BadRequest);
         ProcessException.ThrowIf(() => relationship.RelationshipType != RelationshipType.FriendRequest,
-            ErrorMessages.RequestFriendshipIrrelevantError);
+            ErrorMessages.RequestFriendshipIrrelevantError, HttpErrorsCode.BadRequest);
 
         relationship.RelationshipType = RelationshipType.Rejected;
         await _relationshipRepository.UpdateAsync(relationship);
@@ -106,7 +107,7 @@ public class RelationshipService : IRelationshipService
     {
         var list = await _relationshipRepository.GetAllAsync(x =>
             x.SecondUserId == userId && x.RelationshipType == RelationshipType.FriendRequest, offset, limit);
-        
+
         return _mapper.Map<List<FriendshipRequest>>(list);
     }
 
@@ -122,7 +123,7 @@ public class RelationshipService : IRelationshipService
         {
             Log.Logger.Error(e, ErrorMessages.GetCacheError);
         }
-        
+
         var relationships = await _relationshipRepository.GetAllAsync(
             x => (x.FirstUserId == userId || x.SecondUserId == userId) &&
                  x.RelationshipType == RelationshipType.Friend, offset, limit);
@@ -146,7 +147,7 @@ public class RelationshipService : IRelationshipService
         }
         else
         {
-            throw new ProcessException(ErrorMessages.RelationshipDoesntExistsError);
+            throw new ProcessException(HttpErrorsCode.BadRequest, ErrorMessages.RelationshipDoesntExistsError);
         }
     }
 
@@ -164,7 +165,7 @@ public class RelationshipService : IRelationshipService
             return null; // УБРАТЬ
         }
     }
-    
+
     private async Task CreateDialogBetweenUsers(Guid user1, Guid user2)
     {
         var chat = new Chat()

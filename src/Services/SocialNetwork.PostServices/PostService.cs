@@ -40,17 +40,10 @@ public class PostService : IPostService
 
     public async Task<IEnumerable<PostModelResponse>> GetUsersPosts(Guid userId, int offset = 0, int limit = 10)
     {
-        try
-        {
-            await _userRepository.GetAsync(userId);
-            return _mapper.Map<IEnumerable<PostModelResponse>>(
-                    await _postRepository.GetAllAsync((x) => x.CreatorId == userId, offset, limit))
-                .OrderBy(x => x.CreationDateTime).ToList();
-        }
-        catch (ProcessException e)
-        {
-            throw new ProcessException(ErrorMessages.UserNotFoundError, e);
-        }
+        await _userRepository.GetAsync(userId);
+        return _mapper.Map<IEnumerable<PostModelResponse>>(
+                await _postRepository.GetAllAsync((x) => x.CreatorId == userId, offset, limit))
+            .OrderBy(x => x.CreationDateTime).ToList();
     }
 
     public async Task<IEnumerable<PostModelResponse>> GetUsersPosts(string username, int offset = 0,
@@ -62,23 +55,16 @@ public class PostService : IPostService
 
     public async Task<IEnumerable<PostModelResponse>> GetGroupPosts(Guid groupId, int offset = 0, int limit = 10)
     {
-        try
-        {
-            await _groupRepository.GetAsync(groupId);
-            return _mapper.Map<IEnumerable<PostModelResponse>>(
-                    await _postRepository.GetAllAsync((x) => x.GroupId == groupId, offset, limit))
-                .OrderBy(x => x.CreationDateTime).ToList();
-        }
-        catch (ProcessException e)
-        {
-            throw new ProcessException(ErrorMessages.GroupNotFoundError, e);
-        }
+        await _groupRepository.GetAsync(groupId);
+        return _mapper.Map<IEnumerable<PostModelResponse>>(
+                await _postRepository.GetAllAsync((x) => x.GroupId == groupId, offset, limit))
+            .OrderBy(x => x.CreationDateTime).ToList();
     }
 
     public async Task<PostModelResponse> AddUserPost(Guid userId, PostModelAdd postModel)
     {
         var user = await _userRepository.GetAsync(userId);
-        ProcessException.ThrowIf(() => user.IsBanned, ErrorMessages.YouBannedError);
+        ProcessException.ThrowIf(() => user.IsBanned, ErrorMessages.YouBannedError, HttpErrorsCode.Forbidden);
 
         var createdPost = await _postRepository.AddAsync(_mapper.Map<Post>(postModel));
         return _mapper.Map<PostModelResponse>(createdPost);
@@ -90,9 +76,9 @@ public class PostService : IPostService
         var group = await _groupRepository.GetAsync((Guid)postModel.GroupId!);
         var groupAdmins = group.Users.Where(x => x.IsAdmin).Select(x => x.UserId);
 
-        ProcessException.ThrowIf(() => user.IsBanned, ErrorMessages.YouBannedError);
+        ProcessException.ThrowIf(() => user.IsBanned, ErrorMessages.YouBannedError, HttpErrorsCode.Forbidden);
         ProcessException.ThrowIf(() => !groupAdmins.Contains(userId),
-            ErrorMessages.OnlyAdminOfGroupCanAddContentInError);
+            ErrorMessages.OnlyAdminOfGroupCanAddContentInError, HttpErrorsCode.Forbidden);
 
 
         var createdPost = await _postRepository.AddAsync(_mapper.Map<Post>(postModel));
@@ -116,7 +102,7 @@ public class PostService : IPostService
     public async Task LikePost(Guid userId, Guid postId)
     {
         var user = await _userRepository.GetAsync(userId);
-        ProcessException.ThrowIf(() => user.IsBanned, ErrorMessages.YouBannedError);
+        ProcessException.ThrowIf(() => user.IsBanned, ErrorMessages.YouBannedError, HttpErrorsCode.Forbidden);
 
         var likes = (await _likesRepository.GetAllAsync(x => x.PostId == postId && x.UserId == userId)).ToList();
 
@@ -132,10 +118,10 @@ public class PostService : IPostService
         return (await _likesRepository.GetAllAsync(x => x.PostId == postId)).Count();
     }
 
-    public async  Task<bool> IsUserLikedPost(Guid userId, Guid postId)
+    public async Task<bool> IsUserLikedPost(Guid userId, Guid postId)
     {
         var user = await _userRepository.GetAsync(userId);
-        ProcessException.ThrowIf(() => user.IsBanned, ErrorMessages.YouBannedError);
+        ProcessException.ThrowIf(() => user.IsBanned, ErrorMessages.YouBannedError, HttpErrorsCode.Forbidden);
 
         var likes = (await _likesRepository.GetAllAsync(x => x.PostId == postId && x.UserId == userId)).ToList();
         return likes.Any();
@@ -148,8 +134,9 @@ public class PostService : IPostService
     {
         var user = await _userRepository.GetAsync(userId);
         var post = await _postRepository.GetAsync(postId);
-        ProcessException.ThrowIf(() => user.IsBanned, ErrorMessages.YouBannedError);
-        ProcessException.ThrowIf(() => post.CreatorId != userId, ErrorMessages.OnlyCreatorOfContentCanDoItError);
+        ProcessException.ThrowIf(() => user.IsBanned, ErrorMessages.YouBannedError, HttpErrorsCode.Forbidden);
+        ProcessException.ThrowIf(() => post.CreatorId != userId, ErrorMessages.OnlyCreatorOfContentCanDoItError,
+            HttpErrorsCode.Forbidden);
 
         if (post.IsInGroup)
         {
@@ -157,7 +144,7 @@ public class PostService : IPostService
             var group = await _groupRepository.GetAsync((Guid)post.GroupId!);
             var groupAdmins = group.Users.Where(x => x.IsAdmin).Select(x => x.UserId);
             ProcessException.ThrowIf(() => !groupAdmins.Contains(userId),
-                ErrorMessages.OnlyAdminOfGroupCanAddContentInError);
+                ErrorMessages.OnlyAdminOfGroupCanAddContentInError, HttpErrorsCode.Forbidden);
         }
 
         return post;

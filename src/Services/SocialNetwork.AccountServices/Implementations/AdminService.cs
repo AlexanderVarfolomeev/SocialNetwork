@@ -35,13 +35,13 @@ public class AdminService : IAdminService
     public async Task GiveAdminRoleAsync(Guid userId, Guid accountId)
     {
         if (!await IsAdminAsync(userId))
-            throw new ProcessException(ErrorMessages.OnlyAdminCanDoItError);
+            throw new ProcessException(HttpErrorsCode.Forbidden, ErrorMessages.OnlyAdminCanDoItError);
 
         var user = await _userRepository.GetAsync(accountId);
-        ProcessException.ThrowIf(() => user.IsBanned, ErrorMessages.UserIsBannedError);
+        ProcessException.ThrowIf(() => user.IsBanned, ErrorMessages.UserIsBannedError, HttpErrorsCode.Forbidden);
 
         if (await IsAdminAsync(userId))
-            throw new ProcessException(ErrorMessages.UserIsAdminError);
+            throw new ProcessException(HttpErrorsCode.Forbidden, ErrorMessages.UserIsAdminError);
 
         await _userManager.AddToRoleAsync(user, Permissions.Admin.GetName());
         await _cacheService.Delete(_accountsCacheKey);
@@ -50,12 +50,12 @@ public class AdminService : IAdminService
     public async Task RevokeAdminRoleAsync(Guid userId, Guid accountId)
     {
         if (!await IsAdminAsync(userId))
-            throw new ProcessException(ErrorMessages.OnlyAdminCanDoItError);
+            throw new ProcessException(HttpErrorsCode.Forbidden, ErrorMessages.OnlyAdminCanDoItError);
 
         var user = await _userRepository.GetAsync(accountId);
 
         if (!await IsAdminAsync(userId))
-            throw new ProcessException(ErrorMessages.UserIsNotAdminError);
+            throw new ProcessException(HttpErrorsCode.Forbidden, ErrorMessages.UserIsNotAdminError);
 
         await _userManager.RemoveFromRoleAsync(user, Permissions.Admin.GetName());
         await _cacheService.Delete(_accountsCacheKey);
@@ -64,13 +64,13 @@ public class AdminService : IAdminService
     public async Task BanAccountAsync(Guid userId, Guid accountId)
     {
         if (!await IsAdminAsync(userId))
-            throw new ProcessException(ErrorMessages.OnlyAdminCanDoItError);
+            throw new ProcessException(HttpErrorsCode.Forbidden, ErrorMessages.OnlyAdminCanDoItError);
 
         var user = await _userRepository.GetAsync(accountId);
-        ProcessException.ThrowIf(() => user.IsBanned, ErrorMessages.UserIsBannedError);
+        ProcessException.ThrowIf(() => user.IsBanned, ErrorMessages.UserIsBannedError, HttpErrorsCode.Forbidden);
 
         if (await IsAdminAsync(userId))
-            throw new ProcessException(ErrorMessages.CantBanAdminError);
+            throw new ProcessException(HttpErrorsCode.Forbidden, ErrorMessages.CantBanAdminError);
 
         user.IsBanned = true;
         await _userRepository.UpdateAsync(user);
@@ -80,11 +80,11 @@ public class AdminService : IAdminService
     public async Task UnbanAccountAsync(Guid userId, Guid accountId)
     {
         if (!await IsAdminAsync(userId))
-            throw new ProcessException(ErrorMessages.OnlyAdminCanDoItError);
+            throw new ProcessException(HttpErrorsCode.Forbidden, ErrorMessages.OnlyAdminCanDoItError);
 
         var user = await _userRepository.GetAsync(accountId);
 
-        ProcessException.ThrowIf(() => !user.IsBanned, ErrorMessages.UserIsUnbannedError);
+        ProcessException.ThrowIf(() => !user.IsBanned, ErrorMessages.UserIsUnbannedError, HttpErrorsCode.BadRequest);
 
         user.IsBanned = false;
         await _userRepository.UpdateAsync(user);

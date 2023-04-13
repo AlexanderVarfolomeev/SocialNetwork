@@ -30,10 +30,10 @@ public class ProfileService : IProfileService
     private readonly IAction _action;
 
     public ProfileService(
-        IRepository<AppUser> userRepository, 
+        IRepository<AppUser> userRepository,
         UserManager<AppUser> userManager,
-        SignInManager<AppUser> signInManager, 
-        IMapper mapper, 
+        SignInManager<AppUser> signInManager,
+        IMapper mapper,
         IAppSettings apiSettings,
         ICacheService cacheService,
         IAction action)
@@ -50,7 +50,8 @@ public class ProfileService : IProfileService
     public async Task<AppAccountModel> RegisterUserAsync(AppAccountModelRequest requestModel)
     {
         var user = await _userManager.FindByEmailAsync(requestModel.Email);
-        ProcessException.ThrowIf(() => user is not null, ErrorMessages.UserWithThisEmailExistsError);
+        ProcessException.ThrowIf(() => user is not null, ErrorMessages.UserWithThisEmailExistsError,
+            HttpErrorsCode.BadRequest);
 
         user = _mapper.Map<AppUser>(requestModel);
 
@@ -58,7 +59,7 @@ public class ProfileService : IProfileService
         user.EmailConfirmed = false;
 
         var result = await _userManager.CreateAsync(user, requestModel.Password);
-        ProcessException.ThrowIf(() => !result.Succeeded, result.ToString());
+        ProcessException.ThrowIf(() => !result.Succeeded, result.ToString(), HttpErrorsCode.InternalServerError);
 
         try
         {
@@ -83,9 +84,10 @@ public class ProfileService : IProfileService
         ProcessException.ThrowIf(() => user is null, ErrorMessages.NotFoundError);
 
         var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
-        ProcessException.ThrowIf(() => !result.Succeeded, ErrorMessages.IncorrectEmailOrPasswordError);
+        ProcessException.ThrowIf(() => !result.Succeeded, ErrorMessages.IncorrectEmailOrPasswordError,
+            HttpErrorsCode.BadRequest);
         ProcessException.ThrowIf(() => user.IsBanned,
-            ErrorMessages.YouBannedError); // Не даем зайти в аккаунт если забанен
+            ErrorMessages.YouBannedError, HttpErrorsCode.Forbidden); // Не даем зайти в аккаунт если забанен
 
 
         return await GetTokenResponseAsync(model, user.UserName);
@@ -129,7 +131,7 @@ public class ProfileService : IProfileService
         }
         else
         {
-            throw new ProcessException(ErrorMessages.IncorrectPassword);
+            throw new ProcessException(HttpErrorsCode.Forbidden,ErrorMessages.IncorrectPassword);
         }
     }
 
@@ -139,7 +141,7 @@ public class ProfileService : IProfileService
     private async Task ResetPassword(AppUser user, string newPassword, string resetToken)
     {
         var result = await _userManager.ResetPasswordAsync(user, resetToken, newPassword);
-        ProcessException.ThrowIf(() => !result.Succeeded, ErrorMessages.ErrorWhileResetPassword);
+        ProcessException.ThrowIf(() => !result.Succeeded, ErrorMessages.ErrorWhileResetPassword, HttpErrorsCode.InternalServerError);
         await _cacheService.Delete(_accountsCacheKey);
     }
 
@@ -164,7 +166,7 @@ public class ProfileService : IProfileService
     {
         var client = new HttpClient();
         var disco = await client.GetDiscoveryDocumentAsync(_apiSettings.Identity.Url);
-        ProcessException.ThrowIf(() => disco.IsError, disco.Error);
+        ProcessException.ThrowIf(() => disco.IsError, disco.Error, HttpErrorsCode.InternalServerError);
         var tokenResponse = await client.RequestPasswordTokenAsync(new PasswordTokenRequest
         {
             Address = disco.TokenEndpoint,
@@ -175,7 +177,7 @@ public class ProfileService : IProfileService
             Scope = "offline_access " + AppScopes.NetworkRead + " " + AppScopes.NetworkRead
         });
 
-        ProcessException.ThrowIf(() => tokenResponse.IsError, tokenResponse.Error);
+        ProcessException.ThrowIf(() => tokenResponse.IsError, tokenResponse.Error, HttpErrorsCode.InternalServerError);
         return tokenResponse;
     }
 }

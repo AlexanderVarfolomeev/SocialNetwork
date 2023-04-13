@@ -34,7 +34,6 @@ public class ComplaintService : IComplaintService
     public async Task AddReasonForComplaint(Guid userId, Guid complaintId, Guid reasonId)
     {
         var complaint = await _complaintRepository.GetAsync(complaintId);
-        // TODO add error msg
         ProcessException.ThrowIf(() => complaint.CreatorId != userId, "");
         await _reasonRepository.GetAsync(reasonId);
         await _reasonComplaintRepository.AddAsync(new ReasonComplaint()
@@ -77,7 +76,6 @@ public class ComplaintService : IComplaintService
 
     public async Task<ComplaintModelResponse> AddComplaint(Guid userId, ComplaintModelRequest complaint)
     {
-        //TODO check ban user
         Complaint newComplaint = new Complaint
         {
             Type = complaint.Type,
@@ -99,7 +97,6 @@ public class ComplaintService : IComplaintService
                 newComplaint.UserId = complaint.ContentId;
                 break;
             default:
-                //TODO exception
                 break;
         }
 
