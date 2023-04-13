@@ -35,4 +35,5 @@ public static class ErrorMessages
     public const string UserNotSubToGroupError = "The user is not subscribed to the group.";
     public const string SendMessageToNotFriendError = "You can only send a message to your friends";
     public const string GetCacheError = "Error while getting data from cache";
+    public const string CantSendFriendRequestYourselfError = "You can't send a friend request to yourself.";
 }

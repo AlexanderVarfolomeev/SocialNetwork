@@ -40,10 +40,11 @@ public class RelationshipService : IRelationshipService
 
     public async Task SendFriendRequest(Guid senderId, Guid recipientId)
     {
+        ProcessException.ThrowIf(() => senderId == recipientId, ErrorMessages.CantSendFriendRequestYourselfError);
         var fromUser = await _userRepository.GetAsync(senderId);
         var toUser = await _userRepository.GetAsync(recipientId);
         ProcessException.ThrowIf(() => fromUser.IsBanned || toUser.IsBanned, ErrorMessages.UserIsBannedError);
-
+    
         var relationship = await GetRelationshipBetweenUsers(senderId, recipientId);
 
         if (relationship is not null)
